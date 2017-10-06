@@ -2,7 +2,7 @@ package hh.fernuni.rentamovie.rate.application;
 
 import hh.fernuni.rentamovie.rate.domain.Rate;
 
-public class RateServiceImpl implements RateService {
+class RateServiceImpl implements RateService {
 	private static final RateService INSTANCE = new RateServiceImpl();
 
 	private RateServiceImpl() {

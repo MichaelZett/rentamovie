@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 
-public class CustomerServiceImpl implements CustomerService {
+class CustomerServiceImpl implements CustomerService {
 	private static final CustomerService INSTANCE = new CustomerServiceImpl();
 
 	private CustomerServiceImpl() {

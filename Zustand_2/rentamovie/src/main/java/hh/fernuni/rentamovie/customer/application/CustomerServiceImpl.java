@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 
-public class CustomerServiceImpl implements CustomerService {
+class CustomerServiceImpl implements CustomerService {
 	private static final AtomicLong ID_GENERATOR = new AtomicLong(1L);
 
 	@Override

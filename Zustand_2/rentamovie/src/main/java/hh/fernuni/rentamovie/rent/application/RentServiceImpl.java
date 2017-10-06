@@ -10,7 +10,7 @@ import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 
-public class RentServiceImpl implements RentService {
+class RentServiceImpl implements RentService {
 	private static final AtomicLong ID_GENERATOR = new AtomicLong(1L);
 	private MovieService movieService = new MovieServiceImpl();
 

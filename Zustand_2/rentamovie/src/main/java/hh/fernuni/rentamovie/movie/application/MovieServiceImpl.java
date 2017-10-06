@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 
-public class MovieServiceImpl implements MovieService {
+class MovieServiceImpl implements MovieService {
 	private static final Logger LOG = LoggerFactory.getLogger(MovieServiceImpl.class);
 
 	private static final AtomicLong MOVIE_ID_GENERATOR = new AtomicLong(1L);
@@ -23,14 +23,6 @@ public class MovieServiceImpl implements MovieService {
 	@Override
 	public void updateMovie(Movie currentMovie, Year year, String title) {
 		currentMovie.updateData(year, title);
-	}
-
-	@Override
-	public void createCopies(Movie movie, int numberToCreate) {
-		for (int i = 0; i < numberToCreate; i++) {
-			Copy copy = new Copy(COPY_ID_GENERATOR.getAndIncrement(), movie);
-			LOG.info("Created: {}", copy);
-		}
 	}
 
 	@Override

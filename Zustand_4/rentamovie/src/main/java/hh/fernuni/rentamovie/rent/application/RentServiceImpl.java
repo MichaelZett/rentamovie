@@ -8,7 +8,7 @@ import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 
-public class RentServiceImpl implements RentService {
+class RentServiceImpl implements RentService {
 	private static final RentService Instance = new RentServiceImpl();
 	private MovieService movieService = MovieService.getService();
 
