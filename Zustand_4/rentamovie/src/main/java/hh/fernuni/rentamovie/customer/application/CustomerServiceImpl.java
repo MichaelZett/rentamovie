@@ -10,7 +10,7 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerServiceImpl() {
 		// should only be called from within this class
 	}
-	
+
 	static CustomerService getInstance() {
 		return INSTANCE;
 	}
