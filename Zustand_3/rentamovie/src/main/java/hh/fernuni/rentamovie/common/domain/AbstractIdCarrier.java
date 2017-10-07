@@ -1,5 +1,6 @@
 package hh.fernuni.rentamovie.common.domain;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractIdCarrier implements IdCarrier {
@@ -44,11 +45,10 @@ public abstract class AbstractIdCarrier implements IdCarrier {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		AbstractIdCarrier other = (AbstractIdCarrier) obj;
-		if (this.id != other.id) {
-			return false;
+		if (obj instanceof AbstractIdCarrier) {
+			Objects.equals(this.getId(), ((AbstractIdCarrier) obj).getId());
 		}
-		return true;
+		return false;
 	}
 
 }

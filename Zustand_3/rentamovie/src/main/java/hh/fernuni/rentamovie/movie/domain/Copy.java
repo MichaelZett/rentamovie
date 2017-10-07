@@ -15,11 +15,6 @@ public class Copy extends AbstractIdCarrier {
 	}
 
 	@Override
-	public Long getId() {
-		return this.id;
-	}
-
-	@Override
 	public String toString() {
 		return "Copy [id=" + this.id + ", movie=" + this.movie + "]";
 	}
