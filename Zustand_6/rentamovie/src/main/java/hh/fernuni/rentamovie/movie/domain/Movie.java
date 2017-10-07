@@ -14,11 +14,6 @@ public class Movie extends AbstractIdCarrier {
 		this.title = title;
 	}
 
-	@Override
-	public Long getId() {
-		return this.id;
-	}
-
 	public Year getYearOfPublication() {
 		return this.yearOfPublication;
 	}

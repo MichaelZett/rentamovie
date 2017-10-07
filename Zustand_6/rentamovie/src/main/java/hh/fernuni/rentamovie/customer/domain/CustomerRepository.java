@@ -12,5 +12,4 @@ public interface CustomerRepository {
 	Customer read(Long id);
 
 	Collection<Customer> readAll();
-
 }

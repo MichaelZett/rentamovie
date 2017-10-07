@@ -26,11 +26,6 @@ public class Rent extends AbstractIdCarrier {
 		this.startDate = startDate;
 	}
 
-	@Override
-	public Long getId() {
-		return this.id;
-	}
-
 	public Customer getUser() {
 		return this.customer;
 	}

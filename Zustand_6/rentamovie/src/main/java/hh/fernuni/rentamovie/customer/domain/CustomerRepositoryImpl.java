@@ -1,12 +1,15 @@
 package hh.fernuni.rentamovie.customer.domain;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class CustomerRepositoryImpl implements CustomerRepository {
 	private static final CustomerRepositoryImpl INSTANCE = new CustomerRepositoryImpl();
+	private final Map<Long, Customer> repo = new ConcurrentHashMap<>();
 
 	private CustomerRepositoryImpl() {
-		// only used in thid class
+		// only used in this class
 	}
 
 	static CustomerRepository getInstance() {
@@ -15,20 +18,18 @@ class CustomerRepositoryImpl implements CustomerRepository {
 
 	@Override
 	public void save(Customer customer) {
-		// TODO Auto-generated method stub
+		this.repo.put(customer.getId(), customer);
 
 	}
 
 	@Override
 	public Customer read(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.repo.get(id);
 	}
 
 	@Override
 	public Collection<Customer> readAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.repo.values();
 	}
 
 }
