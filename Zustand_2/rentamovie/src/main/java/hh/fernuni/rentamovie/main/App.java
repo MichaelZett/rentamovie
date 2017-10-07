@@ -17,5 +17,8 @@ public class App {
 		MovieService movieService = new MovieServiceImpl();
 		Movie aNewHope = movieService.createMovie(Year.of(1977), "A new hope");
 		LOG.info("{} was created.", aNewHope);
+
+		movieService.updateMovie(aNewHope, Year.of(1977), "A good hope");
+		LOG.info("{} was updated.", aNewHope);
 	}
 }

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 
-class MovieServiceImpl implements MovieService {
+public class MovieServiceImpl implements MovieService {
 	private static final Logger LOG = LoggerFactory.getLogger(MovieServiceImpl.class);
 
 	private static final AtomicLong MOVIE_ID_GENERATOR = new AtomicLong(1L);
