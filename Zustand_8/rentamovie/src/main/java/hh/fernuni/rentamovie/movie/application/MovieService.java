@@ -13,6 +13,8 @@ public interface MovieService {
 
 	void updateMovie(Movie currentMovie, Year year, String title);
 
+	Collection<Movie> readAllMovies();
+
 	static MovieService getService() {
 		return MovieServiceImpl.getInstance();
 	}

@@ -3,11 +3,10 @@ package hh.fernuni.rentamovie.common.domain;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractIdCarrier implements IdCarrier {
-	private static final AtomicLong ID_GENERATOR = new AtomicLong(1L);
 	protected Long id;
 
 	public AbstractIdCarrier() {
-		this(ID_GENERATOR.getAndIncrement());
+		this(IdRepository.getNextId());
 	}
 
 	public AbstractIdCarrier(Long id) {

@@ -1,7 +1,5 @@
 package hh.fernuni.rentamovie.common.domain;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 public abstract class AbstractIdCarrier implements IdCarrier {
 	protected Long id;
 
