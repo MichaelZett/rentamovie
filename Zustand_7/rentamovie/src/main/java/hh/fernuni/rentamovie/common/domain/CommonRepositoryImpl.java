@@ -39,7 +39,7 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 				Files.createFile(path);
 			}
 		} catch (IOException e) {
-			LOG.error("Error working with file in {}.", path.toString());
+			LOG.error("Error working with file in {}.", path);
 		}
 	}
 
@@ -50,7 +50,7 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 		if (old == null) {
 			try {
 				Files.write(path, Collections.singletonList(toText(domainClass)), StandardCharsets.UTF_8,
-						StandardOpenOption.APPEND);
+				        StandardOpenOption.APPEND);
 			} catch (IOException e) {
 				LOG.error("Error writing to db.");
 			}
@@ -58,7 +58,7 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 			List<String> allEntities = repo.values().stream().map(this::toText).collect(Collectors.toList());
 			try {
 				Files.write(path, allEntities, StandardCharsets.UTF_8, StandardOpenOption.WRITE,
-						StandardOpenOption.TRUNCATE_EXISTING);
+				        StandardOpenOption.TRUNCATE_EXISTING);
 			} catch (IOException e) {
 				LOG.error("Error writing to db.");
 			}

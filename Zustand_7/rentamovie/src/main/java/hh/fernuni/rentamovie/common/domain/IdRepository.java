@@ -27,7 +27,7 @@ public class IdRepository {
 			} else {
 				Files.createFile(path);
 				Files.write(path, Collections.singletonList(String.valueOf(currentId)), StandardCharsets.UTF_8,
-						StandardOpenOption.WRITE);
+				        StandardOpenOption.WRITE);
 			}
 		} catch (IOException e) {
 			LOG.error("Error working with file in id.DB.");
@@ -39,7 +39,7 @@ public class IdRepository {
 		long newId = COUNT.incrementAndGet();
 		try {
 			Files.write(path, Collections.singletonList(String.valueOf(newId)), StandardCharsets.UTF_8,
-					StandardOpenOption.WRITE);
+			        StandardOpenOption.WRITE);
 		} catch (IOException e) {
 			LOG.error("Error writing id.db.");
 		}

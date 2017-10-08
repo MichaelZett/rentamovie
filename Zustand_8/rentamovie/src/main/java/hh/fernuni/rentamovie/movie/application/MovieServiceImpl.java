@@ -50,7 +50,8 @@ class MovieServiceImpl implements MovieService {
 
 	@Override
 	public Collection<Copy> findAllCopiesOfMovie(Movie movie) {
-		return this.copyRepository.readAll().stream().filter(c -> c.getMovie().equals(movie)).collect(Collectors.toSet());
+		return this.copyRepository.readAll().stream().filter(c -> c.getMovie().equals(movie)).collect(
+		        Collectors.toSet());
 	}
 
 	@Override
