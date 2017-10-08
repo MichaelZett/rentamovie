@@ -2,6 +2,7 @@ package hh.fernuni.rentamovie.customer.application;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 
@@ -18,5 +19,9 @@ public class CustomerServiceImplTest {
 		testee.updateCustomers(customer, "surename", "lastname", LocalDate.of(1983, 3, 22));
 
 		verify(customer).updateData("surename", "lastname", LocalDate.of(1983, 3, 22));
+
+		when(customer.getId()).thenReturn(19L);
+
+		System.out.println(customer.getId());
 	}
 }

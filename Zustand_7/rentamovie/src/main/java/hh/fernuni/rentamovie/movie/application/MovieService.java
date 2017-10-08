@@ -20,4 +20,5 @@ public interface MovieService {
 	}
 
 	Collection<Copy> findAllCopiesOfMovie(Movie movie);
+
 }

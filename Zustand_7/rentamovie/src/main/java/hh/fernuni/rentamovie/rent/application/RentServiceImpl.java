@@ -1,6 +1,7 @@
 package hh.fernuni.rentamovie.rent.application;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.application.MovieService;
@@ -22,8 +23,8 @@ class RentServiceImpl implements RentService {
 
 	@Override
 	public Rent createRent(Movie movie, Customer customer, LocalDate startDate) {
-		Copy copy = this.movieService.findCopy(movie);
-		return new Rent(customer, copy, startDate);
+		Collection<Copy> copy = this.movieService.findAllCopiesOfMovie(movie);
+		return new Rent(customer, copy.iterator().next(), startDate);
 	}
 
 }
