@@ -2,8 +2,14 @@ package hh.fernuni.rentamovie.customer.domain;
 
 import java.time.LocalDate;
 
+/**
+ * The Customer.
+ * 
+ * @author zoelleri
+ *
+ */
 public class Customer {
-	private Long id;
+	private final Long id;
 	private String firstname;
 	private String lastname;
 	private LocalDate birthdate;
@@ -23,24 +29,24 @@ public class Customer {
 	}
 
 	public Long getId() {
-		return this.id;
+		return id;
 	}
 
 	public String getFirstname() {
-		return this.firstname;
+		return firstname;
 	}
 
 	public String getLastname() {
-		return this.lastname;
+		return lastname;
 	}
 
 	public LocalDate getBirthdate() {
-		return this.birthdate;
+		return birthdate;
 	}
 
 	@Override
 	public String toString() {
-		return "Customer [id=" + this.id + ", firstname=" + this.firstname + ", lastname=" + this.lastname + ", birthdate=" + this.birthdate
+		return "Customer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", birthdate=" + birthdate
 		        + "]";
 	}
 
