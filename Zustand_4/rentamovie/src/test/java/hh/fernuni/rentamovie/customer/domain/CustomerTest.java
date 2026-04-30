@@ -1,36 +1,30 @@
 package hh.fernuni.rentamovie.customer.domain;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CustomerTest {
+class CustomerTest {
 
 	@Test
-	public void shouldUpdateData() throws Exception {
-		// Given
+    void shouldUpdateData() {
 		Customer testee = new Customer("surename", "lastname", LocalDate.of(1983, 3, 22));
 		LocalDate newBirthday = LocalDate.of(1982, 4, 23);
 
-		// When
 		testee.updateData("newSurename", "newLastname", newBirthday);
 
-		// Then
-		assertThat(testee.getFirstname(), is("newSurename"));
-		assertThat(testee.getLastname(), is("newLastname"));
-		assertThat(testee.getBirthdate(), is(newBirthday));
+        assertThat(testee.getFirstname()).isEqualTo("newSurename");
+        assertThat(testee.getLastname()).isEqualTo("newLastname");
+        assertThat(testee.getBirthdate()).isEqualTo(newBirthday);
 	}
 
 	@Test
-	public void shouldIncrementId() throws Exception {
+    void shouldIncrementId() {
 		Customer testee = new Customer("surename", "lastname", LocalDate.of(1983, 3, 22));
 		Customer testee2 = new Customer("surename", "lastname", LocalDate.of(1983, 3, 22));
 
-		assertThat(testee.getId() + 1 == testee2.getId(), is(true));
-
+        assertThat(testee2.getId()).isEqualTo(testee.getId() + 1);
 	}
-
 }

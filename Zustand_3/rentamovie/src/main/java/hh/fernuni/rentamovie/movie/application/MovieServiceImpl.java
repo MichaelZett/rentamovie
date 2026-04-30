@@ -2,14 +2,10 @@ package hh.fernuni.rentamovie.movie.application;
 
 import java.time.Year;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 
 class MovieServiceImpl implements MovieService {
-	private static final Logger LOG = LoggerFactory.getLogger(MovieServiceImpl.class);
 	private static final MovieService INSTANCE = new MovieServiceImpl();
 
 	private MovieServiceImpl() {

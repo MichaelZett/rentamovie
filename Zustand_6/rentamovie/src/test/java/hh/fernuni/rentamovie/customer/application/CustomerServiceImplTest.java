@@ -5,29 +5,26 @@ import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.customer.domain.CustomerRepository;
 
-public class CustomerServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class CustomerServiceImplTest {
+
 	@Mock
 	private CustomerRepository customerRepoMock;
 
 	@InjectMocks
 	private CustomerServiceImpl testee;
 
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
-	}
-
 	@Test
-	public void shouldUpdateCustomer() {
+    void shouldUpdateCustomer() {
 		Customer customer = mock(Customer.class);
 
 		this.testee.updateCustomers(customer, "surename", "lastname", LocalDate.of(1983, 3, 22));

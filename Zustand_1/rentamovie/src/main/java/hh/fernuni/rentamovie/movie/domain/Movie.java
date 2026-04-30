@@ -3,37 +3,35 @@ package hh.fernuni.rentamovie.movie.domain;
 import java.time.Year;
 
 public class Movie {
-	private Long id;
-	private Year yearOfPublication;
-	private String title;
+    private final Long id;
+    private Year yearOfPublication;
+    private String title;
 
-	public Movie(Long id, Year yearOfPublication, String title) {
-		super();
-		this.id = id;
-		this.yearOfPublication = yearOfPublication;
-		this.title = title;
-	}
+    public Movie(Long id, Year yearOfPublication, String title) {
+        this.id = id;
+        this.yearOfPublication = yearOfPublication;
+        this.title = title;
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public void updateData(Year yearOfPublication, String title) {
+        this.yearOfPublication = yearOfPublication;
+        this.title = title;
+    }
 
-	public Year getYearOfPublication() {
-		return this.yearOfPublication;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public Year getYearOfPublication() {
+        return yearOfPublication;
+    }
 
-	public void updateData(Year yearOfPublication, String title) {
-		this.yearOfPublication = yearOfPublication;
-		this.title = title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	@Override
-	public String toString() {
-		return "Movie [id=" + this.id + ", yearOfPublication=" + this.yearOfPublication + ", title=" + this.title + "]";
-	}
-
+    @Override
+    public String toString() {
+        return "Movie [id=" + id + ", yearOfPublication=" + yearOfPublication + ", title=" + title + "]";
+    }
 }

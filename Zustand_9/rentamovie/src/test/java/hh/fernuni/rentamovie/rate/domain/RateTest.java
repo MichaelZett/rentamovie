@@ -1,17 +1,15 @@
 package hh.fernuni.rentamovie.rate.domain;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class RateTest {
+class RateTest {
 
 	@Test
-	public void shouldGetValue() throws Exception {
-		assertThat(Rate.JUNIOR.getValue(), is(new BigDecimal("1.00")));
-
+    void shouldGetValue() {
+        assertThat(Rate.JUNIOR.getValue()).isEqualTo(new BigDecimal("1.00"));
 	}
 }

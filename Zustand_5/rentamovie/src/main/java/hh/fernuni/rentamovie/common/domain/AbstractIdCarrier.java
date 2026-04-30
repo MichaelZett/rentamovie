@@ -1,17 +1,17 @@
 package hh.fernuni.rentamovie.common.domain;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractIdCarrier implements IdCarrier {
 	private static final AtomicLong ID_GENERATOR = new AtomicLong(1L);
 	protected Long id;
 
-	public AbstractIdCarrier() {
+    protected AbstractIdCarrier() {
 		this(ID_GENERATOR.getAndIncrement());
 	}
 
-	public AbstractIdCarrier(Long id) {
-		super();
+    protected AbstractIdCarrier(Long id) {
 		this.id = id;
 	}
 
@@ -27,10 +27,7 @@ public abstract class AbstractIdCarrier implements IdCarrier {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (this.id ^ (this.id >>> 32));
-		return result;
+        return Objects.hashCode(this.id);
 	}
 
 	@Override
@@ -38,17 +35,10 @@ public abstract class AbstractIdCarrier implements IdCarrier {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+        if (!(obj instanceof AbstractIdCarrier other)) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		AbstractIdCarrier other = (AbstractIdCarrier) obj;
-		if (this.id != other.id) {
-			return false;
-		}
-		return true;
+        return Objects.equals(this.id, other.id);
 	}
 
 }

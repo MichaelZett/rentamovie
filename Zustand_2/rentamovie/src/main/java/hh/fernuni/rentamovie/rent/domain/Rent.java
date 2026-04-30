@@ -1,6 +1,7 @@
 package hh.fernuni.rentamovie.rent.domain;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.domain.Copy;
@@ -45,7 +46,7 @@ public class Rent {
 	}
 
 	public void endRent() {
-		this.endDate = LocalDate.now();
+        this.endDate = LocalDate.now(ZoneId.systemDefault());
 	}
 
 	@Override

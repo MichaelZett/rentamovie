@@ -1,7 +1,6 @@
 package hh.fernuni.rentamovie.rent.adapter;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import hh.fernuni.rentamovie.rent.application.RentService;
 import hh.fernuni.rentamovie.rent.domain.Rent;
@@ -14,6 +13,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+// @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
+@SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class RentOverviewController {
 	private RentService rentService = RentService.getService();
 
@@ -48,7 +49,7 @@ public class RentOverviewController {
 	@FXML
 	private void handleNewRent() {
 		Dialog<Rent> dialog = new RentDialog();
-		Optional<Rent> result = dialog.showAndWait();
+        dialog.showAndWait();
 		refreshRents();
 	}
 

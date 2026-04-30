@@ -13,6 +13,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+// @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
+@SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class CustomerOverviewController {
 	private Customer currentCustomer;
 	private CustomerService customerService = CustomerService.getService();

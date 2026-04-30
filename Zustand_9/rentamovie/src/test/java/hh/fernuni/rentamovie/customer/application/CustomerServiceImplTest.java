@@ -1,50 +1,47 @@
 package hh.fernuni.rentamovie.customer.application;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.customer.domain.CustomerRepository;
 
-public class CustomerServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class CustomerServiceImplTest {
+
 	@Mock
 	private CustomerRepository customerRepoMock;
 
 	@InjectMocks
 	private CustomerServiceImpl testee;
 
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
+	@Test
+    void shouldSaveCustomer() {
+        this.testee.createCustomer("surename", "lastname", LocalDate.of(1983, 3, 22));
+
+        ArgumentCaptor<Customer> captor = ArgumentCaptor.forClass(Customer.class);
+        verify(this.customerRepoMock).save(captor.capture());
+        Customer result = captor.getValue();
+        assertThat(result.getFirstname()).isEqualTo("surename");
 	}
 
 	@Test
-	public void shouldSaveCustomer() {
-		testee.createCustomer("surename", "lastname", LocalDate.of(1983, 3, 22));
+    void shouldUpdateCustomer() {
+        Customer customer = mock(Customer.class);
 
-		final ArgumentCaptor<Customer> captor = ArgumentCaptor.forClass(Customer.class);
-		verify(customerRepoMock).save(captor.capture());
-		final Customer result = captor.getValue();
-		assertTrue(result.getFirstname().equals("surename"));
-	}
-
-	@Test
-	public void shouldUpdateCustomer() {
-		final Customer customer = mock(Customer.class);
-
-		testee.updateCustomers(customer, "surename", "lastname", LocalDate.of(1983, 3, 22));
+        this.testee.updateCustomers(customer, "surename", "lastname", LocalDate.of(1983, 3, 22));
 
 		verify(customer).updateData("surename", "lastname", LocalDate.of(1983, 3, 22));
-		verify(customerRepoMock).save(customer);
+        verify(this.customerRepoMock).save(customer);
 	}
 }

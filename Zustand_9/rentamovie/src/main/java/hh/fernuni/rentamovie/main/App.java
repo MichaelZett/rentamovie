@@ -27,7 +27,7 @@ public class App extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("MovieRentApp");
 		this.primaryStage.getIcons().add(new Image("images/address_book_32.png"));
@@ -39,7 +39,6 @@ public class App extends Application {
 
 		navigateToCustomers();
 
-		// Show the scene containing the root layout.
 		Scene scene = new Scene(this.rootLayout);
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -47,44 +46,39 @@ public class App extends Application {
 
 	public void initRootLayout() {
 		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(App.class.getResource("./RootLayout.fxml"));
-			this.rootLayout = (BorderPane) loader.load();
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("RootLayout.fxml"));
+            this.rootLayout = loader.load();
 			RootLayoutController controller = loader.getController();
 			controller.setMainApp(this);
 		} catch (IOException e) {
-			e.printStackTrace();
+            LOG.error("Failed to load RootLayout.fxml", e);
 		}
-
 	}
 
 	private void initMovieOverview() {
 		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(App.class.getResource("../movie/adapter/MovieOverview.fxml"));
-			this.movieOverview = (AnchorPane) loader.load();
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("/hh/fernuni/rentamovie/movie/adapter/MovieOverview.fxml"));
+            this.movieOverview = loader.load();
 		} catch (IOException e) {
-			e.printStackTrace();
+            LOG.error("Failed to load MovieOverview.fxml", e);
 		}
 	}
 
 	private void initCustomerOverview() {
 		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(App.class.getResource("../customer/adapter/CustomerOverview.fxml"));
-			this.customerOverview = (AnchorPane) loader.load();
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("/hh/fernuni/rentamovie/customer/adapter/CustomerOverview.fxml"));
+            this.customerOverview = loader.load();
 		} catch (IOException e) {
-			e.printStackTrace();
+            LOG.error("Failed to load CustomerOverview.fxml", e);
 		}
 	}
 
 	private void initRentOverview() {
 		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(App.class.getResource("../rent/adapter/RentOverview.fxml"));
-			this.rentOverview = (AnchorPane) loader.load();
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("/hh/fernuni/rentamovie/rent/adapter/RentOverview.fxml"));
+            this.rentOverview = loader.load();
 		} catch (IOException e) {
-			e.printStackTrace();
+            LOG.error("Failed to load RentOverview.fxml", e);
 		}
 	}
 
@@ -98,7 +92,6 @@ public class App extends Application {
 
 	public void navigateToRent() {
 		this.rootLayout.setCenter(this.rentOverview);
-
 	}
 
 }

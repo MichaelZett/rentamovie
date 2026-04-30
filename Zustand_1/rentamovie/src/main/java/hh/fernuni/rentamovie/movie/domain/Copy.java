@@ -1,26 +1,24 @@
 package hh.fernuni.rentamovie.movie.domain;
 
 public class Copy {
-	private Long id;
-	private Movie movie;
+    private final Long id;
+    private final Movie movie;
 
-	public Copy(Long id, Movie movie) {
-		super();
-		this.id = id;
-		this.movie = movie;
-	}
+    public Copy(Long id, Movie movie) {
+        this.id = id;
+        this.movie = movie;
+    }
 
-	public Movie getMovie() {
-		return this.movie;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public Movie getMovie() {
+        return movie;
+    }
 
-	@Override
-	public String toString() {
-		return "Copy [id=" + this.id + ", movie=" + this.movie + "]";
-	}
-
+    @Override
+    public String toString() {
+        return "Copy [id=" + id + ", movie=" + movie + "]";
+    }
 }

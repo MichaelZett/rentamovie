@@ -1,57 +1,56 @@
 package hh.fernuni.rentamovie.rent.domain;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 
 public class Rent {
-	private Long id;
-	private Customer customer;
-	private Copy copy;
-	private LocalDate startDate;
-	private LocalDate endDate;
+    private final Long id;
+    private final Customer customer;
+    private final Copy copy;
+    private final LocalDate startDate;
+    private LocalDate endDate;
 
-	public Rent(Long id, Customer user, Copy copy, LocalDate startDate) {
-		super();
-		this.id = id;
-		this.customer = user;
-		this.copy = copy;
-		this.startDate = startDate;
-	}
+    public Rent(Long id, Customer customer, Copy copy, LocalDate startDate) {
+        this.id = id;
+        this.customer = customer;
+        this.copy = copy;
+        this.startDate = startDate;
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Customer getUser() {
-		return this.customer;
-	}
+    public Customer getCustomer() {
+        return customer;
+    }
 
-	public Copy getCopy() {
-		return this.copy;
-	}
+    public Copy getCopy() {
+        return copy;
+    }
 
-	public LocalDate getStartDate() {
-		return this.startDate;
-	}
+    public LocalDate getStartDate() {
+        return startDate;
+    }
 
-	public LocalDate getEndDate() {
-		return this.endDate;
-	}
+    public LocalDate getEndDate() {
+        return endDate;
+    }
 
-	public boolean isValid() {
-		return this.endDate == null;
-	}
+    public boolean isValid() {
+        return endDate == null;
+    }
 
-	public void endRent() {
-		this.endDate = LocalDate.now();
-	}
+    public void endRent() {
+        this.endDate = LocalDate.now(ZoneId.systemDefault());
+    }
 
-	@Override
-	public String toString() {
-		return "Rent [id=" + this.id + ", customer=" + this.customer + ", copy=" + this.copy + ", startDate=" + this.startDate
-		        + ", endDate=" + this.endDate + "]";
-	}
-
+    @Override
+    public String toString() {
+        return "Rent [id=" + id + ", customer=" + customer + ", copy=" + copy
+                + ", startDate=" + startDate + ", endDate=" + endDate + "]";
+    }
 }

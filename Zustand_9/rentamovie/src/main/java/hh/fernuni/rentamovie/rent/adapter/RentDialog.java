@@ -1,6 +1,7 @@
 package hh.fernuni.rentamovie.rent.adapter;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.customer.domain.CustomerRepository;
@@ -43,7 +44,7 @@ public class RentDialog extends Dialog<Rent> {
 
 		ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
 		this.getDialogPane().getButtonTypes().add(buttonTypeOk);
-		this.setResultConverter(b -> this.rentService.createRent(this.movieBox.getValue(), this.customerBox.getValue(), LocalDate.now()));
+        this.setResultConverter(b -> this.rentService.createRent(this.movieBox.getValue(), this.customerBox.getValue(), LocalDate.now(ZoneId.systemDefault())));
 	}
 
 }

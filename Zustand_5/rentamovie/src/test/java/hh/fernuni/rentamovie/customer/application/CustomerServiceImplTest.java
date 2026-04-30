@@ -5,13 +5,14 @@ import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 
-public class CustomerServiceImplTest {
+class CustomerServiceImplTest {
+
 	@Test
-	public void shouldUpdateCustomer() {
+    void shouldUpdateCustomer() {
 		Customer customer = mock(Customer.class);
 		CustomerService testee = CustomerServiceImpl.getInstance();
 

@@ -1,26 +1,25 @@
 package hh.fernuni.rentamovie.customer.domain;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CustomerRepositoryImplTest {
-	private CustomerRepository testee = CustomerRepository.getRepository();
+class CustomerRepositoryImplTest {
+
+    private final CustomerRepository testee = CustomerRepository.getRepository();
 
 	@Test
-	public void shouldReadAndSave() {
+    void shouldReadAndSave() {
 		Customer customer = mock(Customer.class);
 		when(customer.getId()).thenReturn(3L);
-		assertThat(this.testee.readAll().size(), is(0));
-		assertThat(this.testee.read(3L), is(nullValue()));
+        assertThat(this.testee.readAll()).isEmpty();
+        assertThat(this.testee.read(3L)).isNull();
 
 		this.testee.save(customer);
 
-		assertThat(this.testee.readAll().size(), is(1));
-		assertThat(this.testee.read(3L), is(customer));
+        assertThat(this.testee.readAll()).hasSize(1);
+        assertThat(this.testee.read(3L)).isEqualTo(customer);
 	}
 }

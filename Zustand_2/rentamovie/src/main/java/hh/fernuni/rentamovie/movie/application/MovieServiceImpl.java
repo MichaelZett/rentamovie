@@ -3,15 +3,10 @@ package hh.fernuni.rentamovie.movie.application;
 import java.time.Year;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 
 public class MovieServiceImpl implements MovieService {
-	private static final Logger LOG = LoggerFactory.getLogger(MovieServiceImpl.class);
-
 	private static final AtomicLong MOVIE_ID_GENERATOR = new AtomicLong(1L);
 	private static final AtomicLong COPY_ID_GENERATOR = new AtomicLong(1L);
 

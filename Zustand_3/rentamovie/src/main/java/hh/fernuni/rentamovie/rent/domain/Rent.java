@@ -1,6 +1,7 @@
 package hh.fernuni.rentamovie.rent.domain;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 import hh.fernuni.rentamovie.common.domain.AbstractIdCarrier;
 import hh.fernuni.rentamovie.customer.domain.Customer;
@@ -47,7 +48,7 @@ public class Rent extends AbstractIdCarrier {
 	}
 
 	public void endRent() {
-		this.endDate = LocalDate.now();
+        this.endDate = LocalDate.now(ZoneId.systemDefault());
 	}
 
 	@Override
