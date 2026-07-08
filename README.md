@@ -67,6 +67,14 @@ Aufgaben nach `Zustand_1`:
 - Biete eine einfache Abfrage für offene Ausleihen an, damit die
   Verfügbarkeit einer Kopie fachlich sichtbar wird.
 
+Aufgaben nach `Zustand_2`:
+
+- Vergleiche fachliche Objekte nicht mehr über Objektidentität, sondern
+  über eine stabile ID.
+- Ziehe die gemeinsame ID-Logik aus `Customer`, `Movie`, `Copy` und
+  `Rent` in eine gemeinsame Basisklasse.
+- Prüfe, welche Methoden dadurch in den Domänenklassen entfallen können.
+
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
 aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.
