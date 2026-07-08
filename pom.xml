@@ -11,7 +11,7 @@
 
     <name>rentamovie (FernUni Hagen course)</name>
     <description>
-        Multi-module aggregator for the nine teaching snapshots Zustand_1 .. Zustand_9.
+        Multi-module aggregator for the ten teaching snapshots Zustand_1 .. Zustand_10.
         Each snapshot is a self-contained Maven module that grows the same domain step by step.
     </description>
 
@@ -25,6 +25,7 @@
         <module>Zustand_7/rentamovie</module>
         <module>Zustand_8/rentamovie</module>
         <module>Zustand_9/rentamovie</module>
+        <module>Zustand_10/rentamovie</module>
     </modules>
 
     <properties>

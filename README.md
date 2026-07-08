@@ -5,8 +5,8 @@ Hamburg). Die Domäne ist eine kleine Videothek: Kunden leihen Kopien von
 Filmen aus, zu unterschiedlichen Tarifen.
 
 Das Repository ist **keine** lauffähige Einzelanwendung, sondern eine
-Sequenz aus neun aufeinander aufbauenden Maven-Modulen
-(`Zustand_1` … `Zustand_9`). Jeder Zustand ist ein eigenständiger
+Sequenz aus zehn aufeinander aufbauenden Maven-Modulen
+(`Zustand_1` … `Zustand_10`). Jeder Zustand ist ein eigenständiger
 Schnappschuss derselben Domäne und führt **genau ein** neues Konzept ein.
 
 ## Lernziel
@@ -20,23 +20,24 @@ Die Studierenden sollen Java-Grundlagen *ohne* Framework-Magie nachvollziehen:
 - **In-Memory- und Datei-Persistenz** statt JPA/Hibernate.
 - **JavaFX mit FXML** als UI — keine Web- oder JS-Schicht.
 
-Die Progression `Zustand_1` → `Zustand_9` ist der eigentliche Lehrstoff:
+Die Progression `Zustand_1` → `Zustand_10` ist der eigentliche Lehrstoff:
 sie zeigt, wie eine Anwendung in lesbaren Schritten von „nur Domänen-
 klassen" zu „GUI mit File-Repository" wächst.
 
 ## Was zeigt welcher Zustand?
 
-| Modul         | Neues Konzept                                                                                                                                      |
-|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Zustand_1** | Reine Domänenklassen (`Customer`, `Movie`, `Copy`, `Rent`, `Rate`). `App.main` baut sie von Hand. Logging über `System.Logger` (im JDK enthalten). |
-| **Zustand_2** | Service-Schicht: `XService` als Interface, `XServiceImpl` als Implementierung. Ab hier SLF4J + Logback.                                            |
-| **Zustand_3** | Gemeinsame Basisklasse `AbstractIdCarrier` (Vererbung, ID-Verwaltung, `equals`/`hashCode`).                                                        |
-| **Zustand_4** | Erste Tests: JUnit 5, AssertJ, Mockito. Test-Methoden mit `@Mock` / `@InjectMocks`.                                                                |
-| **Zustand_5** | `RateService` — Tarif-Logik als eigenes Modul.                                                                                                     |
-| **Zustand_6** | Erstes Repository (`CustomerRepository`) mit In-Memory-Speicherung.                                                                                |
-| **Zustand_7** | Generisches `CommonRepository<T>` und `IdRepository`; Repositories speichern jetzt persistent in Dateien.                                          |
-| **Zustand_8** | Schliff: Sichtbarkeiten, Fundroutinen, Repository-Konsistenz.                                                                                      |
-| **Zustand_9** | JavaFX-Oberfläche: Übersichten für Customer, Movie, Rent + ein Dialog.                                                                             |
+| Modul          | Neues Konzept                                                                                                                                      |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Zustand_1**  | Reine Domänenklassen (`Customer`, `Movie`, `Copy`, `Rent`, `Rate`). `App.main` baut sie von Hand. Logging über `System.Logger` (im JDK enthalten). |
+| **Zustand_2**  | Service-Schicht: `XService` als Interface, `XServiceImpl` als Implementierung. Ab hier SLF4J + Logback.                                            |
+| **Zustand_3**  | Gemeinsame Basisklasse `AbstractIdCarrier` (Vererbung, ID-Verwaltung, `equals`/`hashCode`).                                                        |
+| **Zustand_4**  | Erste Tests: JUnit 5, AssertJ, Mockito. Test-Methoden mit `@Mock` / `@InjectMocks`.                                                                |
+| **Zustand_5**  | `RateService` — Tarif-Logik als eigenes Modul.                                                                                                     |
+| **Zustand_6**  | Erstes Repository (`CustomerRepository`) mit In-Memory-Speicherung.                                                                                |
+| **Zustand_7**  | Generisches `CommonRepository<T>` und `IdRepository`; Repositories speichern jetzt persistent in Dateien.                                          |
+| **Zustand_8**  | Validierung und Konsistenzregeln für Verleih, Rückgabe und Zahlung.                                                                                |
+| **Zustand_9**  | JavaFX-Basisoberfläche: Übersichten, Verleihdialog, Rückgabe und Zahlung.                                                                          |
+| **Zustand_10** | Convenience-UI: Suche, Statusfilter, Sortierung über Tabellenköpfe und Demo-Daten-Reset.                                                           |
 
 Die Zustände bleiben technisch klar geschnitten: Jeder Zustand führt ein
 zentrales Java-Konzept ein. Fachliche Erweiterungen dürfen dazukommen,
@@ -47,17 +48,18 @@ wachsen ab `Zustand_4` fortlaufend mit.
 
 Zielbild für die fachliche Progression:
 
-| Modul         | Fachlicher Schwerpunkt                                                                                  |
-|---------------|---------------------------------------------------------------------------------------------------------|
-| **Zustand_1** | Grundmodell: Kunde, Film, Kopie, Ausleihe, Tarif; Vorbereitung für offene und beendete Ausleihen.       |
-| **Zustand_2** | Services orchestrieren Verleih, Rückgabe und Listen offener Ausleihen.                                  |
-| **Zustand_3** | Identität und Gleichheit bleiben im Fokus; die Service-Aufgaben aus `Zustand_2` werden fachlich gelöst. |
-| **Zustand_4** | Erste Tests sichern Verleih, Rückgabe, Verfügbarkeit und ID-Gleichheit ab.                              |
-| **Zustand_5** | Preisberechnung: Mietdauer, Tagespreis, optional Überziehung und Zahlungsfälle.                         |
-| **Zustand_6** | Repository-Lese-Use-Cases: Kunden, Filme, Ausleihen, offene Ausleihen.                                  |
-| **Zustand_7** | Datei-Persistenz für offene und abgeschlossene Ausleihen sowie Zahlungsstatus.                          |
-| **Zustand_8** | Validierung und Konsistenzregeln, z. B. keine doppelte Verleihung derselben Kopie.                      |
-| **Zustand_9** | Basic UI für Kunde, Film, Kopie, Verleih, Rückgabe und Zahlung.                                         |
+| Modul          | Fachlicher Schwerpunkt                                                                                  |
+|----------------|---------------------------------------------------------------------------------------------------------|
+| **Zustand_1**  | Grundmodell: Kunde, Film, Kopie, Ausleihe, Tarif; Vorbereitung für offene und beendete Ausleihen.       |
+| **Zustand_2**  | Services orchestrieren Verleih, Rückgabe und Listen offener Ausleihen.                                  |
+| **Zustand_3**  | Identität und Gleichheit bleiben im Fokus; die Service-Aufgaben aus `Zustand_2` werden fachlich gelöst. |
+| **Zustand_4**  | Erste Tests sichern Verleih, Rückgabe, Verfügbarkeit und ID-Gleichheit ab.                              |
+| **Zustand_5**  | Preisberechnung: Mietdauer, Tagespreis, optional Überziehung und Zahlungsfälle.                         |
+| **Zustand_6**  | Repository-Lese-Use-Cases: Kunden, Filme, Ausleihen, offene Ausleihen.                                  |
+| **Zustand_7**  | Datei-Persistenz für offene und abgeschlossene Ausleihen sowie Zahlungsstatus.                          |
+| **Zustand_8**  | Validierung und Konsistenzregeln, z. B. keine doppelte Verleihung derselben Kopie.                      |
+| **Zustand_9**  | Basic UI für Kunde, Film, Kopie, Verleih, Rückgabe und Zahlung.                                         |
+| **Zustand_10** | Convenience UI mit Suche, Statusfilter, Sortierung und Demo-Daten für Kursübungen.                      |
 
 Aufgaben nach `Zustand_1`:
 
@@ -132,7 +134,7 @@ Aufgaben nach `Zustand_9`:
 
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
-aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.
+aus `Zustand_10` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.
 
 ## Voraussetzungen
 
@@ -164,15 +166,18 @@ cd Zustand_1/rentamovie
 mvn exec:java -Dexec.mainClass=hh.fernuni.rentamovie.main.App
 ```
 
-### JavaFX-Oberfläche starten (Zustand_9)
+### JavaFX-Oberfläche starten (Zustand_9 / Zustand_10)
 
 ```bash
 cd Zustand_9/rentamovie
 mvn javafx:run
+
+cd Zustand_10/rentamovie
+mvn javafx:run
 ```
 
-In IntelliJ IDEA lässt sich `Zustand_9` auch über die Run-Konfiguration
-für `App` starten.
+In IntelliJ IDEA lassen sich `Zustand_9` und `Zustand_10` auch über die
+Run-Konfiguration für `App` starten.
 
 ## Code-Qualität
 
@@ -180,6 +185,14 @@ für `App` starten.
 Annotation-Processor im Compile-Schritt und gibt Hinweise direkt in der
 Maven-Ausgabe (Severity `WARN` — der Build wird dadurch nicht rot, aber
 neue Findings fallen sofort auf).
+
+### Test-Isolation für ID-Dateien
+
+Ab `Zustand_7` schreibt die Anwendung die nächste ID in `id.db`. Im
+Produktiv- und UI-Lauf bleibt das bewusst eine Datei im jeweiligen
+Zustand, damit Datei-Persistenz sichtbar bleibt. Maven-Tests setzen
+dagegen `rentamovie.id.db` auf `target/id.db`; Testläufe verändern
+dadurch nicht die versionierten `id.db`-Dateien.
 
 ## Verzeichnis-Aufbau
 
@@ -190,7 +203,8 @@ rentamovie/
 ├── Zustand_1/rentamovie/   ← Schritt 1: nur Domäne
 ├── Zustand_2/rentamovie/   ← Schritt 2: Service-Schicht
 ├── …
-└── Zustand_9/rentamovie/   ← Schritt 9: JavaFX-UI
+├── Zustand_9/rentamovie/   ← Schritt 9: JavaFX-Basis-UI
+└── Zustand_10/rentamovie/  ← Schritt 10: JavaFX-Convenience-UI
 ```
 
 Innerhalb jedes Zustands folgt der Java-Code dem Schema
