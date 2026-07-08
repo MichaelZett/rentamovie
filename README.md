@@ -75,6 +75,21 @@ Aufgaben nach `Zustand_2`:
   `Rent` in eine gemeinsame Basisklasse.
 - Prüfe, welche Methoden dadurch in den Domänenklassen entfallen können.
 
+Aufgaben nach `Zustand_3`:
+
+- Schreibe erste Unit-Tests für `RentService`: Ausleihe anlegen,
+  Rückgabe durchführen, offene Ausleihen filtern.
+- Schreibe Tests für die ID-basierte Gleichheit aus `AbstractIdCarrier`.
+- Nutze Mockito dort, wo ein Service von einem anderen Service abhängt.
+
+Aufgaben nach `Zustand_4`:
+
+- Ergänze Tests für `MovieService`, `CustomerService` und die
+  Domänenklassen `Movie`, `Copy` und `Rent`.
+- Prüfe Grenzfälle beim Verleih: Rückgabe einer bereits beendeten
+  Ausleihe und mehrere offene Ausleihen.
+- Bereite Testfälle für Tarif- und Preisberechnung vor.
+
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
 aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.
