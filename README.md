@@ -123,6 +123,13 @@ Aufgaben nach `Zustand_8`:
   statt Komfortfunktionen.
 - Formuliere Convenience-Aufgaben für Suche, Filter und Sortierung.
 
+Aufgaben nach `Zustand_9`:
+
+- Ergänze Suche, Filter und Sortierung für Kunden, Filme und Ausleihen.
+- Zeige offene Ausleihen, offene Zahlungen und überfällige Ausleihen als
+  eigene Arbeitslisten.
+- Ergänze Demo-Daten-Reset und mehr Seed-Daten für Kursübungen.
+
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
 aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.

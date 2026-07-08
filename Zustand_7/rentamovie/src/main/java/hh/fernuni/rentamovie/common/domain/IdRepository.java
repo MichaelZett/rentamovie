@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class IdRepository {
 	private static final Logger LOG = LoggerFactory.getLogger(IdRepository.class);
 	private static final AtomicLong COUNT;
-	private static final Path path = Paths.get("./id.db");
+    private static final Path path = Paths.get(System.getProperty("rentamovie.id.db", "./id.db"));
 
     private IdRepository() {
     }

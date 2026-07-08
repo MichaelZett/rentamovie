@@ -1,6 +1,10 @@
 package hh.fernuni.rentamovie.rate.application;
 
 import hh.fernuni.rentamovie.rate.domain.Rate;
+import hh.fernuni.rentamovie.rent.domain.Rent;
+
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 
 class RateServiceImpl implements RateService {
 	private static final RateService INSTANCE = new RateServiceImpl();
@@ -23,5 +27,11 @@ class RateServiceImpl implements RateService {
 			return Rate.REGULAR;
 		}
 	}
+
+    @Override
+    public BigDecimal calculatePrice(Rent rent, Rate rate) {
+        long days = Math.max(1L, ChronoUnit.DAYS.between(rent.getStartDate(), rent.getEndDate()));
+        return rate.getValue().multiply(BigDecimal.valueOf(days));
+    }
 
 }

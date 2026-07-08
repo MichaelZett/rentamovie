@@ -44,7 +44,12 @@ public class RentDialog extends Dialog<Rent> {
 
 		ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
 		this.getDialogPane().getButtonTypes().add(buttonTypeOk);
-        this.setResultConverter(b -> this.rentService.createRent(this.movieBox.getValue(), this.customerBox.getValue(), LocalDate.now(ZoneId.systemDefault())));
+        this.setResultConverter(b -> {
+            if (b != buttonTypeOk || this.movieBox.getValue() == null || this.customerBox.getValue() == null) {
+                return null;
+            }
+            return this.rentService.createRent(this.movieBox.getValue(), this.customerBox.getValue(), LocalDate.now(ZoneId.systemDefault()));
+        });
 	}
 
 }

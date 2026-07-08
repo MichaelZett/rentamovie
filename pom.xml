@@ -181,6 +181,9 @@
                         <argLine>
                             -javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${bytebuddy.version}/byte-buddy-agent-${bytebuddy.version}.jar
                         </argLine>
+                        <systemPropertyVariables>
+                            <rentamovie.id.db>${project.build.directory}/id.db</rentamovie.id.db>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>

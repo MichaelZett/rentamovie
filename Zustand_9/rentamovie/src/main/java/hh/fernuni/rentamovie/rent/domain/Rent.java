@@ -1,17 +1,18 @@
 package hh.fernuni.rentamovie.rent.domain;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-
 import hh.fernuni.rentamovie.common.domain.AbstractIdCarrier;
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.domain.Copy;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class Rent extends AbstractIdCarrier {
 	private Customer customer;
 	private Copy copy;
 	private LocalDate startDate;
 	private LocalDate endDate;
+    private boolean paid;
 
 	public Rent(Customer user, Copy copy, LocalDate startDate) {
 		super();
@@ -20,12 +21,13 @@ public class Rent extends AbstractIdCarrier {
 		this.startDate = startDate;
 	}
 
-	public Rent(Long id, LocalDate startDate, LocalDate endDate, Customer user, Copy copy) {
+    public Rent(Long id, LocalDate startDate, LocalDate endDate, boolean paid, Customer user, Copy copy) {
 		super(id);
 		this.customer = user;
 		this.copy = copy;
 		this.startDate = startDate;
 		this.endDate = endDate;
+        this.paid = paid;
 	}
 
 	public Customer getCustomer() {
@@ -53,17 +55,51 @@ public class Rent extends AbstractIdCarrier {
 	}
 
 	public boolean isValid() {
+        return this.isOpen();
+    }
+
+    public boolean isOpen() {
 		return this.endDate == null;
 	}
 
+    public boolean isFinished() {
+        return !this.isOpen();
+    }
+
 	public void endRent() {
-        this.endDate = LocalDate.now(ZoneId.systemDefault());
+        this.endRent(LocalDate.now(ZoneId.systemDefault()));
+    }
+
+    public void endRent(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public boolean isPaid() {
+        return this.paid;
+    }
+
+    public boolean hasOpenPayment() {
+        return this.isFinished() && !this.paid;
+    }
+
+    public String getPaymentStatus() {
+        if (this.isOpen()) {
+            return "Open rent";
+        }
+        if (this.paid) {
+            return "Paid";
+        }
+        return "Open payment";
+    }
+
+    public void markPaid() {
+        this.paid = true;
 	}
 
 	@Override
 	public String toString() {
 		return "Rent [id=" + this.id + ", customer=" + this.customer + ", copy=" + this.copy + ", startDate=" + this.startDate
-		        + ", endDate=" + this.endDate + "]";
+                + ", endDate=" + this.endDate + ", paid=" + this.paid + "]";
 	}
 
 }
