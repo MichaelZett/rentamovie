@@ -1,10 +1,10 @@
 package hh.fernuni.rentamovie.rent.domain;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.domain.Copy;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class Rent {
     private final Long id;
@@ -41,11 +41,23 @@ public class Rent {
     }
 
     public boolean isValid() {
+        return isOpen();
+    }
+
+    public boolean isOpen() {
         return endDate == null;
     }
 
+    public boolean isFinished() {
+        return !isOpen();
+    }
+
     public void endRent() {
-        this.endDate = LocalDate.now(ZoneId.systemDefault());
+        endRent(LocalDate.now(ZoneId.systemDefault()));
+    }
+
+    public void endRent(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     @Override

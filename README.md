@@ -38,6 +38,35 @@ klassen" zu „GUI mit File-Repository" wächst.
 | **Zustand_8** | Schliff: Sichtbarkeiten, Fundroutinen, Repository-Konsistenz.                                                                                      |
 | **Zustand_9** | JavaFX-Oberfläche: Übersichten für Customer, Movie, Rent + ein Dialog.                                                                             |
 
+Die Zustände bleiben technisch klar geschnitten: Jeder Zustand führt ein
+zentrales Java-Konzept ein. Fachliche Erweiterungen dürfen dazukommen,
+wenn sie dieses Konzept greifbarer machen, zum Beispiel Rückgabe beim
+Service-Konzept, Preisberechnung beim `RateService` oder Filter in der
+UI. Aufgaben aus einem Zustand werden im nächsten Zustand gelöst; Tests
+wachsen ab `Zustand_4` fortlaufend mit.
+
+Zielbild für die fachliche Progression:
+
+| Modul         | Fachlicher Schwerpunkt                                                                                  |
+|---------------|---------------------------------------------------------------------------------------------------------|
+| **Zustand_1** | Grundmodell: Kunde, Film, Kopie, Ausleihe, Tarif; Vorbereitung für offene und beendete Ausleihen.       |
+| **Zustand_2** | Services orchestrieren Verleih, Rückgabe und Listen offener Ausleihen.                                  |
+| **Zustand_3** | Identität und Gleichheit bleiben im Fokus; die Service-Aufgaben aus `Zustand_2` werden fachlich gelöst. |
+| **Zustand_4** | Erste Tests sichern Verleih, Rückgabe, Verfügbarkeit und ID-Gleichheit ab.                              |
+| **Zustand_5** | Preisberechnung: Mietdauer, Tagespreis, optional Überziehung und Zahlungsfälle.                         |
+| **Zustand_6** | Repository-Lese-Use-Cases: Kunden, Filme, Ausleihen, offene Ausleihen.                                  |
+| **Zustand_7** | Datei-Persistenz für offene und abgeschlossene Ausleihen sowie Zahlungsstatus.                          |
+| **Zustand_8** | Validierung und Konsistenzregeln, z. B. keine doppelte Verleihung derselben Kopie.                      |
+| **Zustand_9** | Basic UI für Kunde, Film, Kopie, Verleih, Rückgabe und Zahlung.                                         |
+
+Aufgaben nach `Zustand_1`:
+
+- Erstelle Ausleihen nicht mehr direkt in `App.main`, sondern über einen
+  `RentService`.
+- Ergänze im Service eine Rückgabe-Operation für eine offene Ausleihe.
+- Biete eine einfache Abfrage für offene Ausleihen an, damit die
+  Verfügbarkeit einer Kopie fachlich sichtbar wird.
+
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
 aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.
