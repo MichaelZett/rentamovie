@@ -1,5 +1,8 @@
 package hh.fernuni.rentamovie.common.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,13 +13,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class IdRepository {
 	private static final Logger LOG = LoggerFactory.getLogger(IdRepository.class);
 	private static final AtomicLong COUNT;
 	private static final Path path = Paths.get("./id.db");
+
+    private IdRepository() {
+    }
 
 	static {
 		long currentId = 0;
@@ -29,18 +32,18 @@ public class IdRepository {
 				Files.write(path, Collections.singletonList(String.valueOf(currentId)), StandardCharsets.UTF_8,
 				        StandardOpenOption.WRITE);
 			}
-		} catch (IOException e) {
+        } catch (IOException _) {
 			LOG.error("Error working with file in id.DB.");
 		}
 		COUNT = new AtomicLong(currentId);
 	}
 
-	public synchronized static long getNextId() {
+    public static synchronized long getNextId() {
 		long newId = COUNT.incrementAndGet();
 		try {
 			Files.write(path, Collections.singletonList(String.valueOf(newId)), StandardCharsets.UTF_8,
 			        StandardOpenOption.WRITE);
-		} catch (IOException e) {
+        } catch (IOException _) {
 			LOG.error("Error writing id.db.");
 		}
 		return newId;

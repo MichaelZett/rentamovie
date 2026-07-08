@@ -1,16 +1,16 @@
 package hh.fernuni.rentamovie.rent.application;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.application.MovieService;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 import hh.fernuni.rentamovie.rent.domain.RentRepository;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class RentServiceImpl implements RentService {
 	private static final RentService Instance = new RentServiceImpl();
@@ -29,7 +29,7 @@ class RentServiceImpl implements RentService {
 	public Collection<Copy> findAllFreeCopies(Movie movie) {
 		Collection<Copy> allCopies = this.movieService.findAllCopiesOfMovie(movie);
 		Set<Copy> rentedCopies = this.rentRepository.readAll().stream()
-		        .filter(r -> r.isValid() && allCopies.contains(r.getCopy())).map(r -> r.getCopy())
+                .filter(r -> r.isValid() && allCopies.contains(r.getCopy())).map(Rent::getCopy)
 		        .collect(Collectors.toSet());
 		allCopies.removeAll(rentedCopies);
 		return allCopies;

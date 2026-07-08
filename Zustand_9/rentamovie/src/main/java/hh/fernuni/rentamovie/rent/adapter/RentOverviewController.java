@@ -1,7 +1,5 @@
 package hh.fernuni.rentamovie.rent.adapter;
 
-import java.time.LocalDate;
-
 import hh.fernuni.rentamovie.rent.application.RentService;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 import javafx.collections.FXCollections;
@@ -12,6 +10,8 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.time.LocalDate;
 
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
@@ -33,9 +33,9 @@ public class RentOverviewController {
 
 	@FXML
 	private void initialize() {
-		this.customerColumn.setCellValueFactory(new PropertyValueFactory<Rent, String>("customerLastname"));
-		this.copyColumn.setCellValueFactory(new PropertyValueFactory<Rent, String>("copyTitle"));
-		this.startDateColumn.setCellValueFactory(new PropertyValueFactory<Rent, LocalDate>("startDate"));
+        this.customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerLastname"));
+        this.copyColumn.setCellValueFactory(new PropertyValueFactory<>("copyTitle"));
+        this.startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
 		refreshRents();
 	}
 

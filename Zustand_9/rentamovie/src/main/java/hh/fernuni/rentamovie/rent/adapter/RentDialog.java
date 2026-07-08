@@ -1,8 +1,5 @@
 package hh.fernuni.rentamovie.rent.adapter;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.customer.domain.CustomerRepository;
 import hh.fernuni.rentamovie.movie.domain.Copy;
@@ -18,6 +15,9 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 public class RentDialog extends Dialog<Rent> {
 	private Label customerLabel = new Label("Customer: ");
 	private Label movieLabel = new Label("Movie: ");
@@ -32,9 +32,9 @@ public class RentDialog extends Dialog<Rent> {
 	RentDialog() {
 		this.setTitle("Input rent");
 		ObservableList<Customer> customerOptions = FXCollections.observableArrayList(this.customerRepository.readAll());
-		this.customerBox = new ComboBox(customerOptions);
+        this.customerBox = new ComboBox<>(customerOptions);
 		ObservableList<Copy> movieOptions = FXCollections.observableArrayList(this.copyRepository.readAll());
-		this.movieBox = new ComboBox(movieOptions);
+        this.movieBox = new ComboBox<>(movieOptions);
 
 		this.grid.add(this.customerLabel, 1, 1);
 		this.grid.add(this.customerBox, 2, 1);

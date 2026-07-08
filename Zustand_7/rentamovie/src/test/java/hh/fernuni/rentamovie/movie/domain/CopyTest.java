@@ -1,10 +1,10 @@
 package hh.fernuni.rentamovie.movie.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 import java.time.Year;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CopyTest {
 
@@ -21,7 +21,7 @@ class CopyTest {
 		Movie aNewHope = new Movie(Year.of(1977), "A new hope");
 		Copy testee = new Copy(aNewHope);
 
-        assertThat(testee.toString()).isEqualTo("Copy [id=" + testee.getId() + ", movie=Movie [id=" + aNewHope.getId()
+        assertThat(testee).hasToString("Copy [id=" + testee.getId() + ", movie=Movie [id=" + aNewHope.getId()
                 + ", yearOfPublication=1977, title=A new hope]]");
 	}
 

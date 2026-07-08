@@ -33,17 +33,49 @@
         <maven.compiler.release>25</maven.compiler.release>
 
         <error-prone.version>2.36.0</error-prone.version>
-        <slf4j.version>2.0.16</slf4j.version>
-        <logback.version>1.5.18</logback.version>
-        <junit.version>5.11.4</junit.version>
-        <mockito.version>5.18.0</mockito.version>
-        <bytebuddy.version>1.17.6</bytebuddy.version>
-        <assertj.version>3.27.3</assertj.version>
+        <slf4j.version>2.0.18</slf4j.version>
+        <logback.version>1.5.37</logback.version>
+        <junit.version>5.14.4</junit.version>
+        <mockito.version>5.23.0</mockito.version>
+        <bytebuddy.version>1.18.11</bytebuddy.version>
+        <assertj.version>3.27.7</assertj.version>
         <javafx.version>24.0.2</javafx.version>
 
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <javafx-maven-plugin.version>0.0.8</javafx-maven-plugin.version>
+        <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
+        <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
+
+        <versions.allowMajorUpdates>false</versions.allowMajorUpdates>
+
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.projectKey>rentamovie</sonar.projectKey>
+        <sonar.projectName>rentamovie</sonar.projectName>
+        <sonar.issue.ignore.multicriteria>
+            idBasedEquals,teachingSingletons,mainArgs,disabledRepositoryTests,numericDatesInTests
+        </sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria.idBasedEquals.ruleKey>java:S2160
+        </sonar.issue.ignore.multicriteria.idBasedEquals.ruleKey>
+        <sonar.issue.ignore.multicriteria.idBasedEquals.resourceKey>**/src/main/java/**/domain/*.java
+        </sonar.issue.ignore.multicriteria.idBasedEquals.resourceKey>
+        <sonar.issue.ignore.multicriteria.teachingSingletons.ruleKey>java:S6548
+        </sonar.issue.ignore.multicriteria.teachingSingletons.ruleKey>
+        <sonar.issue.ignore.multicriteria.teachingSingletons.resourceKey>**/src/main/java/**/*.java
+        </sonar.issue.ignore.multicriteria.teachingSingletons.resourceKey>
+        <sonar.issue.ignore.multicriteria.mainArgs.ruleKey>java:S1172
+        </sonar.issue.ignore.multicriteria.mainArgs.ruleKey>
+        <sonar.issue.ignore.multicriteria.mainArgs.resourceKey>**/src/main/java/**/main/App.java
+        </sonar.issue.ignore.multicriteria.mainArgs.resourceKey>
+        <sonar.issue.ignore.multicriteria.disabledRepositoryTests.ruleKey>java:S2699
+        </sonar.issue.ignore.multicriteria.disabledRepositoryTests.ruleKey>
+        <sonar.issue.ignore.multicriteria.disabledRepositoryTests.resourceKey>
+            **/src/test/java/**/customer/domain/CustomerRepositoryImplTest.java
+        </sonar.issue.ignore.multicriteria.disabledRepositoryTests.resourceKey>
+        <sonar.issue.ignore.multicriteria.numericDatesInTests.ruleKey>java:S8694
+        </sonar.issue.ignore.multicriteria.numericDatesInTests.ruleKey>
+        <sonar.issue.ignore.multicriteria.numericDatesInTests.resourceKey>**/src/test/java/**/*.java
+        </sonar.issue.ignore.multicriteria.numericDatesInTests.resourceKey>
     </properties>
 
     <dependencyManagement>
@@ -144,11 +176,38 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <argLine>
+                            -javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${bytebuddy.version}/byte-buddy-agent-${bytebuddy.version}.jar
+                        </argLine>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-maven-plugin</artifactId>
                     <version>${javafx-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${versions-maven-plugin.version}</version>
+                    <configuration>
+                        <allowMajorUpdates>${versions.allowMajorUpdates}</allowMajorUpdates>
+                        <allowMinorUpdates>true</allowMinorUpdates>
+                        <allowIncrementalUpdates>true</allowIncrementalUpdates>
+                        <allowSnapshots>false</allowSnapshots>
+                        <ignoredVersions>
+                            <ignoredVersion>
+                                (?i).*[.-](alpha|beta|b|rc|cr|m|milestone|ea|preview|snapshot)([.+_-]?[0-9a-z]+)?.*
+                            </ignoredVersion>
+                            <ignoredVersion>(?i).*[.-]jdk[0-9]+.*</ignoredVersion>
+                        </ignoredVersions>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -157,6 +216,34 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>complete</id>
+            <build>
+                <defaultGoal>verify sonar:sonar</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+            <id>major</id>
+            <activation>
+                <property>
+                    <name>major</name>
+                </property>
+            </activation>
+            <properties>
+                <versions.allowMajorUpdates>true</versions.allowMajorUpdates>
+            </properties>
+        </profile>
+    </profiles>
 </project>

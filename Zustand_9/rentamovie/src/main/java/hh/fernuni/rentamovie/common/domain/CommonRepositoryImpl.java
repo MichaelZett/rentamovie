@@ -1,5 +1,8 @@
 package hh.fernuni.rentamovie.common.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -11,10 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implements CommonRepository<T> {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonRepositoryImpl.class);
@@ -38,8 +37,8 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 			} else {
 				Files.createFile(path);
 			}
-		} catch (IOException e) {
-			LOG.error("Error working with file in {}.", path.toString());
+        } catch (IOException _) {
+            LOG.error("Error working with file in {}.", path);
 		}
 	}
 
@@ -51,15 +50,15 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 			try {
 				Files.write(path, Collections.singletonList(toText(domainClass)), StandardCharsets.UTF_8,
 						StandardOpenOption.APPEND);
-			} catch (IOException e) {
+            } catch (IOException _) {
 				LOG.error("Error writing to db.");
 			}
 		} else {
-			List<String> allEntities = repo.values().stream().map(this::toText).collect(Collectors.toList());
+            List<String> allEntities = repo.values().stream().map(this::toText).toList();
 			try {
 				Files.write(path, allEntities, StandardCharsets.UTF_8, StandardOpenOption.WRITE,
 						StandardOpenOption.TRUNCATE_EXISTING);
-			} catch (IOException e) {
+            } catch (IOException _) {
 				LOG.error("Error writing to db.");
 			}
 		}

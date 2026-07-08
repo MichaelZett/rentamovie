@@ -1,9 +1,9 @@
 package hh.fernuni.rentamovie.customer.application;
 
+import hh.fernuni.rentamovie.customer.domain.Customer;
+
 import java.time.LocalDate;
 import java.util.Collection;
-
-import hh.fernuni.rentamovie.customer.domain.Customer;
 
 class CustomerServiceImpl implements CustomerService {
 	private static final CustomerService INSTANCE = new CustomerServiceImpl();
@@ -28,8 +28,7 @@ class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Collection<Customer> readAllCustomers() {
-		// TODO Auto-generated method stub
-		return null;
+        return java.util.Collections.emptyList();
 	}
 
 }

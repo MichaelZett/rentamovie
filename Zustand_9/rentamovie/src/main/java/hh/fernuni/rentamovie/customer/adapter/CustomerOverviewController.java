@@ -1,7 +1,5 @@
 package hh.fernuni.rentamovie.customer.adapter;
 
-import java.time.LocalDate;
-
 import hh.fernuni.rentamovie.customer.application.CustomerService;
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import javafx.collections.FXCollections;
@@ -12,6 +10,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.time.LocalDate;
 
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
@@ -40,9 +40,9 @@ public class CustomerOverviewController {
 
 	@FXML
 	private void initialize() {
-		firstnameColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("firstname"));
-		lastnameColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("lastname"));
-		birthdayColumn.setCellValueFactory(new PropertyValueFactory<Customer, LocalDate>("birthdate"));
+        firstnameColumn.setCellValueFactory(new PropertyValueFactory<>("firstname"));
+        lastnameColumn.setCellValueFactory(new PropertyValueFactory<>("lastname"));
+        birthdayColumn.setCellValueFactory(new PropertyValueFactory<>("birthdate"));
 
 		showCustomerDetails(null);
 

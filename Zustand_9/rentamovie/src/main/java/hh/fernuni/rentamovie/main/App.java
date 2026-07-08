@@ -1,10 +1,5 @@
 package hh.fernuni.rentamovie.main;
 
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,11 +7,14 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class App extends Application {
 	private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
-	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private AnchorPane customerOverview;
 	private AnchorPane movieOverview;
@@ -28,9 +26,8 @@ public class App extends Application {
 
 	@Override
     public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("MovieRentApp");
-		this.primaryStage.getIcons().add(new Image("images/address_book_32.png"));
+		primaryStage.setTitle("MovieRentApp");
+		primaryStage.getIcons().add(new Image("images/address_book_32.png"));
 
 		initRootLayout();
 		initCustomerOverview();

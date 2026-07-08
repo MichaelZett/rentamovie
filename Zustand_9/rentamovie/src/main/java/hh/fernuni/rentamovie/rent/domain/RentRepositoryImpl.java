@@ -1,12 +1,12 @@
 package hh.fernuni.rentamovie.rent.domain;
 
-import java.time.LocalDate;
-
 import hh.fernuni.rentamovie.common.domain.CommonRepositoryImpl;
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.customer.domain.CustomerRepository;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.CopyRepository;
+
+import java.time.LocalDate;
 
 class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepository {
 
@@ -30,8 +30,7 @@ class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepos
 		Customer user = this.customerRepository.read(Long.parseLong(split[3]));
 		Copy copy = this.copyRepository.read(Long.parseLong(split[4]));
 		LocalDate endDate = split[2].equals("null") ? null : LocalDate.parse(split[2]);
-		Rent rent = new Rent(Long.parseLong(split[0]), LocalDate.parse(split[1]), endDate, user, copy);
-		return rent;
+        return new Rent(Long.parseLong(split[0]), LocalDate.parse(split[1]), endDate, user, copy);
 	}
 
 	@Override

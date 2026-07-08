@@ -26,17 +26,17 @@ klassen" zu „GUI mit File-Repository" wächst.
 
 ## Was zeigt welcher Zustand?
 
-| Modul         | Neues Konzept                                                                                                                                       |
-|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Zustand_1** | Reine Domänen­klassen (`Customer`, `Movie`, `Copy`, `Rent`, `Rate`). `App.main` baut sie von Hand. Logging über `System.Logger` (im JDK enthalten). |
-| **Zustand_2** | Service-Schicht: `XService` als Interface, `XServiceImpl` als Implementierung. Ab hier SLF4J + Logback.                                             |
-| **Zustand_3** | Gemeinsame Basis­klasse `AbstractIdCarrier` (Vererbung, ID-Verwaltung, `equals`/`hashCode`).                                                        |
-| **Zustand_4** | Erste Tests: JUnit 5, AssertJ, Mockito. Test-Methoden mit `@Mock` / `@InjectMocks`.                                                                 |
-| **Zustand_5** | `RateService` — Tarif-Logik als eigenes Modul.                                                                                                      |
-| **Zustand_6** | Erstes Repository (`CustomerRepository`) mit In-Memory-Speicherung.                                                                                 |
-| **Zustand_7** | Generisches `CommonRepository<T>` und `IdRepository`; Repositories speichern jetzt persistent in Dateien.                                           |
-| **Zustand_8** | Schliff: Sichtbarkeiten, Fund­routinen, Repository-Konsistenz.                                                                                      |
-| **Zustand_9** | JavaFX-Oberfläche: Übersichten für Customer, Movie, Rent + ein Dialog.                                                                              |
+| Modul         | Neues Konzept                                                                                                                                      |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Zustand_1** | Reine Domänenklassen (`Customer`, `Movie`, `Copy`, `Rent`, `Rate`). `App.main` baut sie von Hand. Logging über `System.Logger` (im JDK enthalten). |
+| **Zustand_2** | Service-Schicht: `XService` als Interface, `XServiceImpl` als Implementierung. Ab hier SLF4J + Logback.                                            |
+| **Zustand_3** | Gemeinsame Basisklasse `AbstractIdCarrier` (Vererbung, ID-Verwaltung, `equals`/`hashCode`).                                                        |
+| **Zustand_4** | Erste Tests: JUnit 5, AssertJ, Mockito. Test-Methoden mit `@Mock` / `@InjectMocks`.                                                                |
+| **Zustand_5** | `RateService` — Tarif-Logik als eigenes Modul.                                                                                                     |
+| **Zustand_6** | Erstes Repository (`CustomerRepository`) mit In-Memory-Speicherung.                                                                                |
+| **Zustand_7** | Generisches `CommonRepository<T>` und `IdRepository`; Repositories speichern jetzt persistent in Dateien.                                          |
+| **Zustand_8** | Schliff: Sichtbarkeiten, Fundroutinen, Repository-Konsistenz.                                                                                      |
+| **Zustand_9** | JavaFX-Oberfläche: Übersichten für Customer, Movie, Rent + ein Dialog.                                                                             |
 
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
@@ -52,7 +52,7 @@ Modul-POMs enthalten bewusst keine Versionen.
 
 ## Bauen & Ausführen
 
-Aus dem Repository-Wurzel­verzeichnis:
+Aus dem Repository-Wurzelverzeichnis:
 
 ```bash
 # Alles bauen und alle Tests laufen lassen
@@ -110,8 +110,8 @@ Innerhalb jedes Zustands folgt der Java-Code dem Schema
 
 - Spring, Spring Boot oder andere DI-Container
 - Hibernate / JPA / eine Datenbank
-- Lombok, Records als Domänen­klassen, Builder-Pattern
+- Lombok, Records als Domänenklassen, Builder-Pattern
 - Web-Frameworks, REST-APIs, JavaScript-Frontend
 
 All diese Themen bauen auf den hier vermittelten Grundlagen auf — sie
-gehören in eine Folge­veranstaltung, nicht hierher.
+gehören in eine Folgeveranstaltung, nicht hierher.

@@ -1,5 +1,8 @@
 package hh.fernuni.rentamovie.movie.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,10 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class MovieRepositoryImpl implements MovieRepository {
 	private static final Logger LOG = LoggerFactory.getLogger(MovieRepositoryImpl.class);
@@ -35,8 +34,8 @@ class MovieRepositoryImpl implements MovieRepository {
 			} else {
 				Files.createFile(path);
 			}
-		} catch (IOException e) {
-			LOG.error("Error working with file in {}.", path.toString());
+        } catch (IOException _) {
+            LOG.error("Error working with file in {}.", path);
 		}
 	}
 
@@ -51,16 +50,16 @@ class MovieRepositoryImpl implements MovieRepository {
 			try {
 				Files.write(path, Collections.singletonList(toText(movie)), StandardCharsets.UTF_8,
 						StandardOpenOption.APPEND);
-			} catch (IOException e) {
+            } catch (IOException _) {
 				LOG.error("Error writing movie.db.");
 			}
 		} else {
 			List<String> allMovies = repo.values().stream().map(MovieRepositoryImpl::toText)
-					.collect(Collectors.toList());
+                    .toList();
 			try {
 				Files.write(path, allMovies, StandardCharsets.UTF_8, StandardOpenOption.WRITE,
 						StandardOpenOption.TRUNCATE_EXISTING);
-			} catch (IOException e) {
+            } catch (IOException _) {
 				LOG.error("Error writing movie.db.");
 			}
 		}

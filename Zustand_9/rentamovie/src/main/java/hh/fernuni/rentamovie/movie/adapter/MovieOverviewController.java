@@ -1,7 +1,5 @@
 package hh.fernuni.rentamovie.movie.adapter;
 
-import java.time.Year;
-
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.application.MovieService;
 import hh.fernuni.rentamovie.movie.domain.Movie;
@@ -14,6 +12,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.time.Year;
 
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
@@ -42,8 +42,8 @@ public class MovieOverviewController {
 
 	@FXML
 	private void initialize() {
-		yearOfPublicationColumn.setCellValueFactory(new PropertyValueFactory<Customer, Year>("yearOfPublication"));
-		titleColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("title"));
+        yearOfPublicationColumn.setCellValueFactory(new PropertyValueFactory<>("yearOfPublication"));
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
 		showMovieDetails(null);
 
