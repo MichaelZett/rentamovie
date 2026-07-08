@@ -90,6 +90,16 @@ Aufgaben nach `Zustand_4`:
   Ausleihe und mehrere offene Ausleihen.
 - Bereite Testfälle für Tarif- und Preisberechnung vor.
 
+Aufgaben nach `Zustand_5`:
+
+- Baue Repository-Methoden, um Kunden, Filme und Ausleihen gesammelt
+  lesen zu können.
+- Ersetze die service-interne Ausleih-Liste schrittweise durch ein
+  Repository.
+- Bereite Zahlungsfälle vor: berechneter Preis, offener Betrag und
+  bezahlte Ausleihe.
+- Ergänze Tests für die neuen Lese-Use-Cases.
+
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
 aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.
