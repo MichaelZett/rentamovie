@@ -1,0 +1,77 @@
+package hh.fernuni.rentamovie.rent.application;
+
+import hh.fernuni.rentamovie.customer.domain.Customer;
+import hh.fernuni.rentamovie.movie.application.MovieService;
+import hh.fernuni.rentamovie.movie.domain.Copy;
+import hh.fernuni.rentamovie.movie.domain.Movie;
+import hh.fernuni.rentamovie.rent.domain.Rent;
+import hh.fernuni.rentamovie.rent.domain.RentRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class RentServiceImplTest {
+
+    @Mock
+    private MovieService movieServiceMock;
+
+    @Mock
+    private RentRepository rentRepositoryMock;
+
+    @InjectMocks
+    private RentServiceImpl testee;
+
+    @Test
+    void shouldSaveCreatedRent() {
+        Movie movie = mock(Movie.class);
+        Customer customer = mock(Customer.class);
+        LocalDate startDate = LocalDate.of(2026, 7, 1);
+        Copy copy = mock(Copy.class);
+        when(this.movieServiceMock.findCopy(movie)).thenReturn(copy);
+
+        Rent rent = this.testee.createRent(movie, customer, startDate);
+
+        assertThat(rent.getCopy()).isEqualTo(copy);
+        verify(this.rentRepositoryMock).save(rent);
+    }
+
+    @Test
+    void shouldSaveReturnedRent() {
+        Rent rent = mock(Rent.class);
+
+        this.testee.returnRent(rent);
+
+        verify(rent).endRent();
+        verify(this.rentRepositoryMock).save(rent);
+    }
+
+    @Test
+    void shouldReadAllRents() {
+        Rent rent = mock(Rent.class);
+        when(this.rentRepositoryMock.readAll()).thenReturn(List.of(rent));
+
+        assertThat(this.testee.readAllRents()).containsExactly(rent);
+    }
+
+    @Test
+    void shouldFindOpenRents() {
+        Rent openRent = mock(Rent.class);
+        Rent finishedRent = mock(Rent.class);
+        when(openRent.isValid()).thenReturn(true);
+        when(finishedRent.isValid()).thenReturn(false);
+        when(this.rentRepositoryMock.readAll()).thenReturn(List.of(openRent, finishedRent));
+
+        assertThat(this.testee.findOpenRents()).containsExactly(openRent);
+    }
+}

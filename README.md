@@ -100,6 +100,14 @@ Aufgaben nach `Zustand_5`:
   bezahlte Ausleihe.
 - Ergänze Tests für die neuen Lese-Use-Cases.
 
+Aufgaben nach `Zustand_6`:
+
+- Verallgemeinere die drei In-Memory-Repositories zu einem gemeinsamen
+  `CommonRepository<T>`.
+- Bereite Datei-Persistenz für Kunden, Filme und Ausleihen vor.
+- Prüfe, welche ID-Erzeugung noch im Domain-Modell steckt und in ein
+  Repository ausgelagert werden kann.
+
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
 aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.

@@ -1,11 +1,11 @@
 package hh.fernuni.rentamovie.rent.domain;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-
 import hh.fernuni.rentamovie.common.domain.AbstractIdCarrier;
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.domain.Copy;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class Rent extends AbstractIdCarrier {
 	private Customer customer;
@@ -44,11 +44,23 @@ public class Rent extends AbstractIdCarrier {
 	}
 
 	public boolean isValid() {
+        return this.isOpen();
+    }
+
+    public boolean isOpen() {
 		return this.endDate == null;
 	}
 
+    public boolean isFinished() {
+        return !this.isOpen();
+    }
+
 	public void endRent() {
-        this.endDate = LocalDate.now(ZoneId.systemDefault());
+        this.endRent(LocalDate.now(ZoneId.systemDefault()));
+    }
+
+    public void endRent(LocalDate endDate) {
+        this.endDate = endDate;
 	}
 
 	@Override

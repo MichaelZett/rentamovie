@@ -1,0 +1,51 @@
+package hh.fernuni.rentamovie.movie.application;
+
+import hh.fernuni.rentamovie.movie.domain.Movie;
+import hh.fernuni.rentamovie.movie.domain.MovieRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Year;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class MovieServiceImplTest {
+
+    @Mock
+    private MovieRepository movieRepositoryMock;
+
+    @InjectMocks
+    private MovieServiceImpl testee;
+
+    @Test
+    void shouldSaveCreatedMovie() {
+        Movie movie = this.testee.createMovie(Year.of(1977), "A new hope");
+
+        verify(this.movieRepositoryMock).save(movie);
+    }
+
+    @Test
+    void shouldSaveUpdatedMovie() {
+        Movie movie = mock(Movie.class);
+
+        this.testee.updateMovie(movie, Year.of(1977), "A good hope");
+
+        verify(movie).updateData(Year.of(1977), "A good hope");
+        verify(this.movieRepositoryMock).save(movie);
+    }
+
+    @Test
+    void shouldReadAllMovies() {
+        Movie movie = mock(Movie.class);
+        when(this.movieRepositoryMock.readAll()).thenReturn(java.util.List.of(movie));
+
+        assertThat(this.testee.readAllMovies()).containsExactly(movie);
+    }
+}
