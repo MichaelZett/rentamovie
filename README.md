@@ -108,6 +108,13 @@ Aufgaben nach `Zustand_6`:
 - Prüfe, welche ID-Erzeugung noch im Domain-Modell steckt und in ein
   Repository ausgelagert werden kann.
 
+Aufgaben nach `Zustand_7`:
+
+- Ergänze Konsistenzregeln für Verleih, Rückgabe und Zahlung.
+- Verhindere doppelte Verleihung derselben Kopie, solange eine offene
+  Ausleihe existiert.
+- Prüfe Rückgabedatum und Zahlungsstatus fachlich, bevor gespeichert wird.
+
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
 aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.
