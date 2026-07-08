@@ -7,8 +7,11 @@ import hh.fernuni.rentamovie.movie.domain.Movie;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 import hh.fernuni.rentamovie.rent.domain.RentRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,9 +30,9 @@ class RentServiceImpl implements RentService {
 
 	@Override
 	public Collection<Copy> findAllFreeCopies(Movie movie) {
-		Collection<Copy> allCopies = this.movieService.findAllCopiesOfMovie(movie);
+        Collection<Copy> allCopies = new ArrayList<>(this.movieService.findAllCopiesOfMovie(movie));
 		Set<Copy> rentedCopies = this.rentRepository.readAll().stream()
-                .filter(r -> r.isValid() && allCopies.contains(r.getCopy())).map(Rent::getCopy)
+                .filter(r -> r.isOpen() && allCopies.contains(r.getCopy())).map(Rent::getCopy)
 		        .collect(Collectors.toSet());
 		allCopies.removeAll(rentedCopies);
 		return allCopies;
@@ -38,9 +41,52 @@ class RentServiceImpl implements RentService {
 	@Override
 	public Rent createRent(Movie movie, Customer customer, LocalDate startDate) {
 		Collection<Copy> copies = findAllFreeCopies(movie);
+        if (copies.isEmpty()) {
+            throw new IllegalStateException("No free copy available.");
+        }
 		Rent newRent = new Rent(customer, copies.iterator().next(), startDate);
 		this.rentRepository.save(newRent);
 		return newRent;
 	}
+
+    @Override
+    public void returnRent(Rent rent, LocalDate endDate) {
+        if (endDate.isBefore(rent.getStartDate())) {
+            throw new IllegalArgumentException("Return date must not be before start date.");
+        }
+        rent.endRent(endDate);
+        this.rentRepository.save(rent);
+    }
+
+    @Override
+    public void payRent(Rent rent, BigDecimal amount) {
+        if (rent.isOpen()) {
+            throw new IllegalStateException("Rent must be returned before payment.");
+        }
+        if (amount.signum() <= 0) {
+            throw new IllegalArgumentException("Payment amount must be positive.");
+        }
+        rent.markPaid();
+        this.rentRepository.save(rent);
+    }
+
+    @Override
+    public Collection<Rent> readAllRents() {
+        return this.rentRepository.readAll();
+    }
+
+    @Override
+    public List<Rent> findOpenRents() {
+        return this.rentRepository.readAll().stream()
+                .filter(Rent::isOpen)
+                .toList();
+    }
+
+    @Override
+    public List<Rent> findRentsWithOpenPayment() {
+        return this.rentRepository.readAll().stream()
+                .filter(Rent::hasOpenPayment)
+                .toList();
+    }
 
 }

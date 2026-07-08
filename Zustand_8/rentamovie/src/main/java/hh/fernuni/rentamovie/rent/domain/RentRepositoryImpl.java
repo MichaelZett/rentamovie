@@ -1,16 +1,19 @@
 package hh.fernuni.rentamovie.rent.domain;
 
-import java.time.LocalDate;
-
 import hh.fernuni.rentamovie.common.domain.CommonRepositoryImpl;
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.customer.domain.CustomerRepository;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.CopyRepository;
 
+import java.time.LocalDate;
+
 class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepository {
 
 	private static final RentRepositoryImpl INSTANCE = new RentRepositoryImpl("./rent.db");
+    private static final String OPEN_END_DATE = "OPEN";
+    private static final String PAID = "PAID";
+    private static final String OPEN_PAYMENT = "OPEN_PAYMENT";
 	private CustomerRepository customerRepository;
 	private CopyRepository copyRepository;
 
@@ -29,7 +32,9 @@ class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepos
 	protected Rent fromText(String[] split) {
 		Customer user = customerRepository.read(Long.parseLong(split[3]));
 		Copy copy = copyRepository.read(Long.parseLong(split[4]));
-		return new Rent(Long.parseLong(split[0]), LocalDate.parse(split[1]), LocalDate.parse(split[2]), user, copy);
+        LocalDate endDate = parseEndDate(split[2]);
+        boolean paid = split.length > 5 && PAID.equals(split[5]);
+        return new Rent(Long.parseLong(split[0]), LocalDate.parse(split[1]), endDate, paid, user, copy);
 	}
 
 	@Override
@@ -37,11 +42,26 @@ class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepos
 		StringBuilder b = new StringBuilder();
 		b.append(domainClass.getId()).append(DELIMITER);
 		b.append(domainClass.getStartDate()).append(DELIMITER);
-		b.append(domainClass.getEndDate()).append(DELIMITER);
+        b.append(toText(domainClass.getEndDate())).append(DELIMITER);
 		b.append(domainClass.getUser().getId()).append(DELIMITER);
-		b.append(domainClass.getCopy().getId());
+        b.append(domainClass.getCopy().getId()).append(DELIMITER);
+        b.append(domainClass.isPaid() ? PAID : OPEN_PAYMENT);
 		return b.toString();
 	}
+
+    private static LocalDate parseEndDate(String endDateAsText) {
+        if (OPEN_END_DATE.equals(endDateAsText) || "null".equals(endDateAsText)) {
+            return null;
+        }
+        return LocalDate.parse(endDateAsText);
+    }
+
+    private static String toText(LocalDate endDate) {
+        if (endDate == null) {
+            return OPEN_END_DATE;
+        }
+        return endDate.toString();
+    }
 
 	static RentRepository getInstance() {
 		return INSTANCE;

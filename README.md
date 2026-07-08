@@ -115,6 +115,14 @@ Aufgaben nach `Zustand_7`:
   Ausleihe existiert.
 - Prüfe Rückgabedatum und Zahlungsstatus fachlich, bevor gespeichert wird.
 
+Aufgaben nach `Zustand_8`:
+
+- Binde Kunden-, Film-, Kopien-, Verleih-, Rückgabe- und Zahlungsfälle in
+  eine einfache JavaFX-Oberfläche ein.
+- Halte die erste UI bewusst schlicht: Tabellen, Auswahl und Aktionen
+  statt Komfortfunktionen.
+- Formuliere Convenience-Aufgaben für Suche, Filter und Sortierung.
+
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept
 aus `Zustand_9` braucht, schaut dort; in `Zustand_3` gehört es nicht hin.
