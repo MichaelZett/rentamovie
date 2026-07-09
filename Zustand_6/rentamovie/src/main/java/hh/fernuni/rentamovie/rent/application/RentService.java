@@ -20,4 +20,6 @@ public interface RentService {
     Collection<Rent> readAllRents();
 
     List<Rent> findOpenRents();
+
+    List<Rent> findOverdueRents(LocalDate date);
 }

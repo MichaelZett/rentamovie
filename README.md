@@ -87,10 +87,11 @@ und spätere Nachzahlungen möglich sind. Die Kundenanlage erfolgt aktuell
 vor dem Verleih in der Kundenübersicht, nicht innerhalb des Verleihdialogs.
 
 Gezieltes Löschen einzelner Kunden ist in `Zustand_10` noch nicht
-umgesetzt. Der Verleihdialog erfasst außerdem keine geplante Leihdauer;
-eine Ausleihe startet mit dem aktuellen Datum und endet erst bei der
-Rückgabe. Eine Regel wie „maximal 7 Tage" und eine Übersicht für nicht
-rechtzeitig zurückgegebene Kopien gibt es noch nicht.
+umgesetzt. Ausleihen haben fachlich ein geplantes Rückgabedatum, standardmäßig
+sieben Tage nach dem Startdatum. Der Verleihdialog erfasst diese geplante
+Leihdauer aber noch nicht; er nutzt aktuell den Default. Überfällige
+Ausleihen können im Service gefiltert werden, sind in der Oberfläche aber
+noch keine eigene Arbeitsliste.
 
 Gebührenberechnung nach Tagen existiert als `RateService`: Junior,
 Regular und Senior haben unterschiedliche Tagespreise, und der Preis wird
@@ -129,7 +130,7 @@ Zielbild für die fachliche Progression:
 | **Zustand_3**  | Identität und Gleichheit bleiben im Fokus; die Service-Aufgaben aus `Zustand_2` werden fachlich gelöst. |
 | **Zustand_4**  | Erste Tests sichern Verleih, Rückgabe, Verfügbarkeit und ID-Gleichheit ab.                              |
 | **Zustand_5**  | Preisberechnung: Mietdauer, Tagespreis, optional Überziehung und Zahlungsfälle.                         |
-| **Zustand_6**  | Repository-Lese-Use-Cases: Kunden, Filme, Ausleihen, offene Ausleihen.                                  |
+| **Zustand_6**  | Repository-Lese-Use-Cases: Kunden, Filme, Ausleihen, offene und überfällige Ausleihen.                  |
 | **Zustand_7**  | Datei-Persistenz für offene und abgeschlossene Ausleihen sowie Zahlungsstatus.                          |
 | **Zustand_8**  | Validierung und Konsistenzregeln, z. B. keine doppelte Verleihung derselben Kopie.                      |
 | **Zustand_9**  | Basic UI für Kunde, Film, Kopie, Verleih, Rückgabe und Zahlung.                                         |
@@ -144,7 +145,7 @@ Erweiterungsplan für fachlich realistischere 1-Mann-Videothek:
 | **Zustand_3**    | Statusfelder in die ID-/Gleichheitsstruktur einpassen, ohne `equals`/`hashCode` fachlich zu verwässern.                 | Identität bleibt stabil, fachlicher Status ändert sie nicht.                                 |
 | **Zustand_4**    | Tests für Status- und Validierungsregeln ergänzen.                                                                      | Erste Teststufe: Regeln werden hier sichtbar abgesichert.                                    |
 | **Zustand_5**    | Gebühren sauberer nutzen: Preis aus Tagespreis und Mietdauer, spätere Überziehungsgebühren als Aufgabe vorbereiten.     | `RateService` ist der richtige Ort für Preislogik.                                           |
-| **Zustand_6**    | Repository-Lese-Use-Cases ergänzen: aktive Kunden und aktive Filme.                                                     | Repositorys liefern jetzt fachliche Listen.                                                  |
+| **Zustand_6**    | Repository-Lese-Use-Cases ergänzen: aktive Kunden, aktive Filme und überfällige Ausleihen.                              | Repositorys liefern jetzt fachliche Listen.                                                  |
 | **Zustand_7**    | Neue Felder persistieren: Status, Medienformat, geplantes Rückgabedatum und Zahlungsinformationen in Dateien speichern. | Datei-Persistenz ist hier das neue technische Konzept.                                       |
 | **Zustand_8**    | Konsistenzregeln schärfen: verfügbare Kopien filtern, keine Ausleihe an gesperrte Kunden oder verliehene Kopien.        | Validierung und Konsistenzregeln stehen hier im Zentrum.                                     |
 | **Zustand_9**    | UI-Bedienung ergänzen: Status anzeigen/ändern, Medienformat pflegen, geplante Leihdauer erfassen, offene Forderungen.   | JavaFX-Basis-UI ist vorhanden; neue Felder und Aktionen sind „mehr vom gleichen".            |
@@ -220,15 +221,15 @@ Aufgaben nach `Zustand_9`:
 - Ergänze Suche, Filter und optional robuste Sortierung für Kunden,
   Filme und Ausleihen.
 - Zeige offene Ausleihen, offene Zahlungen und überfällige Ausleihen als
-  eigene Arbeitslisten.
+  eigene Arbeitslisten in der Oberfläche.
 - Ergänze Demo-Daten-Reset und mehr Seed-Daten für Kursübungen.
 
 Mögliche Hausaufgaben nach `Zustand_10` sollen die Anwendung fachlich
 realistischer machen, ohne die Studierenden mit viel neuer Technik zu
 überfordern. Gute Kandidaten sind „mehr vom gleichen": zusätzliche
 Felder, Validierungen, Repository-Methoden, Services, JavaFX-Dialoge und
-Tests. Dazu gehören zum Beispiel geplante Leihdauer, überfällige
-Ausleihen, offene Forderungen, UI-Filter für Status/Format sowie das
+Tests. Dazu gehören zum Beispiel UI-Erfassung der geplanten Leihdauer,
+offene Forderungen, UI-Filter für Status/Format sowie das
 fachlich saubere Entfernen von Kunden, Filmen und Kopien. Robuste
 Sortierung und Paging sind ebenfalls denkbare Erweiterungen, aber nicht
 zwingend für die 1-Mann-Videothek.

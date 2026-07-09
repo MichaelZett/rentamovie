@@ -29,5 +29,7 @@ public interface RentService {
 
     List<Rent> findOpenRents();
 
+    List<Rent> findOverdueRents(LocalDate date);
+
     List<Rent> findRentsWithOpenPayment();
 }

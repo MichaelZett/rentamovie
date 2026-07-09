@@ -31,4 +31,20 @@ class RentTest {
         assertThat(testee.isPaid()).isTrue();
         assertThat(testee.hasOpenPayment()).isFalse();
     }
+
+    @Test
+    void shouldUseDefaultPlannedReturnDate() {
+        Rent testee = new Rent(mock(Customer.class), mock(Copy.class), LocalDate.of(2026, 7, 1));
+
+        assertThat(testee.getPlannedReturnDate()).isEqualTo(LocalDate.of(2026, 7, 8));
+    }
+
+    @Test
+    void shouldDetectOverdueOpenRent() {
+        Rent testee = new Rent(mock(Customer.class), mock(Copy.class), LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 3));
+
+        assertThat(testee.isOverdue(LocalDate.of(2026, 7, 4))).isTrue();
+        assertThat(testee.isOverdue(LocalDate.of(2026, 7, 3))).isFalse();
+    }
 }

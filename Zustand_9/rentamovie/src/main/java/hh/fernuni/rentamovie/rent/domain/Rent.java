@@ -11,21 +11,32 @@ public class Rent extends AbstractIdCarrier {
 	private Customer customer;
 	private Copy copy;
 	private LocalDate startDate;
+    private LocalDate plannedReturnDate;
 	private LocalDate endDate;
     private boolean paid;
 
 	public Rent(Customer user, Copy copy, LocalDate startDate) {
+        this(user, copy, startDate, startDate.plusDays(7));
+    }
+
+    public Rent(Customer user, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
 		super();
 		this.customer = user;
 		this.copy = copy;
 		this.startDate = startDate;
+        this.plannedReturnDate = plannedReturnDate;
 	}
 
     public Rent(Long id, LocalDate startDate, LocalDate endDate, boolean paid, Customer user, Copy copy) {
+        this(id, startDate, startDate.plusDays(7), endDate, paid, user, copy);
+    }
+
+    public Rent(Long id, LocalDate startDate, LocalDate plannedReturnDate, LocalDate endDate, boolean paid, Customer user, Copy copy) {
 		super(id);
 		this.customer = user;
 		this.copy = copy;
 		this.startDate = startDate;
+        this.plannedReturnDate = plannedReturnDate;
 		this.endDate = endDate;
         this.paid = paid;
 	}
@@ -54,6 +65,10 @@ public class Rent extends AbstractIdCarrier {
 		return this.endDate;
 	}
 
+    public LocalDate getPlannedReturnDate() {
+        return this.plannedReturnDate;
+    }
+
 	public boolean isValid() {
         return this.isOpen();
     }
@@ -64,6 +79,10 @@ public class Rent extends AbstractIdCarrier {
 
     public boolean isFinished() {
         return !this.isOpen();
+    }
+
+    public boolean isOverdue(LocalDate date) {
+        return this.isOpen() && date.isAfter(this.plannedReturnDate);
     }
 
 	public void endRent() {
@@ -99,7 +118,7 @@ public class Rent extends AbstractIdCarrier {
 	@Override
 	public String toString() {
 		return "Rent [id=" + this.id + ", customer=" + this.customer + ", copy=" + this.copy + ", startDate=" + this.startDate
-                + ", endDate=" + this.endDate + ", paid=" + this.paid + "]";
+                + ", plannedReturnDate=" + this.plannedReturnDate + ", endDate=" + this.endDate + ", paid=" + this.paid + "]";
 	}
 
 }

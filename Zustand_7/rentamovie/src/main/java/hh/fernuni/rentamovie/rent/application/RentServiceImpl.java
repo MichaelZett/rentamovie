@@ -61,6 +61,13 @@ class RentServiceImpl implements RentService {
     }
 
     @Override
+    public List<Rent> findOverdueRents(LocalDate date) {
+        return this.rentRepository.readAll().stream()
+                .filter(r -> r.isOverdue(date))
+                .toList();
+    }
+
+    @Override
     public List<Rent> findRentsWithOpenPayment() {
         return this.rentRepository.readAll().stream()
                 .filter(Rent::hasOpenPayment)

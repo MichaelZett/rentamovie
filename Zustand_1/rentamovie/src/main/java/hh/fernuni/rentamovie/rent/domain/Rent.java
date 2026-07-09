@@ -11,13 +11,19 @@ public class Rent {
     private final Customer customer;
     private final Copy copy;
     private final LocalDate startDate;
+    private final LocalDate plannedReturnDate;
     private LocalDate endDate;
 
     public Rent(Long id, Customer customer, Copy copy, LocalDate startDate) {
+        this(id, customer, copy, startDate, startDate.plusDays(7));
+    }
+
+    public Rent(Long id, Customer customer, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
         this.id = id;
         this.customer = customer;
         this.copy = copy;
         this.startDate = startDate;
+        this.plannedReturnDate = plannedReturnDate;
     }
 
     public Long getId() {
@@ -40,6 +46,10 @@ public class Rent {
         return endDate;
     }
 
+    public LocalDate getPlannedReturnDate() {
+        return plannedReturnDate;
+    }
+
     public boolean isValid() {
         return isOpen();
     }
@@ -50,6 +60,10 @@ public class Rent {
 
     public boolean isFinished() {
         return !isOpen();
+    }
+
+    public boolean isOverdue(LocalDate date) {
+        return isOpen() && date.isAfter(plannedReturnDate);
     }
 
     public void endRent() {
@@ -63,6 +77,7 @@ public class Rent {
     @Override
     public String toString() {
         return "Rent [id=" + id + ", customer=" + customer + ", copy=" + copy
-                + ", startDate=" + startDate + ", endDate=" + endDate + "]";
+                + ", startDate=" + startDate + ", plannedReturnDate=" + plannedReturnDate
+                + ", endDate=" + endDate + "]";
     }
 }

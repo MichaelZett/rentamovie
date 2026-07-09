@@ -123,4 +123,16 @@ class RentServiceImplTest {
         when(customer.isActive()).thenReturn(true);
         return customer;
     }
+
+    @Test
+    void shouldFindOverdueRents() {
+        Rent overdueRent = mock(Rent.class);
+        Rent rentInTime = mock(Rent.class);
+        LocalDate date = LocalDate.of(2026, 7, 10);
+        when(overdueRent.isOverdue(date)).thenReturn(true);
+        when(rentInTime.isOverdue(date)).thenReturn(false);
+        when(this.rentRepositoryMock.readAll()).thenReturn(List.of(overdueRent, rentInTime));
+
+        assertThat(this.testee.findOverdueRents(date)).containsExactly(overdueRent);
+    }
 }

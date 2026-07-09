@@ -12,7 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -84,5 +86,17 @@ class RentServiceImplTest {
 
         verify(rent).markPaid();
         verify(this.rentRepositoryMock).save(rent);
+    }
+
+    @Test
+    void shouldFindOverdueRents() {
+        Rent overdueRent = mock(Rent.class);
+        Rent rentInTime = mock(Rent.class);
+        LocalDate date = LocalDate.of(2026, 7, 10);
+        when(overdueRent.isOverdue(date)).thenReturn(true);
+        when(rentInTime.isOverdue(date)).thenReturn(false);
+        when(this.rentRepositoryMock.readAll()).thenReturn(List.of(overdueRent, rentInTime));
+
+        assertThat(this.testee.findOverdueRents(date)).containsExactly(overdueRent);
     }
 }

@@ -53,6 +53,13 @@ class RentServiceImpl implements RentService {
                 .toList();
 	}
 
+    @Override
+    public List<Rent> findOverdueRents(LocalDate date) {
+        return this.rentRepository.readAll().stream()
+                .filter(r -> r.isOverdue(date))
+                .toList();
+    }
+
     private static void validateCustomer(Customer customer) {
         if (!customer.isActive()) {
             throw new IllegalStateException("Customer is not active.");

@@ -11,13 +11,19 @@ public class Rent extends AbstractIdCarrier {
 	private Customer customer;
 	private Copy copy;
 	private LocalDate startDate;
+    private LocalDate plannedReturnDate;
 	private LocalDate endDate;
 
 	public Rent(Long id, Customer user, Copy copy, LocalDate startDate) {
+        this(id, user, copy, startDate, startDate.plusDays(7));
+    }
+
+    public Rent(Long id, Customer user, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
 		super(id);
 		this.customer = user;
 		this.copy = copy;
 		this.startDate = startDate;
+        this.plannedReturnDate = plannedReturnDate;
 	}
 
 	public Rent(Customer user, Copy copy, LocalDate startDate) {
@@ -43,6 +49,10 @@ public class Rent extends AbstractIdCarrier {
 		return this.endDate;
 	}
 
+    public LocalDate getPlannedReturnDate() {
+        return this.plannedReturnDate;
+    }
+
 	public boolean isValid() {
         return this.isOpen();
     }
@@ -53,6 +63,10 @@ public class Rent extends AbstractIdCarrier {
 
     public boolean isFinished() {
         return !this.isOpen();
+    }
+
+    public boolean isOverdue(LocalDate date) {
+        return this.isOpen() && date.isAfter(this.plannedReturnDate);
     }
 
 	public void endRent() {
@@ -66,7 +80,7 @@ public class Rent extends AbstractIdCarrier {
 	@Override
 	public String toString() {
 		return "Rent [id=" + this.id + ", customer=" + this.customer + ", copy=" + this.copy + ", startDate=" + this.startDate
-		        + ", endDate=" + this.endDate + "]";
+                + ", plannedReturnDate=" + this.plannedReturnDate + ", endDate=" + this.endDate + "]";
 	}
 
 }

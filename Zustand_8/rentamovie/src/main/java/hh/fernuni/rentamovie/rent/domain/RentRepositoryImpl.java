@@ -30,11 +30,17 @@ class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepos
 
 	@Override
 	protected Rent fromText(String[] split) {
-		Customer user = customerRepository.read(Long.parseLong(split[3]));
-		Copy copy = copyRepository.read(Long.parseLong(split[4]));
-        LocalDate endDate = parseEndDate(split[2]);
-        boolean paid = split.length > 5 && PAID.equals(split[5]);
-        return new Rent(Long.parseLong(split[0]), LocalDate.parse(split[1]), endDate, paid, user, copy);
+        LocalDate startDate = LocalDate.parse(split[1]);
+        LocalDate plannedReturnDate = split.length > 6 ? LocalDate.parse(split[2]) : startDate.plusDays(7);
+        int endDateIndex = split.length > 6 ? 3 : 2;
+        int customerIndex = split.length > 6 ? 4 : 3;
+        int copyIndex = split.length > 6 ? 5 : 4;
+        int paymentIndex = split.length > 6 ? 6 : 5;
+        Customer user = customerRepository.read(Long.parseLong(split[customerIndex]));
+        Copy copy = copyRepository.read(Long.parseLong(split[copyIndex]));
+        LocalDate endDate = parseEndDate(split[endDateIndex]);
+        boolean paid = split.length > paymentIndex && PAID.equals(split[paymentIndex]);
+        return new Rent(Long.parseLong(split[0]), startDate, plannedReturnDate, endDate, paid, user, copy);
 	}
 
 	@Override
@@ -42,6 +48,7 @@ class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepos
 		StringBuilder b = new StringBuilder();
 		b.append(domainClass.getId()).append(DELIMITER);
 		b.append(domainClass.getStartDate()).append(DELIMITER);
+        b.append(domainClass.getPlannedReturnDate()).append(DELIMITER);
         b.append(toText(domainClass.getEndDate())).append(DELIMITER);
 		b.append(domainClass.getUser().getId()).append(DELIMITER);
         b.append(domainClass.getCopy().getId()).append(DELIMITER);
