@@ -66,8 +66,11 @@ Die Domäne kennt bereits Basisfelder für Status und Format: Kunden haben
 einen `CustomerStatus`, Filme einen `MovieStatus`, Kopien einen
 `CopyStatus` und ein `MediaFormat`. In `Zustand_10` sind diese Felder
 im Verleihkern fachlich verdrahtet: Es wird nur an aktive Kunden verliehen,
-Filme müssen aktiv sein, und Kopien müssen verfügbar sein. In der
-Oberfläche sind die Felder noch nicht vollständig bearbeitbar.
+Filme müssen aktiv sein, und Kopien müssen verfügbar sein. In `Zustand_10`
+lassen sich Kunden- und Filmstatus direkt in der Oberfläche pflegen; neue
+Kopien bekommen ihr Medienformat beim Anlegen. Die Ausleihübersicht zeigt
+außerdem eine robuste Sortierung über den gefilterten Bestand und ein
+einfaches Paging-Beispiel.
 
 Gezieltes Löschen einzelner Filme oder Kopien ist in `Zustand_10` noch
 nicht umgesetzt. Es gibt nur den Demo-Daten-Reset, der alle Repositories
@@ -91,6 +94,8 @@ umgesetzt. Ausleihen haben fachlich ein geplantes Rückgabedatum, standardmäßi
 sieben Tage nach dem Startdatum. Der Verleihdialog erfasst diese geplante
 Leihdauer aber noch nicht; er nutzt aktuell den Default. In `Zustand_10`
 kann die Ausleihliste nach überfälligen Ausleihen gefiltert werden.
+Robuste Sortierung heißt hier: sortiert wird der vollständige gefilterte
+Bestand, nicht nur die gerade sichtbare Seite.
 
 Gebührenberechnung nach Tagen existiert als `RateService`: Junior,
 Regular und Senior haben unterschiedliche Tagespreise, und der Preis wird
@@ -148,8 +153,9 @@ Erweiterungsplan für fachlich realistischere 1-Mann-Videothek:
 | **Zustand_7**    | Neue Felder persistieren: Status, Medienformat, geplantes Rückgabedatum und Zahlungsinformationen in Dateien speichern.    | Datei-Persistenz ist hier das neue technische Konzept.                                       |
 | **Zustand_8**    | Konsistenzregeln schärfen: verfügbare Kopien filtern, keine Ausleihe an gesperrte Kunden oder verliehene Kopien.           | Validierung und Konsistenzregeln stehen hier im Zentrum.                                     |
 | **Zustand_9**    | UI-Bedienung ergänzen: Status anzeigen/ändern, Medienformat pflegen, geplantes Rückgabedatum anzeigen, offene Forderungen. | JavaFX-Basis-UI ist vorhanden; neue Felder und Aktionen sind „mehr vom gleichen".            |
-| **Zustand_10**   | Komfort ergänzen: Filter für aktive/inaktive Daten, überfällige Ausleihen, offene Forderungen, robuste Sortierung.         | Z10 ist die Convenience-Stufe; Suche und Statusfilter werden fachlich erweitert.             |
-| **Zustand_11ff** | Optional: Soft-Delete konsequent ausbauen, Archivmodell, Paging, Großhandel, Bestellsystem und Mehrplatz-Ausblick.         | Größere fachliche oder architektonische Schritte gehören nach der Grundlagenprogression hin. |
+| **Zustand_10**   | Komfort ergänzen: Filter für aktive/inaktive Daten, überfällige Ausleihen, robuste Sortierung und Paging-Beispiel.         | Z10 ist die Convenience-Stufe; Suche, Sortierung und Seitenwechsel werden konkret sichtbar.  |
+| **Zustand_11**   | Hausaufgaben für die fachlichen Restthemen: Arbeitslisten, Verleihhistorie, Copy-Status, weitere Domänenpflege.            | Z11 löst die restlichen fachlichen Aufgaben ohne neue Technik.                               |
+| **Zustand_11ff** | Optional: Soft-Delete konsequent ausbauen, Archivmodell, Großhandel, Bestellsystem und Mehrplatz-Ausblick.                 | Größere fachliche oder architektonische Schritte gehören nach der Grundlagenprogression hin. |
 
 Aufgaben nach `Zustand_1`:
 
@@ -215,23 +221,30 @@ Aufgaben nach `Zustand_8`:
   statt Komfortfunktionen.
 - Formuliere Convenience-Aufgaben für Suche, Filter und Sortierung.
 
-Aufgaben nach `Zustand_9`:
+Aufgaben nach `Zustand_10`:
 
-- Ergänze Suche, Filter und optional robuste Sortierung für Kunden,
-  Filme und Ausleihen.
-- Erweitere die vorhandenen Filter zu klareren Arbeitslisten für offene
-  Ausleihen, offene Zahlungen und überfällige Ausleihen.
-- Ergänze Demo-Daten-Reset und mehr Seed-Daten für Kursübungen.
+- Ergänze in den übrigen Oberflächen die Pflege der Statusfelder dort,
+  wo sie noch fehlt.
+- Ergänze die geplante Leihdauer im Verleihdialog für die fachliche
+  Validierung durch den Nutzer.
+- Ergänze weitere Tests für die neuen UI-Flüsse.
 
-Mögliche Hausaufgaben nach `Zustand_10` sollen die Anwendung fachlich
+Aufgaben nach `Zustand_11`:
+
+- Zeige offene Ausleihen, offene Zahlungen und überfällige Ausleihen als
+  eigene Arbeitslisten in der Oberfläche.
+- Zeige die Verleihhistorie pro Kunde.
+- Vervollständige die fachlichen Regeln für inaktive, gesperrte,
+  beschädigte oder verlorene Datensätze.
+
+Mögliche Hausaufgaben nach `Zustand_11` sollen die Anwendung fachlich
 realistischer machen, ohne die Studierenden mit viel neuer Technik zu
 überfordern. Gute Kandidaten sind „mehr vom gleichen": zusätzliche
 Felder, Validierungen, Repository-Methoden, Services, JavaFX-Dialoge und
 Tests. Dazu gehören zum Beispiel UI-Erfassung der geplanten Leihdauer,
-klarere Arbeitslisten, UI-Filter für Status/Format sowie das
-fachlich saubere Entfernen von Kunden, Filmen und Kopien. Robuste
-Sortierung und Paging sind ebenfalls denkbare Erweiterungen, aber nicht
-zwingend für die 1-Mann-Videothek.
+klarere Arbeitslisten, UI-Filter für Status/Format sowie das fachlich
+saubere Entfernen von Kunden, Filmen und Kopien. Robuste Sortierung und
+Paging bleiben dann als allgemeines Muster sichtbar.
 
 Gerade Löschen ist didaktisch interessant: Wegen der Verleihhistorie ist
 hartes Entfernen oft falsch. Realistisch sind eher Soft-Delete-Varianten

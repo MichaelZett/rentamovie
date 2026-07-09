@@ -2,6 +2,8 @@ package hh.fernuni.rentamovie.movie.application;
 
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.CopyRepository;
+import hh.fernuni.rentamovie.movie.domain.CopyStatus;
+import hh.fernuni.rentamovie.movie.domain.MediaFormat;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 import hh.fernuni.rentamovie.movie.domain.MovieRepository;
 import org.slf4j.Logger;
@@ -40,8 +42,13 @@ class MovieServiceImpl implements MovieService {
 
     @Override
     public void createCopies(Movie movie, int numberToCreate) {
+        createCopies(movie, numberToCreate, MediaFormat.DVD);
+    }
+
+    @Override
+    public void createCopies(Movie movie, int numberToCreate, MediaFormat mediaFormat) {
         for (int i = 0; i < numberToCreate; i++) {
-            Copy copy = new Copy(movie);
+            Copy copy = new Copy(movie, mediaFormat, CopyStatus.AVAILABLE);
             this.copyRepository.save(copy);
             LOG.info("Created: {}", copy);
         }

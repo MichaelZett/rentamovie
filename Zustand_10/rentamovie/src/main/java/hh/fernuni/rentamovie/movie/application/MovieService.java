@@ -1,6 +1,7 @@
 package hh.fernuni.rentamovie.movie.application;
 
 import hh.fernuni.rentamovie.movie.domain.Copy;
+import hh.fernuni.rentamovie.movie.domain.MediaFormat;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 
 import java.time.Year;
@@ -10,6 +11,8 @@ public interface MovieService {
     Movie createMovie(Year yearOfPublication, String title);
 
     void createCopies(Movie movie, int count);
+
+    void createCopies(Movie movie, int count, MediaFormat mediaFormat);
 
     void updateMovie(Movie currentMovie, Year year, String title);
 

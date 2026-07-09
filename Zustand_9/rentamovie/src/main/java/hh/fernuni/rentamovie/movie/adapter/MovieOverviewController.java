@@ -1,12 +1,14 @@
 package hh.fernuni.rentamovie.movie.adapter;
 
-import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.application.MovieService;
+import hh.fernuni.rentamovie.movie.domain.MediaFormat;
 import hh.fernuni.rentamovie.movie.domain.Movie;
+import hh.fernuni.rentamovie.movie.domain.MovieStatus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -24,14 +26,20 @@ public class MovieOverviewController {
 	@FXML
 	private TableView<Movie> movieTable;
 	@FXML
-	private TableColumn<Customer, Year> yearOfPublicationColumn;
+    private TableColumn<Movie, Year> yearOfPublicationColumn;
+    @FXML
+    private TableColumn<Movie, String> titleColumn;
 	@FXML
-	private TableColumn<Customer, String> titleColumn;
+    private TableColumn<Movie, MovieStatus> statusColumn;
 	@FXML
 	private TextField yearOfPublicationInput;
 	@FXML
 	private TextField titleInput;
 	@FXML
+    private ComboBox<MovieStatus> statusInput;
+    @FXML
+    private ComboBox<MediaFormat> mediaFormatInput;
+    @FXML
 	private Label copiesLabel;
 	@FXML
 	private Button newButton;
@@ -44,6 +52,10 @@ public class MovieOverviewController {
 	private void initialize() {
         yearOfPublicationColumn.setCellValueFactory(new PropertyValueFactory<>("yearOfPublication"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusInput.setItems(FXCollections.observableArrayList(MovieStatus.values()));
+        mediaFormatInput.setItems(FXCollections.observableArrayList(MediaFormat.values()));
+        mediaFormatInput.getSelectionModel().select(MediaFormat.DVD);
 
 		showMovieDetails(null);
 
@@ -65,6 +77,7 @@ public class MovieOverviewController {
 			currentMovie = movie;
 			yearOfPublicationInput.setText(movie.getYearOfPublication().toString());
 			titleInput.setText(movie.getTitle());
+            statusInput.setValue(movie.getStatus());
 			copiesLabel.setText(String.valueOf(movieService.findAllCopiesOfMovie(movie).size()));
 		} else {
 			clearInput();
@@ -75,6 +88,8 @@ public class MovieOverviewController {
 		currentMovie = null;
 		yearOfPublicationInput.setText("");
 		titleInput.setText("");
+        statusInput.setValue(MovieStatus.ACTIVE);
+        mediaFormatInput.getSelectionModel().select(MediaFormat.DVD);
 		copiesLabel.setText("");
 		movieTable.getSelectionModel().select(-1);
 	}
@@ -87,7 +102,7 @@ public class MovieOverviewController {
 	@FXML
 	private void handleCopies() {
 		if (currentMovie != null) {
-			movieService.createCopies(currentMovie, 1);
+            movieService.createCopies(currentMovie, 1, mediaFormatInput.getValue());
 			showMovieDetails(currentMovie);
 		}
 	}
@@ -95,12 +110,22 @@ public class MovieOverviewController {
 	@FXML
 	private void handleSaveMovie() {
 		if (currentMovie != null) {
-			movieService.updateMovie(currentMovie, Year.parse(yearOfPublicationInput.getText()), titleInput.getText());
+            currentMovie.updateData(Year.parse(yearOfPublicationInput.getText()), titleInput.getText());
 		} else {
 			currentMovie = movieService.createMovie(Year.parse(yearOfPublicationInput.getText()), titleInput.getText());
 			movieTable.getSelectionModel().select(currentMovie);
 		}
+        applyStatus(currentMovie, statusInput.getValue());
+        movieService.updateMovie(currentMovie, Year.parse(yearOfPublicationInput.getText()), titleInput.getText());
 		refreshMovies();
 	}
+
+    private static void applyStatus(Movie movie, MovieStatus status) {
+        if (status == MovieStatus.INACTIVE) {
+            movie.deactivate();
+            return;
+        }
+        movie.activate();
+    }
 
 }

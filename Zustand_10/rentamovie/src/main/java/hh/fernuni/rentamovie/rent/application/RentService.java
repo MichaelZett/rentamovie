@@ -23,6 +23,8 @@ public interface RentService {
 
     Rent createRent(Copy value, Customer value2, LocalDate now);
 
+    Rent createRent(Copy value, Customer value2, LocalDate now, int plannedDays);
+
     void returnRent(Rent rent, LocalDate endDate);
 
     void payRent(Rent rent, BigDecimal amount);

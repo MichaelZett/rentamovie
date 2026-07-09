@@ -46,7 +46,7 @@ class RentServiceImpl implements RentService {
         if (copies.isEmpty()) {
             throw new IllegalStateException("No free copy available.");
         }
-		return createRent(copies.iterator().next(), customer, startDate);
+        return createRent(copies.iterator().next(), customer, startDate, 7);
 	}
 
 	@Override
@@ -56,12 +56,20 @@ class RentServiceImpl implements RentService {
 
 	@Override
 	public Rent createRent(Copy copy, Customer customer, LocalDate startDate) {
+        return createRent(copy, customer, startDate, 7);
+    }
+
+    @Override
+    public Rent createRent(Copy copy, Customer customer, LocalDate startDate, int plannedDays) {
         validateCustomer(customer);
         validateCopy(copy);
+        if (plannedDays < 1 || plannedDays > 7) {
+            throw new IllegalArgumentException("Planned rental duration must be between 1 and 7 days.");
+        }
         if (this.rentRepository.readAll().stream().anyMatch(r -> r.isOpen() && r.getCopy().equals(copy))) {
             throw new IllegalStateException("Copy is already rented.");
         }
-		Rent newRent = new Rent(customer, copy, startDate);
+        Rent newRent = new Rent(customer, copy, startDate, startDate.plusDays(plannedDays));
 		this.rentRepository.save(newRent);
 		return newRent;
 	}

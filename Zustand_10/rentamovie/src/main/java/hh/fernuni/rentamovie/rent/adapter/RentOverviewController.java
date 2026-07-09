@@ -5,10 +5,12 @@ import hh.fernuni.rentamovie.rent.domain.Rent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
@@ -21,9 +23,14 @@ import java.time.ZoneId;
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class RentOverviewController {
+    private static final int PAGE_SIZE = 5;
+
     private RentService rentService = RentService.getService();
     private final ObservableList<Rent> rents = FXCollections.observableArrayList();
+    private final ObservableList<Rent> pageRents = FXCollections.observableArrayList();
     private FilteredList<Rent> filteredRents;
+    private SortedList<Rent> sortedRents;
+    private int currentPageIndex;
 
     @FXML
     private TableView<Rent> rentTable;
@@ -42,11 +49,17 @@ public class RentOverviewController {
     @FXML
     private ComboBox<String> statusFilterBox;
     @FXML
+    private Label pageInfoLabel;
+    @FXML
     private Button newButton;
     @FXML
     private Button returnButton;
     @FXML
     private Button payButton;
+    @FXML
+    private Button previousPageButton;
+    @FXML
+    private Button nextPageButton;
 
     @FXML
     private void initialize() {
@@ -58,15 +71,18 @@ public class RentOverviewController {
         this.paymentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
         this.statusFilterBox.setItems(FXCollections.observableArrayList("All", "Open rents", "Overdue", "Open payments", "Paid"));
         this.statusFilterBox.getSelectionModel().select("All");
-        this.statusFilterBox.valueProperty().addListener((observable, oldValue, newValue) -> applyFilter());
         this.filteredRents = new FilteredList<>(rents, rent -> true);
-        this.rentTable.setItems(filteredRents);
+        this.sortedRents = new SortedList<>(this.filteredRents);
+        this.sortedRents.comparatorProperty().bind(this.rentTable.comparatorProperty());
+        this.rentTable.setItems(this.pageRents);
+        this.rentTable.comparatorProperty().addListener((observable, oldValue, newValue) -> updatePage(0));
+        this.statusFilterBox.valueProperty().addListener((observable, oldValue, newValue) -> applyFilter());
         refreshRents();
     }
 
     private void refreshRents() {
         this.rents.setAll(this.rentService.readAllRents());
-        this.rentTable.refresh();
+        updatePage(0);
     }
 
     private void applyFilter() {
@@ -78,6 +94,18 @@ public class RentOverviewController {
             case "Paid" -> rent.isPaid();
             default -> true;
         });
+        updatePage(0);
+    }
+
+    private void updatePage(int pageIndex) {
+        int pageCount = Math.max(1, (int) Math.ceil((double) this.sortedRents.size() / PAGE_SIZE));
+        this.currentPageIndex = Math.max(0, Math.min(pageIndex, pageCount - 1));
+        int fromIndex = this.currentPageIndex * PAGE_SIZE;
+        int toIndex = Math.min(fromIndex + PAGE_SIZE, this.sortedRents.size());
+        this.pageRents.setAll(this.sortedRents.subList(fromIndex, toIndex));
+        this.pageInfoLabel.setText((this.sortedRents.isEmpty() ? 0 : this.currentPageIndex + 1) + " / " + pageCount);
+        this.previousPageButton.setDisable(this.currentPageIndex == 0);
+        this.nextPageButton.setDisable(this.currentPageIndex >= pageCount - 1 || this.sortedRents.isEmpty());
     }
 
     @FXML
@@ -109,6 +137,16 @@ public class RentOverviewController {
                     .ifPresent(amount -> this.rentService.payRent(rent, amount));
             refreshRents();
         }
+    }
+
+    @FXML
+    private void handlePreviousPage() {
+        updatePage(this.currentPageIndex - 1);
+    }
+
+    @FXML
+    private void handleNextPage() {
+        updatePage(this.currentPageIndex + 1);
     }
 
 }
