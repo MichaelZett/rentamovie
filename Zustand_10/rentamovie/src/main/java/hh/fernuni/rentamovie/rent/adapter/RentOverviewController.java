@@ -34,6 +34,8 @@ public class RentOverviewController {
     @FXML
     private TableColumn<Rent, LocalDate> startDateColumn;
     @FXML
+    private TableColumn<Rent, LocalDate> plannedReturnDateColumn;
+    @FXML
     private TableColumn<Rent, LocalDate> endDateColumn;
     @FXML
     private TableColumn<Rent, String> paymentStatusColumn;
@@ -51,9 +53,10 @@ public class RentOverviewController {
         this.customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerLastname"));
         this.copyColumn.setCellValueFactory(new PropertyValueFactory<>("copyTitle"));
         this.startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        this.plannedReturnDateColumn.setCellValueFactory(new PropertyValueFactory<>("plannedReturnDate"));
         this.endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         this.paymentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
-        this.statusFilterBox.setItems(FXCollections.observableArrayList("All", "Open rents", "Open payments", "Paid"));
+        this.statusFilterBox.setItems(FXCollections.observableArrayList("All", "Open rents", "Overdue", "Open payments", "Paid"));
         this.statusFilterBox.getSelectionModel().select("All");
         this.statusFilterBox.valueProperty().addListener((observable, oldValue, newValue) -> applyFilter());
         this.filteredRents = new FilteredList<>(rents, rent -> true);
@@ -70,6 +73,7 @@ public class RentOverviewController {
         String selected = this.statusFilterBox.getSelectionModel().getSelectedItem();
         this.filteredRents.setPredicate(rent -> switch (selected) {
             case "Open rents" -> rent.isOpen();
+            case "Overdue" -> rent.isOverdue(LocalDate.now(ZoneId.systemDefault()));
             case "Open payments" -> rent.hasOpenPayment();
             case "Paid" -> rent.isPaid();
             default -> true;

@@ -1,7 +1,7 @@
 package hh.fernuni.rentamovie.rent.adapter;
 
+import hh.fernuni.rentamovie.customer.application.CustomerService;
 import hh.fernuni.rentamovie.customer.domain.Customer;
-import hh.fernuni.rentamovie.customer.domain.CustomerRepository;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.CopyRepository;
 import hh.fernuni.rentamovie.rent.application.RentService;
@@ -25,15 +25,17 @@ public class RentDialog extends Dialog<Rent> {
 	private ComboBox<Customer> customerBox;
 	private ComboBox<Copy> movieBox;
 
-	private CustomerRepository customerRepository = CustomerRepository.getRepository();
+    private CustomerService customerService = CustomerService.getService();
 	private CopyRepository copyRepository = CopyRepository.getRepository();
 	private RentService rentService = RentService.getService();
 
 	RentDialog() {
 		this.setTitle("Input rent");
-		ObservableList<Customer> customerOptions = FXCollections.observableArrayList(this.customerRepository.readAll());
+        ObservableList<Customer> customerOptions = FXCollections.observableArrayList(this.customerService.readActiveCustomers());
         this.customerBox = new ComboBox<>(customerOptions);
-		ObservableList<Copy> movieOptions = FXCollections.observableArrayList(this.copyRepository.readAll());
+        ObservableList<Copy> movieOptions = FXCollections.observableArrayList(this.copyRepository.readAll().stream()
+                .filter(copy -> copy.isAvailable() && copy.getMovie().isActive())
+                .toList());
         this.movieBox = new ComboBox<>(movieOptions);
 
 		this.grid.add(this.customerLabel, 1, 1);

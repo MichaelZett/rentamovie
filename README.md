@@ -89,9 +89,8 @@ vor dem Verleih in der Kundenübersicht, nicht innerhalb des Verleihdialogs.
 Gezieltes Löschen einzelner Kunden ist in `Zustand_10` noch nicht
 umgesetzt. Ausleihen haben fachlich ein geplantes Rückgabedatum, standardmäßig
 sieben Tage nach dem Startdatum. Der Verleihdialog erfasst diese geplante
-Leihdauer aber noch nicht; er nutzt aktuell den Default. Überfällige
-Ausleihen können im Service gefiltert werden, sind in der Oberfläche aber
-noch keine eigene Arbeitsliste.
+Leihdauer aber noch nicht; er nutzt aktuell den Default. In `Zustand_10`
+kann die Ausleihliste nach überfälligen Ausleihen gefiltert werden.
 
 Gebührenberechnung nach Tagen existiert als `RateService`: Junior,
 Regular und Senior haben unterschiedliche Tagespreise, und der Preis wird
@@ -138,19 +137,19 @@ Zielbild für die fachliche Progression:
 
 Erweiterungsplan für fachlich realistischere 1-Mann-Videothek:
 
-| Modul            | Sinnvolle Ergänzung                                                                                                     | Warum hier?                                                                                  |
-|------------------|-------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| **Zustand_1**    | Domänenfelder vorbereiten: Kundenstatus, Filmstatus, Kopienstatus und Medienformat als einfache Attribute.              | Reine OOP-Modellierung ohne Services, Tests oder Persistenz.                                 |
-| **Zustand_2**    | Service-Regeln ergänzen: nur aktive Kunden, aktive Filme und verfügbare Kopien.                                         | Services sind neu und kapseln fachliche Abläufe.                                             |
-| **Zustand_3**    | Statusfelder in die ID-/Gleichheitsstruktur einpassen, ohne `equals`/`hashCode` fachlich zu verwässern.                 | Identität bleibt stabil, fachlicher Status ändert sie nicht.                                 |
-| **Zustand_4**    | Tests für Status- und Validierungsregeln ergänzen.                                                                      | Erste Teststufe: Regeln werden hier sichtbar abgesichert.                                    |
-| **Zustand_5**    | Gebühren sauberer nutzen: Preis aus Tagespreis und Mietdauer, spätere Überziehungsgebühren als Aufgabe vorbereiten.     | `RateService` ist der richtige Ort für Preislogik.                                           |
-| **Zustand_6**    | Repository-Lese-Use-Cases ergänzen: aktive Kunden, aktive Filme und überfällige Ausleihen.                              | Repositorys liefern jetzt fachliche Listen.                                                  |
-| **Zustand_7**    | Neue Felder persistieren: Status, Medienformat, geplantes Rückgabedatum und Zahlungsinformationen in Dateien speichern. | Datei-Persistenz ist hier das neue technische Konzept.                                       |
-| **Zustand_8**    | Konsistenzregeln schärfen: verfügbare Kopien filtern, keine Ausleihe an gesperrte Kunden oder verliehene Kopien.        | Validierung und Konsistenzregeln stehen hier im Zentrum.                                     |
-| **Zustand_9**    | UI-Bedienung ergänzen: Status anzeigen/ändern, Medienformat pflegen, geplante Leihdauer erfassen, offene Forderungen.   | JavaFX-Basis-UI ist vorhanden; neue Felder und Aktionen sind „mehr vom gleichen".            |
-| **Zustand_10**   | Komfort ergänzen: Filter für aktive/inaktive Daten, überfällige Ausleihen, offene Forderungen, robuste Sortierung.      | Z10 ist die Convenience-Stufe; Suche und Statusfilter sind bereits angelegt.                 |
-| **Zustand_11ff** | Optional: Soft-Delete konsequent ausbauen, Archivmodell, Paging, Großhandel, Bestellsystem und Mehrplatz-Ausblick.      | Größere fachliche oder architektonische Schritte gehören nach der Grundlagenprogression hin. |
+| Modul            | Sinnvolle Ergänzung                                                                                                        | Warum hier?                                                                                  |
+|------------------|----------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| **Zustand_1**    | Domänenfelder vorbereiten: Kundenstatus, Filmstatus, Kopienstatus und Medienformat als einfache Attribute.                 | Reine OOP-Modellierung ohne Services, Tests oder Persistenz.                                 |
+| **Zustand_2**    | Service-Regeln ergänzen: nur aktive Kunden, aktive Filme und verfügbare Kopien.                                            | Services sind neu und kapseln fachliche Abläufe.                                             |
+| **Zustand_3**    | Statusfelder in die ID-/Gleichheitsstruktur einpassen, ohne `equals`/`hashCode` fachlich zu verwässern.                    | Identität bleibt stabil, fachlicher Status ändert sie nicht.                                 |
+| **Zustand_4**    | Tests für Status- und Validierungsregeln ergänzen.                                                                         | Erste Teststufe: Regeln werden hier sichtbar abgesichert.                                    |
+| **Zustand_5**    | Gebühren sauberer nutzen: Preis aus Tagespreis und Mietdauer, spätere Überziehungsgebühren als Aufgabe vorbereiten.        | `RateService` ist der richtige Ort für Preislogik.                                           |
+| **Zustand_6**    | Repository-Lese-Use-Cases ergänzen: aktive Kunden, aktive Filme und überfällige Ausleihen.                                 | Repositorys liefern jetzt fachliche Listen.                                                  |
+| **Zustand_7**    | Neue Felder persistieren: Status, Medienformat, geplantes Rückgabedatum und Zahlungsinformationen in Dateien speichern.    | Datei-Persistenz ist hier das neue technische Konzept.                                       |
+| **Zustand_8**    | Konsistenzregeln schärfen: verfügbare Kopien filtern, keine Ausleihe an gesperrte Kunden oder verliehene Kopien.           | Validierung und Konsistenzregeln stehen hier im Zentrum.                                     |
+| **Zustand_9**    | UI-Bedienung ergänzen: Status anzeigen/ändern, Medienformat pflegen, geplantes Rückgabedatum anzeigen, offene Forderungen. | JavaFX-Basis-UI ist vorhanden; neue Felder und Aktionen sind „mehr vom gleichen".            |
+| **Zustand_10**   | Komfort ergänzen: Filter für aktive/inaktive Daten, überfällige Ausleihen, offene Forderungen, robuste Sortierung.         | Z10 ist die Convenience-Stufe; Suche und Statusfilter werden fachlich erweitert.             |
+| **Zustand_11ff** | Optional: Soft-Delete konsequent ausbauen, Archivmodell, Paging, Großhandel, Bestellsystem und Mehrplatz-Ausblick.         | Größere fachliche oder architektonische Schritte gehören nach der Grundlagenprogression hin. |
 
 Aufgaben nach `Zustand_1`:
 
@@ -220,8 +219,8 @@ Aufgaben nach `Zustand_9`:
 
 - Ergänze Suche, Filter und optional robuste Sortierung für Kunden,
   Filme und Ausleihen.
-- Zeige offene Ausleihen, offene Zahlungen und überfällige Ausleihen als
-  eigene Arbeitslisten in der Oberfläche.
+- Erweitere die vorhandenen Filter zu klareren Arbeitslisten für offene
+  Ausleihen, offene Zahlungen und überfällige Ausleihen.
 - Ergänze Demo-Daten-Reset und mehr Seed-Daten für Kursübungen.
 
 Mögliche Hausaufgaben nach `Zustand_10` sollen die Anwendung fachlich
@@ -229,7 +228,7 @@ realistischer machen, ohne die Studierenden mit viel neuer Technik zu
 überfordern. Gute Kandidaten sind „mehr vom gleichen": zusätzliche
 Felder, Validierungen, Repository-Methoden, Services, JavaFX-Dialoge und
 Tests. Dazu gehören zum Beispiel UI-Erfassung der geplanten Leihdauer,
-offene Forderungen, UI-Filter für Status/Format sowie das
+klarere Arbeitslisten, UI-Filter für Status/Format sowie das
 fachlich saubere Entfernen von Kunden, Filmen und Kopien. Robuste
 Sortierung und Paging sind ebenfalls denkbare Erweiterungen, aber nicht
 zwingend für die 1-Mann-Videothek.

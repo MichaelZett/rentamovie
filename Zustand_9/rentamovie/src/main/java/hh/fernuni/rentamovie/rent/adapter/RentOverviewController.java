@@ -30,6 +30,8 @@ public class RentOverviewController {
 	@FXML
 	private TableColumn<Rent, LocalDate> startDateColumn;
 	@FXML
+    private TableColumn<Rent, LocalDate> plannedReturnDateColumn;
+    @FXML
 	private TableColumn<Rent, LocalDate> endDateColumn;
     @FXML
     private TableColumn<Rent, String> paymentStatusColumn;
@@ -45,6 +47,7 @@ public class RentOverviewController {
         this.customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerLastname"));
         this.copyColumn.setCellValueFactory(new PropertyValueFactory<>("copyTitle"));
         this.startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        this.plannedReturnDateColumn.setCellValueFactory(new PropertyValueFactory<>("plannedReturnDate"));
         this.endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         this.paymentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
 		refreshRents();

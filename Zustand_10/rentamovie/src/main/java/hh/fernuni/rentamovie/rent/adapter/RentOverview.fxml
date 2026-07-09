@@ -20,6 +20,7 @@
                         <TableColumn fx:id="customerColumn" prefWidth="100.0" text="Customer"/>
                         <TableColumn fx:id="copyColumn" prefWidth="100.0" text="Copy"/>
                         <TableColumn fx:id="startDateColumn" prefWidth="100.0" text="Start Date"/>
+                        <TableColumn fx:id="plannedReturnDateColumn" prefWidth="100.0" text="Planned Return"/>
                         <TableColumn fx:id="endDateColumn" prefWidth="100.0" text="End Date"/>
                         <TableColumn fx:id="paymentStatusColumn" prefWidth="100.0" text="Payment"/>
                     </columns>
