@@ -76,14 +76,16 @@ class MovieRepositoryImpl implements MovieRepository {
 	}
 
 	private Movie fromText(String[] strings) {
-		return new Movie(Long.parseLong(strings[0]), Year.parse(strings[1]), strings[2]);
+        MovieStatus status = strings.length > 3 ? MovieStatus.valueOf(strings[3]) : MovieStatus.ACTIVE;
+        return new Movie(Long.parseLong(strings[0]), Year.parse(strings[1]), strings[2], status);
 	}
 
 	private static String toText(Movie movie) {
 		StringBuilder b = new StringBuilder();
 		b.append(movie.getId()).append(DELIMITER);
 		b.append(movie.getYearOfPublication().toString()).append(DELIMITER);
-		b.append(movie.getTitle());
+        b.append(movie.getTitle()).append(DELIMITER);
+        b.append(movie.getStatus());
 		return b.toString();
 	}
 }

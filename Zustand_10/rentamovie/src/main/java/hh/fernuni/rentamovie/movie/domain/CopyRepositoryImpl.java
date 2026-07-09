@@ -20,14 +20,18 @@ class CopyRepositoryImpl extends CommonRepositoryImpl<Copy> implements CopyRepos
     @Override
     protected Copy fromText(String[] split) {
         Movie movie = movieRepository.read(Long.parseLong(split[1]));
-        return new Copy(Long.parseLong(split[0]), movie);
+        MediaFormat mediaFormat = split.length > 2 ? MediaFormat.valueOf(split[2]) : MediaFormat.DVD;
+        CopyStatus status = split.length > 3 ? CopyStatus.valueOf(split[3]) : CopyStatus.AVAILABLE;
+        return new Copy(Long.parseLong(split[0]), movie, mediaFormat, status);
     }
 
     @Override
     protected String toText(Copy domainClass) {
         StringBuilder b = new StringBuilder();
         b.append(domainClass.getId()).append(DELIMITER);
-        b.append(domainClass.getMovie().getId());
+        b.append(domainClass.getMovie().getId()).append(DELIMITER);
+        b.append(domainClass.getMediaFormat()).append(DELIMITER);
+        b.append(domainClass.getStatus());
         return b.toString();
     }
 

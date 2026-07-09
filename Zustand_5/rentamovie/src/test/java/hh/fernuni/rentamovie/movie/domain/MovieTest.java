@@ -17,4 +17,19 @@ class MovieTest {
         assertThat(testee.getYearOfPublication()).isEqualTo(Year.of(1980));
         assertThat(testee.getTitle()).isEqualTo("The empire strikes back");
     }
+
+    @Test
+    void shouldChangeStatus() {
+        Movie testee = new Movie(Year.of(1977), "A new hope");
+
+        testee.deactivate();
+
+        assertThat(testee.getStatus()).isEqualTo(MovieStatus.INACTIVE);
+        assertThat(testee.isActive()).isFalse();
+
+        testee.activate();
+
+        assertThat(testee.getStatus()).isEqualTo(MovieStatus.ACTIVE);
+        assertThat(testee.isActive()).isTrue();
+    }
 }

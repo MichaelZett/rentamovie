@@ -1,10 +1,10 @@
 package hh.fernuni.rentamovie.customer.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CustomerTest {
 
@@ -19,4 +19,19 @@ class CustomerTest {
         assertThat(testee.getLastname()).isEqualTo("newLastname");
         assertThat(testee.getBirthdate()).isEqualTo(newBirthday);
 	}
+
+    @Test
+    void shouldChangeStatus() {
+        Customer testee = new Customer("surename", "lastname", LocalDate.of(1983, 3, 22));
+
+        testee.block();
+
+        assertThat(testee.getStatus()).isEqualTo(CustomerStatus.BLOCKED);
+        assertThat(testee.isActive()).isFalse();
+
+        testee.activate();
+
+        assertThat(testee.getStatus()).isEqualTo(CustomerStatus.ACTIVE);
+        assertThat(testee.isActive()).isTrue();
+    }
 }

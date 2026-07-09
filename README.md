@@ -4,6 +4,21 @@ Begleit-Code für einen Java-Grundlagenkurs an der FernUni Hagen (Standort
 Hamburg). Die Domäne ist eine kleine Videothek: Kunden leihen Kopien von
 Filmen aus, zu unterschiedlichen Tarifen.
 
+Die Videothek-Domäne stammt ursprünglich aus dem Schulungsthema
+`netzfilm`, das 2017 für Spring-Boot- und Spring-Cloud-Schulungen
+entstand. Der Name war eine Anspielung auf Netflix und zugleich ein
+anachronistischer Scherz: Wer würde 2017 noch eine Online-Videothek
+gründen? Historisch passt das Thema trotzdem zu den frühen 2000ern, als
+Unternehmen wie Lovefilm DVDs und Blu-rays online verliehen und per Post
+verschickten.
+
+Dieses Repository nutzt dieselbe Domäne für die dritte Veranstaltung
+einer Kursreihe. Die Zielgruppe hatte vorher bereits „imperative
+Programmierung mit Java" und „objektorientierte Programmierung mit Java".
+Hier geht es um eine konkrete Business-Anwendung mit grafischer
+Java-Oberfläche, grundlegender Architektur, Tests, Datei-Arbeit,
+Repository-Grundlagen, Validierungen und UI.
+
 Das Repository ist **keine** lauffähige Einzelanwendung, sondern eine
 Sequenz aus zehn aufeinander aufbauenden Maven-Modulen
 (`Zustand_1` … `Zustand_10`). Jeder Zustand ist ein eigenständiger
@@ -18,11 +33,69 @@ Die Studierenden sollen Java-Grundlagen *ohne* Framework-Magie nachvollziehen:
 - **Hand-verdrahtete Architektur**: Singletons über statische
   `getService()` / `getRepository()`, kein Spring, kein DI-Framework.
 - **In-Memory- und Datei-Persistenz** statt JPA/Hibernate.
-- **JavaFX mit FXML** als UI — keine Web- oder JS-Schicht.
+- **JavaFX mit FXML** als bewusst klassische Desktop-UI — keine Web-
+  oder JS-Schicht.
+- **So wenige Bibliotheken wie möglich**: externe Abhängigkeiten werden
+  nur genutzt, wenn sie dem Lernziel dienen oder im Java-Ökosystem
+  üblich sind.
 
 Die Progression `Zustand_1` → `Zustand_10` ist der eigentliche Lehrstoff:
 sie zeigt, wie eine Anwendung in lesbaren Schritten von „nur Domänen-
 klassen" zu „GUI mit File-Repository" wächst.
+
+Fachlich ist die Anwendung aktuell als **1-Mann-Einzel-Videothek**
+geschnitten. Daraus folgt bewusst:
+
+- keine Mitarbeiterverwaltung,
+- keine Rollen- und Rechteverwaltung,
+- keine konkurrierende Bearbeitung durch mehrere Arbeitsplätze,
+- keine Client-Server-Architektur.
+
+Diese Themen sind nicht vergessen, sondern gehören in eine spätere
+Ausbaustufe: Die Videothek ist erfolgreich, stellt Mitarbeiter ein und
+betreibt mehrere Arbeitsplätze.
+
+Aktuelle fachliche Use-Cases in `Zustand_10` für Filme und Kopien:
+
+- neue Filme über die Oberfläche erfassen,
+- Filmdaten wie Titel und Erscheinungsjahr über die Oberfläche ändern,
+- ankommende Kopien eines Films durch zusätzliche Kopien einbuchen,
+- Filme suchen.
+
+Die Domäne kennt bereits Basisfelder für Status und Format: Kunden haben
+einen `CustomerStatus`, Filme einen `MovieStatus`, Kopien einen
+`CopyStatus` und ein `MediaFormat`. In `Zustand_10` sind diese Felder
+noch nicht vollständig in der Oberfläche und in allen fachlichen Regeln
+verdrahtet.
+
+Gezieltes Löschen einzelner Filme oder Kopien ist in `Zustand_10` noch
+nicht umgesetzt. Es gibt nur den Demo-Daten-Reset, der alle Repositories
+leert und Seed-Daten neu anlegt.
+
+Aktuelle fachliche Use-Cases in `Zustand_10` für Kunden und Verleih:
+
+- Kunden über die Oberfläche erfassen und ändern,
+- eine Kopie an einen bestehenden Kunden verleihen,
+- offene Ausleihen zurücknehmen,
+- zurückgegebene Ausleihen bezahlen.
+
+Ein Verleih ohne Kundenanlage ist bewusst nicht vorgesehen. Das passt zum
+Videothek-Szenario: Wer Medien mitnimmt, braucht ein Kundenkonto bzw. einen
+Ausweis, weil beim Verleih zunächst nur die geplante Gebühr erfasst wird
+und spätere Nachzahlungen möglich sind. Die Kundenanlage erfolgt aktuell
+vor dem Verleih in der Kundenübersicht, nicht innerhalb des Verleihdialogs.
+
+Gezieltes Löschen einzelner Kunden ist in `Zustand_10` noch nicht
+umgesetzt. Der Verleihdialog erfasst außerdem keine geplante Leihdauer;
+eine Ausleihe startet mit dem aktuellen Datum und endet erst bei der
+Rückgabe. Eine Regel wie „maximal 7 Tage" und eine Übersicht für nicht
+rechtzeitig zurückgegebene Kopien gibt es noch nicht.
+
+Gebührenberechnung nach Tagen existiert als `RateService`: Junior,
+Regular und Senior haben unterschiedliche Tagespreise, und der Preis wird
+aus Start- und Rückgabedatum berechnet. Die JavaFX-Zahlung nutzt diese
+Berechnung aktuell aber noch nicht sichtbar im Dialog; eine positive
+Zahlung markiert die zurückgegebene Ausleihe als bezahlt.
 
 ## Was zeigt welcher Zustand?
 
@@ -37,7 +110,7 @@ klassen" zu „GUI mit File-Repository" wächst.
 | **Zustand_7**  | Generisches `CommonRepository<T>` und `IdRepository`; Repositories speichern jetzt persistent in Dateien.                                          |
 | **Zustand_8**  | Validierung und Konsistenzregeln für Verleih, Rückgabe und Zahlung.                                                                                |
 | **Zustand_9**  | JavaFX-Basisoberfläche: Übersichten, Verleihdialog, Rückgabe und Zahlung.                                                                          |
-| **Zustand_10** | Convenience-UI: Suche, Statusfilter, Sortierung über Tabellenköpfe und Demo-Daten-Reset.                                                           |
+| **Zustand_10** | Convenience-UI: Suche, Statusfilter und Demo-Daten-Reset.                                                                                          |
 
 Die Zustände bleiben technisch klar geschnitten: Jeder Zustand führt ein
 zentrales Java-Konzept ein. Fachliche Erweiterungen dürfen dazukommen,
@@ -59,7 +132,23 @@ Zielbild für die fachliche Progression:
 | **Zustand_7**  | Datei-Persistenz für offene und abgeschlossene Ausleihen sowie Zahlungsstatus.                          |
 | **Zustand_8**  | Validierung und Konsistenzregeln, z. B. keine doppelte Verleihung derselben Kopie.                      |
 | **Zustand_9**  | Basic UI für Kunde, Film, Kopie, Verleih, Rückgabe und Zahlung.                                         |
-| **Zustand_10** | Convenience UI mit Suche, Statusfilter, Sortierung und Demo-Daten für Kursübungen.                      |
+| **Zustand_10** | Convenience UI mit Suche, Statusfilter und Demo-Daten für Kursübungen.                                  |
+
+Erweiterungsplan für fachlich realistischere 1-Mann-Videothek:
+
+| Modul            | Sinnvolle Ergänzung                                                                                                     | Warum hier?                                                                                  |
+|------------------|-------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| **Zustand_1**    | Domänenfelder vorbereiten: Kundenstatus, Filmstatus, Kopienstatus und Medienformat als einfache Attribute.              | Reine OOP-Modellierung ohne Services, Tests oder Persistenz.                                 |
+| **Zustand_2**    | Service-Regeln ergänzen: nur aktive Kunden, nur verfügbare Kopien, geplante Leihdauer validieren.                       | Services sind neu und kapseln fachliche Abläufe.                                             |
+| **Zustand_3**    | Statusfelder in die ID-/Gleichheitsstruktur einpassen, ohne `equals`/`hashCode` fachlich zu verwässern.                 | Identität bleibt stabil, fachlicher Status ändert sie nicht.                                 |
+| **Zustand_4**    | Tests für Status- und Validierungsregeln ergänzen.                                                                      | Erste Teststufe: Regeln werden hier sichtbar abgesichert.                                    |
+| **Zustand_5**    | Gebühren sauberer nutzen: Preis aus Tagespreis und Mietdauer, spätere Überziehungsgebühren als Aufgabe vorbereiten.     | `RateService` ist der richtige Ort für Preislogik.                                           |
+| **Zustand_6**    | Repository-Lese-Use-Cases ergänzen: aktive Kunden, verfügbare Kopien, offene Forderungen, überfällige Ausleihen.        | Repositorys liefern jetzt fachliche Listen.                                                  |
+| **Zustand_7**    | Neue Felder persistieren: Status, Medienformat, geplantes Rückgabedatum und Zahlungsinformationen in Dateien speichern. | Datei-Persistenz ist hier das neue technische Konzept.                                       |
+| **Zustand_8**    | Konsistenzregeln schärfen: keine Ausleihe an gesperrte Kunden, keine Ausleihe ausgemusterter oder verliehener Kopien.   | Validierung und Konsistenzregeln stehen hier im Zentrum.                                     |
+| **Zustand_9**    | UI-Bedienung ergänzen: Status anzeigen/ändern, Medienformat pflegen, geplante Leihdauer erfassen, offene Forderungen.   | JavaFX-Basis-UI ist vorhanden; neue Felder und Aktionen sind „mehr vom gleichen".            |
+| **Zustand_10**   | Komfort ergänzen: Filter für aktive/inaktive Daten, überfällige Ausleihen, offene Forderungen, robuste Sortierung.      | Z10 ist die Convenience-Stufe; Suche und Statusfilter sind bereits angelegt.                 |
+| **Zustand_11ff** | Optional: Soft-Delete konsequent ausbauen, Archivmodell, Paging, Großhandel, Bestellsystem und Mehrplatz-Ausblick.      | Größere fachliche oder architektonische Schritte gehören nach der Grundlagenprogression hin. |
 
 Aufgaben nach `Zustand_1`:
 
@@ -127,10 +216,30 @@ Aufgaben nach `Zustand_8`:
 
 Aufgaben nach `Zustand_9`:
 
-- Ergänze Suche, Filter und Sortierung für Kunden, Filme und Ausleihen.
+- Ergänze Suche, Filter und optional robuste Sortierung für Kunden,
+  Filme und Ausleihen.
 - Zeige offene Ausleihen, offene Zahlungen und überfällige Ausleihen als
   eigene Arbeitslisten.
 - Ergänze Demo-Daten-Reset und mehr Seed-Daten für Kursübungen.
+
+Mögliche Hausaufgaben nach `Zustand_10` sollen die Anwendung fachlich
+realistischer machen, ohne die Studierenden mit viel neuer Technik zu
+überfordern. Gute Kandidaten sind „mehr vom gleichen": zusätzliche
+Felder, Validierungen, Repository-Methoden, Services, JavaFX-Dialoge und
+Tests. Dazu gehören zum Beispiel geplante Leihdauer, überfällige
+Ausleihen, offene Forderungen, UI-Filter für Status/Format sowie das
+fachlich saubere Entfernen von Kunden, Filmen und Kopien. Robuste
+Sortierung und Paging sind ebenfalls denkbare Erweiterungen, aber nicht
+zwingend für die 1-Mann-Videothek.
+
+Gerade Löschen ist didaktisch interessant: Wegen der Verleihhistorie ist
+hartes Entfernen oft falsch. Realistisch sind eher Soft-Delete-Varianten
+wie „inaktiv", „gesperrt" oder „ausgemustert". Alternativ könnte eine
+Ausleihe vor dem Löschen beteiligter Objekte textuell archiviert werden,
+damit historische Belege erhalten bleiben, ohne weiter auf aktive
+Domain-Objekte zu zeigen. Solche Themen eignen sich gut für
+`Zustand_11ff`: erst als Aufgabe formulieren, im nächsten Zustand eine
+Referenzlösung zeigen.
 
 Jeder Zustand bleibt nach Veröffentlichung „eingefroren" — er
 dokumentiert den Lernschritt, nicht den letzten Stand. Wer ein Konzept

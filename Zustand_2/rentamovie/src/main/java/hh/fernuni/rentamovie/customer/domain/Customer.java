@@ -3,45 +3,70 @@ package hh.fernuni.rentamovie.customer.domain;
 import java.time.LocalDate;
 
 public class Customer {
-	private Long id;
-	private String firstname;
-	private String lastname;
-	private LocalDate birthdate;
+    private Long id;
+    private String firstname;
+    private String lastname;
+    private LocalDate birthdate;
+    private CustomerStatus status;
 
-	public Customer(Long id, String firstname, String lastname, LocalDate birthdate) {
-		super();
-		this.id = id;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.birthdate = birthdate;
-	}
+    public Customer(Long id, String firstname, String lastname, LocalDate birthdate) {
+        this(id, firstname, lastname, birthdate, CustomerStatus.ACTIVE);
+    }
 
-	public void updateData(String firstname, String lastname, LocalDate birthdate) {
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.birthdate = birthdate;
-	}
+    public Customer(Long id, String firstname, String lastname, LocalDate birthdate, CustomerStatus status) {
+        super();
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.birthdate = birthdate;
+        this.status = status;
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public void updateData(String firstname, String lastname, LocalDate birthdate) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.birthdate = birthdate;
+    }
 
-	public String getFirstname() {
-		return this.firstname;
-	}
+    public void activate() {
+        this.status = CustomerStatus.ACTIVE;
+    }
 
-	public String getLastname() {
-		return this.lastname;
-	}
+    public void deactivate() {
+        this.status = CustomerStatus.INACTIVE;
+    }
 
-	public LocalDate getBirthdate() {
-		return this.birthdate;
-	}
+    public void block() {
+        this.status = CustomerStatus.BLOCKED;
+    }
 
-	@Override
-	public String toString() {
-		return "Customer [id=" + this.id + ", firstname=" + this.firstname + ", lastname=" + this.lastname + ", birthdate=" + this.birthdate
-		        + "]";
-	}
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getFirstname() {
+        return this.firstname;
+    }
+
+    public String getLastname() {
+        return this.lastname;
+    }
+
+    public LocalDate getBirthdate() {
+        return this.birthdate;
+    }
+
+    public CustomerStatus getStatus() {
+        return this.status;
+    }
+
+    public boolean isActive() {
+        return this.status == CustomerStatus.ACTIVE;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer [id=" + this.id + ", firstname=" + this.firstname + ", lastname=" + this.lastname + ", birthdate=" + this.birthdate + "]";
+    }
 
 }

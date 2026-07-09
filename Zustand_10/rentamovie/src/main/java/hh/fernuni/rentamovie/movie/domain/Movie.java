@@ -7,17 +7,28 @@ import java.time.Year;
 public class Movie extends AbstractIdCarrier {
     private Year yearOfPublication;
     private String title;
+    private MovieStatus status;
 
     public Movie(Year yearOfPublication, String title) {
+        this(yearOfPublication, title, MovieStatus.ACTIVE);
+    }
+
+    public Movie(Year yearOfPublication, String title, MovieStatus status) {
         super();
         this.yearOfPublication = yearOfPublication;
         this.title = title;
+        this.status = status;
     }
 
     public Movie(Long id, Year yearOfPublication, String title) {
+        this(id, yearOfPublication, title, MovieStatus.ACTIVE);
+    }
+
+    public Movie(Long id, Year yearOfPublication, String title, MovieStatus status) {
         super(id);
         this.yearOfPublication = yearOfPublication;
         this.title = title;
+        this.status = status;
     }
 
     public Year getYearOfPublication() {
@@ -28,9 +39,25 @@ public class Movie extends AbstractIdCarrier {
         return this.title;
     }
 
+    public MovieStatus getStatus() {
+        return this.status;
+    }
+
+    public boolean isActive() {
+        return this.status == MovieStatus.ACTIVE;
+    }
+
     public void updateData(Year yearOfPublication, String title) {
         this.yearOfPublication = yearOfPublication;
         this.title = title;
+    }
+
+    public void activate() {
+        this.status = MovieStatus.ACTIVE;
+    }
+
+    public void deactivate() {
+        this.status = MovieStatus.INACTIVE;
     }
 
     @Override
