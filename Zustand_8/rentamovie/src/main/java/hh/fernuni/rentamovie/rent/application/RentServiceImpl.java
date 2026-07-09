@@ -30,17 +30,19 @@ class RentServiceImpl implements RentService {
 
 	@Override
 	public Collection<Copy> findAllFreeCopies(Movie movie) {
+        validateMovie(movie);
         Collection<Copy> allCopies = new ArrayList<>(this.movieService.findAllCopiesOfMovie(movie));
 		Set<Copy> rentedCopies = this.rentRepository.readAll().stream()
                 .filter(r -> r.isOpen() && allCopies.contains(r.getCopy())).map(Rent::getCopy)
 		        .collect(Collectors.toSet());
 		allCopies.removeAll(rentedCopies);
-		return allCopies;
+        return allCopies.stream().filter(Copy::isAvailable).toList();
 	}
 
 	@Override
 	public Rent createRent(Movie movie, Customer customer, LocalDate startDate) {
-		Collection<Copy> copies = findAllFreeCopies(movie);
+        validateCustomer(customer);
+        Collection<Copy> copies = findAllFreeCopies(movie);
         if (copies.isEmpty()) {
             throw new IllegalStateException("No free copy available.");
         }
@@ -87,6 +89,18 @@ class RentServiceImpl implements RentService {
         return this.rentRepository.readAll().stream()
                 .filter(Rent::hasOpenPayment)
                 .toList();
+    }
+
+    private static void validateCustomer(Customer customer) {
+        if (!customer.isActive()) {
+            throw new IllegalStateException("Customer is not active.");
+        }
+    }
+
+    private static void validateMovie(Movie movie) {
+        if (!movie.isActive()) {
+            throw new IllegalStateException("Movie is not active.");
+        }
     }
 
 }

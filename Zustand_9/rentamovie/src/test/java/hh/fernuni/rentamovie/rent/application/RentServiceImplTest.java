@@ -1,5 +1,7 @@
 package hh.fernuni.rentamovie.rent.application;
 
+import hh.fernuni.rentamovie.customer.domain.Customer;
+import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 import hh.fernuni.rentamovie.rent.domain.RentRepository;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,16 @@ class RentServiceImplTest {
 
     @InjectMocks
     private RentServiceImpl testee;
+
+    @Test
+    void shouldRejectRentForInactiveCustomer() {
+        Copy copy = mock(Copy.class);
+        Customer customer = mock(Customer.class);
+        when(customer.isActive()).thenReturn(false);
+
+        assertThatThrownBy(() -> this.testee.createRent(copy, customer, LocalDate.of(2026, 7, 1)))
+                .isInstanceOf(IllegalStateException.class);
+    }
 
     @Test
     void shouldRejectReturnBeforeStartDate() {

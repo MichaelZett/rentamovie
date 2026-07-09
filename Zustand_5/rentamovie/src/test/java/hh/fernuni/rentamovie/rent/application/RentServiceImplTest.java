@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,9 +31,13 @@ class RentServiceImplTest {
     @Test
     void shouldCreateRent() {
         Movie movie = mock(Movie.class);
+        when(movie.isActive()).thenReturn(true);
         Customer customer = mock(Customer.class);
+        when(customer.isActive()).thenReturn(true);
         LocalDate startDate = LocalDate.of(2017, 10, 7);
         Copy copy = mock(Copy.class);
+        when(copy.isAvailable()).thenReturn(true);
+        when(copy.getMovie()).thenReturn(movie);
         when(movieServiceMock.findCopy(movie)).thenReturn(copy);
 
         Rent createdRent = testee.createRent(movie, customer, startDate);
@@ -40,6 +45,16 @@ class RentServiceImplTest {
         assertThat(createdRent.getUser()).isEqualTo(customer);
         assertThat(createdRent.getStartDate()).isEqualTo(startDate);
         assertThat(createdRent.getCopy()).isEqualTo(copy);
+    }
+
+    @Test
+    void shouldRejectRentForInactiveCustomer() {
+        Movie movie = mock(Movie.class);
+        Customer customer = mock(Customer.class);
+        when(customer.isActive()).thenReturn(false);
+
+        assertThatThrownBy(() -> testee.createRent(movie, customer, LocalDate.of(2017, 10, 7)))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -54,9 +69,15 @@ class RentServiceImplTest {
     @Test
     void shouldFindOpenRents() {
         Movie movie = mock(Movie.class);
+        when(movie.isActive()).thenReturn(true);
         Customer customer = mock(Customer.class);
+        when(customer.isActive()).thenReturn(true);
         Copy firstCopy = mock(Copy.class);
+        when(firstCopy.isAvailable()).thenReturn(true);
+        when(firstCopy.getMovie()).thenReturn(movie);
         Copy secondCopy = mock(Copy.class);
+        when(secondCopy.isAvailable()).thenReturn(true);
+        when(secondCopy.getMovie()).thenReturn(movie);
         when(movieServiceMock.findCopy(movie)).thenReturn(firstCopy, secondCopy);
         Rent firstRent = testee.createRent(movie, customer, LocalDate.of(2017, 10, 7));
         Rent secondRent = testee.createRent(movie, customer, LocalDate.of(2017, 10, 8));

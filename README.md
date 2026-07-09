@@ -65,8 +65,9 @@ Aktuelle fachliche Use-Cases in `Zustand_10` für Filme und Kopien:
 Die Domäne kennt bereits Basisfelder für Status und Format: Kunden haben
 einen `CustomerStatus`, Filme einen `MovieStatus`, Kopien einen
 `CopyStatus` und ein `MediaFormat`. In `Zustand_10` sind diese Felder
-noch nicht vollständig in der Oberfläche und in allen fachlichen Regeln
-verdrahtet.
+im Verleihkern fachlich verdrahtet: Es wird nur an aktive Kunden verliehen,
+Filme müssen aktiv sein, und Kopien müssen verfügbar sein. In der
+Oberfläche sind die Felder noch nicht vollständig bearbeitbar.
 
 Gezieltes Löschen einzelner Filme oder Kopien ist in `Zustand_10` noch
 nicht umgesetzt. Es gibt nur den Demo-Daten-Reset, der alle Repositories
@@ -139,7 +140,7 @@ Erweiterungsplan für fachlich realistischere 1-Mann-Videothek:
 | Modul            | Sinnvolle Ergänzung                                                                                                     | Warum hier?                                                                                  |
 |------------------|-------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
 | **Zustand_1**    | Domänenfelder vorbereiten: Kundenstatus, Filmstatus, Kopienstatus und Medienformat als einfache Attribute.              | Reine OOP-Modellierung ohne Services, Tests oder Persistenz.                                 |
-| **Zustand_2**    | Service-Regeln ergänzen: nur aktive Kunden, nur verfügbare Kopien, geplante Leihdauer validieren.                       | Services sind neu und kapseln fachliche Abläufe.                                             |
+| **Zustand_2**    | Service-Regeln ergänzen: nur aktive Kunden, aktive Filme und verfügbare Kopien.                                         | Services sind neu und kapseln fachliche Abläufe.                                             |
 | **Zustand_3**    | Statusfelder in die ID-/Gleichheitsstruktur einpassen, ohne `equals`/`hashCode` fachlich zu verwässern.                 | Identität bleibt stabil, fachlicher Status ändert sie nicht.                                 |
 | **Zustand_4**    | Tests für Status- und Validierungsregeln ergänzen.                                                                      | Erste Teststufe: Regeln werden hier sichtbar abgesichert.                                    |
 | **Zustand_5**    | Gebühren sauberer nutzen: Preis aus Tagespreis und Mietdauer, spätere Überziehungsgebühren als Aufgabe vorbereiten.     | `RateService` ist der richtige Ort für Preislogik.                                           |

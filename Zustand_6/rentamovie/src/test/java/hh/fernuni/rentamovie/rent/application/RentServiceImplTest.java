@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,15 +36,29 @@ class RentServiceImplTest {
     @Test
     void shouldSaveCreatedRent() {
         Movie movie = mock(Movie.class);
+        when(movie.isActive()).thenReturn(true);
         Customer customer = mock(Customer.class);
+        when(customer.isActive()).thenReturn(true);
         LocalDate startDate = LocalDate.of(2026, 7, 1);
         Copy copy = mock(Copy.class);
+        when(copy.isAvailable()).thenReturn(true);
+        when(copy.getMovie()).thenReturn(movie);
         when(this.movieServiceMock.findCopy(movie)).thenReturn(copy);
 
         Rent rent = this.testee.createRent(movie, customer, startDate);
 
         assertThat(rent.getCopy()).isEqualTo(copy);
         verify(this.rentRepositoryMock).save(rent);
+    }
+
+    @Test
+    void shouldRejectRentForInactiveCustomer() {
+        Movie movie = mock(Movie.class);
+        Customer customer = mock(Customer.class);
+        when(customer.isActive()).thenReturn(false);
+
+        assertThatThrownBy(() -> this.testee.createRent(movie, customer, LocalDate.of(2026, 7, 1)))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test

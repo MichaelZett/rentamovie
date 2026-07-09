@@ -26,7 +26,10 @@ class RentServiceImpl implements RentService {
 
 	@Override
 	public Rent createRent(Movie movie, Customer customer, LocalDate startDate) {
+        validateCustomer(customer);
+        validateMovie(movie);
 		Copy copy = this.movieService.findCopy(movie);
+        validateCopy(copy);
         Rent rent = new Rent(customer, copy, startDate);
         this.rentRepository.save(rent);
         return rent;
@@ -50,4 +53,21 @@ class RentServiceImpl implements RentService {
                 .toList();
 	}
 
+    private static void validateCustomer(Customer customer) {
+        if (!customer.isActive()) {
+            throw new IllegalStateException("Customer is not active.");
+        }
+    }
+
+    private static void validateMovie(Movie movie) {
+        if (!movie.isActive()) {
+            throw new IllegalStateException("Movie is not active.");
+        }
+    }
+
+    private static void validateCopy(Copy copy) {
+        if (!copy.isAvailable() || !copy.getMovie().isActive()) {
+            throw new IllegalStateException("Copy is not available.");
+        }
+    }
 }

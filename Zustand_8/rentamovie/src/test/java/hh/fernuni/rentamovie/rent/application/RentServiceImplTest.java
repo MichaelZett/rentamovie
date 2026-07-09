@@ -38,15 +38,27 @@ class RentServiceImplTest {
     @Test
     void shouldRejectRentWithoutFreeCopy() {
         Movie movie = mock(Movie.class);
+        when(movie.isActive()).thenReturn(true);
         when(this.movieServiceMock.findAllCopiesOfMovie(movie)).thenReturn(List.of());
 
-        assertThatThrownBy(() -> this.testee.createRent(movie, mock(Customer.class), LocalDate.of(2026, 7, 1)))
+        assertThatThrownBy(() -> this.testee.createRent(movie, activeCustomer(), LocalDate.of(2026, 7, 1)))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void shouldRejectRentForInactiveCustomer() {
+        Movie movie = mock(Movie.class);
+        Customer customer = mock(Customer.class);
+        when(customer.isActive()).thenReturn(false);
+
+        assertThatThrownBy(() -> this.testee.createRent(movie, customer, LocalDate.of(2026, 7, 1)))
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void shouldExcludeAlreadyRentedCopy() {
         Movie movie = mock(Movie.class);
+        when(movie.isActive()).thenReturn(true);
         Copy copy = mock(Copy.class);
         Rent openRent = mock(Rent.class);
         when(openRent.isOpen()).thenReturn(true);
@@ -104,5 +116,11 @@ class RentServiceImplTest {
 
         verify(rent).markPaid();
         verify(this.rentRepositoryMock).save(rent);
+    }
+
+    private static Customer activeCustomer() {
+        Customer customer = mock(Customer.class);
+        when(customer.isActive()).thenReturn(true);
+        return customer;
     }
 }
