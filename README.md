@@ -20,9 +20,10 @@ Java-Oberfläche, grundlegender Architektur, Tests, Datei-Arbeit,
 Repository-Grundlagen, Validierungen und UI.
 
 Das Repository ist **keine** lauffähige Einzelanwendung, sondern eine
-Sequenz aus zehn aufeinander aufbauenden Maven-Modulen
-(`Zustand_1` … `Zustand_10`). Jeder Zustand ist ein eigenständiger
-Schnappschuss derselben Domäne und führt **genau ein** neues Konzept ein.
+Sequenz aus elf aufeinander aufbauenden Maven-Modulen
+(`Zustand_1` … `Zustand_11`). Jeder Zustand ist ein eigenständiger
+Schnappschuss derselben Domäne und hat einen klaren didaktischen
+Schwerpunkt.
 
 ## Lernziel
 
@@ -39,7 +40,7 @@ Die Studierenden sollen Java-Grundlagen *ohne* Framework-Magie nachvollziehen:
   nur genutzt, wenn sie dem Lernziel dienen oder im Java-Ökosystem
   üblich sind.
 
-Die Progression `Zustand_1` → `Zustand_10` ist der eigentliche Lehrstoff:
+Die Progression `Zustand_1` → `Zustand_11` ist der eigentliche Lehrstoff:
 sie zeigt, wie eine Anwendung in lesbaren Schritten von „nur Domänen-
 klassen" zu „GUI mit File-Repository" wächst.
 
@@ -55,12 +56,15 @@ Diese Themen sind nicht vergessen, sondern gehören in eine spätere
 Ausbaustufe: Die Videothek ist erfolgreich, stellt Mitarbeiter ein und
 betreibt mehrere Arbeitsplätze.
 
-Aktuelle fachliche Use-Cases in `Zustand_10` für Filme und Kopien:
+`Zustand_10` bündelt die fachlichen Komfortfunktionen für Filme und Kopien:
 
 - neue Filme über die Oberfläche erfassen,
 - Filmdaten wie Titel und Erscheinungsjahr über die Oberfläche ändern,
 - ankommende Kopien eines Films durch zusätzliche Kopien einbuchen,
-- Filme suchen.
+- Filme suchen,
+- Kunden- und Filmstatus in der Oberfläche anzeigen und pflegen,
+- die Ausleihübersicht über einen gefilterten Bestand sortiert anzeigen,
+- ein Paging-Beispiel in der Ausleihübersicht benutzen.
 
 Die Domäne kennt bereits Basisfelder für Status und Format: Kunden haben
 einen `CustomerStatus`, Filme einen `MovieStatus`, Kopien einen
@@ -72,36 +76,53 @@ Kopien bekommen ihr Medienformat beim Anlegen. Die Ausleihübersicht zeigt
 außerdem eine robuste Sortierung über den gefilterten Bestand und ein
 einfaches Paging-Beispiel.
 
+`Zustand_10` deckt damit diese fachlichen Use-Cases ab:
+
+- Kunden über die Oberfläche erfassen und ändern,
+- Filme über die Oberfläche erfassen und ändern,
+- Kopien eines Films anlegen und mit Medienformat versehen,
+- Filme suchen,
+- Kundenstatus und Filmstatus pflegen,
+- nur an aktive Kunden, aktive Filme und verfügbare Kopien verleihen,
+- eine Kopie an einen bestehenden Kunden verleihen,
+- die geplante Leihdauer von ein bis sieben Tagen im Verleihdialog erfassen,
+- offene Ausleihen zurücknehmen,
+- zurückgegebene Ausleihen bezahlen,
+- überfällige Ausleihen filtern,
+- die Ausleihübersicht robust sortieren,
+- die Ausleihübersicht anhand eines Paging-Beispiels blättern.
+
 Gezieltes Löschen einzelner Filme oder Kopien ist in `Zustand_10` noch
 nicht umgesetzt. Es gibt nur den Demo-Daten-Reset, der alle Repositories
 leert und Seed-Daten neu anlegt.
 
-Aktuelle fachliche Use-Cases in `Zustand_10` für Kunden und Verleih:
-
-- Kunden über die Oberfläche erfassen und ändern,
-- eine Kopie an einen bestehenden Kunden verleihen,
-- offene Ausleihen zurücknehmen,
-- zurückgegebene Ausleihen bezahlen.
-
-Ein Verleih ohne Kundenanlage ist bewusst nicht vorgesehen. Das passt zum
-Videothek-Szenario: Wer Medien mitnimmt, braucht ein Kundenkonto bzw. einen
-Ausweis, weil beim Verleih zunächst nur die geplante Gebühr erfasst wird
-und spätere Nachzahlungen möglich sind. Die Kundenanlage erfolgt aktuell
-vor dem Verleih in der Kundenübersicht, nicht innerhalb des Verleihdialogs.
-
-Gezieltes Löschen einzelner Kunden ist in `Zustand_10` noch nicht
-umgesetzt. Ausleihen haben fachlich ein geplantes Rückgabedatum, standardmäßig
-sieben Tage nach dem Startdatum. Der Verleihdialog erfasst diese geplante
-Leihdauer aber noch nicht; er nutzt aktuell den Default. In `Zustand_10`
-kann die Ausleihliste nach überfälligen Ausleihen gefiltert werden.
-Robuste Sortierung heißt hier: sortiert wird der vollständige gefilterte
-Bestand, nicht nur die gerade sichtbare Seite.
-
 Gebührenberechnung nach Tagen existiert als `RateService`: Junior,
 Regular und Senior haben unterschiedliche Tagespreise, und der Preis wird
-aus Start- und Rückgabedatum berechnet. Die JavaFX-Zahlung nutzt diese
-Berechnung aktuell aber noch nicht sichtbar im Dialog; eine positive
-Zahlung markiert die zurückgegebene Ausleihe als bezahlt.
+aus Start- und Rückgabedatum berechnet. In `Zustand_10` nutzt der
+Zahlungsdialog diese Berechnung bereits sichtbar: Der erwartete Betrag
+wird vorgeschlagen und im Dialog angezeigt; eine positive Zahlung markiert
+die zurückgegebene Ausleihe als bezahlt.
+
+`Zustand_11` greift fachliche Vertiefungsaufgaben auf, ohne neue Technik
+einzuführen. Dort geht es zusätzlich um diese umgesetzten Use-Cases:
+
+- Kundenübersichten und Filmübersichten mit Paging,
+- eine Ausleihübersicht mit Paging und Arbeitslisten,
+- Arbeitslisten für alle Ausleihen, offene Ausleihen, überfällige Ausleihen,
+  offene Zahlungen und bezahlte Ausleihen,
+- die Verleihhistorie pro Kunde anzeigen,
+- den Tagesabschluss für heutige Zahlungen anzeigen und summieren,
+- die bisherigen Fachobjekte weiter mit Status und Filterung bedienen.
+
+Damit bleibt `Zustand_10` die Komfortstufe für Suche, Sortierung und erste
+Paging-Beispiele, während `Zustand_11` weitere fachliche Aufgaben
+als Aufgaben- und Lösungsschritt nachzieht.
+
+Der **Tagesabschluss** ist in `Zustand_11` umgesetzt: Die Verleihübersicht
+zeigt die heutigen Zahlungen gesammelt an und summiert sie. Das passt
+didaktisch zu den vorhandenen Arbeitslisten, weil es dieselben Bausteine
+nutzt: Ausleihen lesen, nach Zahlungsstatus und Datum filtern, Beträge
+berechnen und als übersichtliche Liste darstellen.
 
 ## Was zeigt welcher Zustand?
 
@@ -117,10 +138,11 @@ Zahlung markiert die zurückgegebene Ausleihe als bezahlt.
 | **Zustand_8**  | Validierung und Konsistenzregeln für Verleih, Rückgabe und Zahlung.                                                                                |
 | **Zustand_9**  | JavaFX-Basisoberfläche: Übersichten, Verleihdialog, Rückgabe und Zahlung.                                                                          |
 | **Zustand_10** | Convenience-UI: Suche, Statusfilter und Demo-Daten-Reset.                                                                                          |
+| **Zustand_11** | Vertiefungs-UI: Paging für weitere Übersichten, Arbeitslisten, Verleihhistorie und Tagesabschluss.                                                 |
 
-Die Zustände bleiben technisch klar geschnitten: Jeder Zustand führt ein
-zentrales Java-Konzept ein. Fachliche Erweiterungen dürfen dazukommen,
-wenn sie dieses Konzept greifbarer machen, zum Beispiel Rückgabe beim
+Die Zustände bleiben didaktisch klar geschnitten: Jeder Zustand hat einen
+zentralen Schwerpunkt. Fachliche Erweiterungen dürfen dazukommen, wenn
+sie diesen Schwerpunkt greifbarer machen, zum Beispiel Rückgabe beim
 Service-Konzept, Preisberechnung beim `RateService` oder Filter in der
 UI. Aufgaben aus einem Zustand werden im nächsten Zustand gelöst; Tests
 wachsen ab `Zustand_4` fortlaufend mit.
@@ -138,24 +160,25 @@ Zielbild für die fachliche Progression:
 | **Zustand_7**  | Datei-Persistenz für offene und abgeschlossene Ausleihen sowie Zahlungsstatus.                          |
 | **Zustand_8**  | Validierung und Konsistenzregeln, z. B. keine doppelte Verleihung derselben Kopie.                      |
 | **Zustand_9**  | Basic UI für Kunde, Film, Kopie, Verleih, Rückgabe und Zahlung.                                         |
-| **Zustand_10** | Convenience UI mit Suche, Statusfilter und Demo-Daten für Kursübungen.                                  |
+| **Zustand_10** | Convenience UI mit Suche, Statusfilter, robustem Sortieren und Paging-Beispiel in der Ausleihübersicht. |
+| **Zustand_11** | Fachliche Vertiefung: Arbeitslisten, Verleihhistorie, Tagesabschluss, Kunden- und Film-Paging.          |
 
 Erweiterungsplan für fachlich realistischere 1-Mann-Videothek:
 
-| Modul            | Sinnvolle Ergänzung                                                                                                        | Warum hier?                                                                                  |
-|------------------|----------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| **Zustand_1**    | Domänenfelder vorbereiten: Kundenstatus, Filmstatus, Kopienstatus und Medienformat als einfache Attribute.                 | Reine OOP-Modellierung ohne Services, Tests oder Persistenz.                                 |
-| **Zustand_2**    | Service-Regeln ergänzen: nur aktive Kunden, aktive Filme und verfügbare Kopien.                                            | Services sind neu und kapseln fachliche Abläufe.                                             |
-| **Zustand_3**    | Statusfelder in die ID-/Gleichheitsstruktur einpassen, ohne `equals`/`hashCode` fachlich zu verwässern.                    | Identität bleibt stabil, fachlicher Status ändert sie nicht.                                 |
-| **Zustand_4**    | Tests für Status- und Validierungsregeln ergänzen.                                                                         | Erste Teststufe: Regeln werden hier sichtbar abgesichert.                                    |
-| **Zustand_5**    | Gebühren sauberer nutzen: Preis aus Tagespreis und Mietdauer, spätere Überziehungsgebühren als Aufgabe vorbereiten.        | `RateService` ist der richtige Ort für Preislogik.                                           |
-| **Zustand_6**    | Repository-Lese-Use-Cases ergänzen: aktive Kunden, aktive Filme und überfällige Ausleihen.                                 | Repositorys liefern jetzt fachliche Listen.                                                  |
-| **Zustand_7**    | Neue Felder persistieren: Status, Medienformat, geplantes Rückgabedatum und Zahlungsinformationen in Dateien speichern.    | Datei-Persistenz ist hier das neue technische Konzept.                                       |
-| **Zustand_8**    | Konsistenzregeln schärfen: verfügbare Kopien filtern, keine Ausleihe an gesperrte Kunden oder verliehene Kopien.           | Validierung und Konsistenzregeln stehen hier im Zentrum.                                     |
-| **Zustand_9**    | UI-Bedienung ergänzen: Status anzeigen/ändern, Medienformat pflegen, geplantes Rückgabedatum anzeigen, offene Forderungen. | JavaFX-Basis-UI ist vorhanden; neue Felder und Aktionen sind „mehr vom gleichen".            |
-| **Zustand_10**   | Komfort ergänzen: Filter für aktive/inaktive Daten, überfällige Ausleihen, robuste Sortierung und Paging-Beispiel.         | Z10 ist die Convenience-Stufe; Suche, Sortierung und Seitenwechsel werden konkret sichtbar.  |
-| **Zustand_11**   | Hausaufgaben für die fachlichen Restthemen: Arbeitslisten, Verleihhistorie, Copy-Status, weitere Domänenpflege.            | Z11 löst die restlichen fachlichen Aufgaben ohne neue Technik.                               |
-| **Zustand_11ff** | Optional: Soft-Delete konsequent ausbauen, Archivmodell, Großhandel, Bestellsystem und Mehrplatz-Ausblick.                 | Größere fachliche oder architektonische Schritte gehören nach der Grundlagenprogression hin. |
+| Modul            | Sinnvolle Ergänzung                                                                                                        | Warum hier?                                                                                       |
+|------------------|----------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| **Zustand_1**    | Domänenfelder vorbereiten: Kundenstatus, Filmstatus, Kopienstatus und Medienformat als einfache Attribute.                 | Reine OOP-Modellierung ohne Services, Tests oder Persistenz.                                      |
+| **Zustand_2**    | Service-Regeln ergänzen: nur aktive Kunden, aktive Filme und verfügbare Kopien.                                            | Services sind neu und kapseln fachliche Abläufe.                                                  |
+| **Zustand_3**    | Statusfelder in die ID-/Gleichheitsstruktur einpassen, ohne `equals`/`hashCode` fachlich zu verwässern.                    | Identität bleibt stabil, fachlicher Status ändert sie nicht.                                      |
+| **Zustand_4**    | Tests für Status- und Validierungsregeln ergänzen.                                                                         | Erste Teststufe: Regeln werden hier sichtbar abgesichert.                                         |
+| **Zustand_5**    | Gebühren sauberer nutzen: Preis aus Tagespreis und Mietdauer, spätere Überziehungsgebühren als Aufgabe vorbereiten.        | `RateService` ist der richtige Ort für Preislogik.                                                |
+| **Zustand_6**    | Repository-Lese-Use-Cases ergänzen: aktive Kunden, aktive Filme und überfällige Ausleihen.                                 | Repositorys liefern jetzt fachliche Listen.                                                       |
+| **Zustand_7**    | Neue Felder persistieren: Status, Medienformat, geplantes Rückgabedatum und Zahlungsinformationen in Dateien speichern.    | Datei-Persistenz ist hier das neue technische Konzept.                                            |
+| **Zustand_8**    | Konsistenzregeln schärfen: verfügbare Kopien filtern, keine Ausleihe an gesperrte Kunden oder verliehene Kopien.           | Validierung und Konsistenzregeln stehen hier im Zentrum.                                          |
+| **Zustand_9**    | UI-Bedienung ergänzen: Status anzeigen/ändern, Medienformat pflegen, geplantes Rückgabedatum anzeigen, offene Forderungen. | JavaFX-Basis-UI ist vorhanden; neue Felder und Aktionen sind „mehr vom gleichen".                 |
+| **Zustand_10**   | Komfort ergänzen: Suche, Verleihfilter, Gebührenvorschlag, robuste Sortierung und Paging-Beispiel in der Ausleihübersicht. | Z10 ist die Convenience-Stufe; Suche, Sortierung und ein konkreter Seitenwechsel werden sichtbar. |
+| **Zustand_11**   | Hausaufgaben lösen: Arbeitslisten, Verleihhistorie, Tagesabschluss sowie Kunden- und Film-Paging.                          | Z11 vertieft die vorhandene JavaFX-Technik ohne neues Framework oder neue Architektur.            |
+| **Zustand_11ff** | Optional: Soft-Delete konsequent ausbauen, Archivmodell, Großhandel, Bestellsystem und Mehrplatz-Ausblick.                 | Größere fachliche oder architektonische Schritte gehören nach der Grundlagenprogression hin.      |
 
 Aufgaben nach `Zustand_1`:
 
@@ -221,30 +244,35 @@ Aufgaben nach `Zustand_8`:
   statt Komfortfunktionen.
 - Formuliere Convenience-Aufgaben für Suche, Filter und Sortierung.
 
-Aufgaben nach `Zustand_10`:
-
-- Ergänze in den übrigen Oberflächen die Pflege der Statusfelder dort,
-  wo sie noch fehlt.
-- Ergänze die geplante Leihdauer im Verleihdialog für die fachliche
-  Validierung durch den Nutzer.
-- Ergänze weitere Tests für die neuen UI-Flüsse.
-
-Aufgaben nach `Zustand_11`:
+Hausaufgaben nach `Zustand_10` mit Referenzlösung in `Zustand_11`:
 
 - Zeige offene Ausleihen, offene Zahlungen und überfällige Ausleihen als
   eigene Arbeitslisten in der Oberfläche.
 - Zeige die Verleihhistorie pro Kunde.
-- Vervollständige die fachlichen Regeln für inaktive, gesperrte,
-  beschädigte oder verlorene Datensätze.
+- Ergänze Paging für Kunden- und Filmübersichten.
+- Ergänze einen Tagesabschluss, der Zahlungen eines Tages anzeigt und
+  summiert.
+- Ergänze weitere Tests für die neuen UI-Flüsse.
+
+Mögliche Aufgaben nach `Zustand_11`:
+
+- Ergänze UI-Filter für Status und Medienformat in Kunden- und
+  Filmübersichten.
+- Ergänze die Pflege des Kopienstatus, z. B. verfügbar, beschädigt,
+  verloren oder ausgemustert.
+- Prüfe fachlich sauberes Entfernen von Kunden, Filmen und Kopien.
+- Ergänze Zahlungsübersicht oder einfachen Beleg als weitere fachliche
+  Übung.
 
 Mögliche Hausaufgaben nach `Zustand_11` sollen die Anwendung fachlich
 realistischer machen, ohne die Studierenden mit viel neuer Technik zu
 überfordern. Gute Kandidaten sind „mehr vom gleichen": zusätzliche
 Felder, Validierungen, Repository-Methoden, Services, JavaFX-Dialoge und
-Tests. Dazu gehören zum Beispiel UI-Erfassung der geplanten Leihdauer,
-klarere Arbeitslisten, UI-Filter für Status/Format sowie das fachlich
-saubere Entfernen von Kunden, Filmen und Kopien. Robuste Sortierung und
-Paging bleiben dann als allgemeines Muster sichtbar.
+Tests. Dazu gehören zum Beispiel UI-Filter für Status/Format, Pflege des
+Kopienstatus, einfache Belege sowie das fachlich saubere Entfernen von
+Kunden, Filmen und Kopien. Robuste Sortierung und Paging
+bleiben als allgemeines Muster sichtbar: in `Zustand_10` am Beispiel der
+Ausleihübersicht, in `Zustand_11` zusätzlich bei Kunden und Filmen.
 
 Gerade Löschen ist didaktisch interessant: Wegen der Verleihhistorie ist
 hartes Entfernen oft falsch. Realistisch sind eher Soft-Delete-Varianten
@@ -289,7 +317,7 @@ cd Zustand_1/rentamovie
 mvn exec:java -Dexec.mainClass=hh.fernuni.rentamovie.main.App
 ```
 
-### JavaFX-Oberfläche starten (Zustand_9 / Zustand_10)
+### JavaFX-Oberfläche starten (Zustand_9 / Zustand_10 / Zustand_11)
 
 ```bash
 cd Zustand_9/rentamovie
@@ -297,9 +325,12 @@ mvn javafx:run
 
 cd Zustand_10/rentamovie
 mvn javafx:run
+
+cd Zustand_11/rentamovie
+mvn javafx:run
 ```
 
-In IntelliJ IDEA lassen sich `Zustand_9` und `Zustand_10` auch über die
+In IntelliJ IDEA lassen sich `Zustand_9`, `Zustand_10` und `Zustand_11` auch über die
 Run-Konfiguration für `App` starten.
 
 ## Code-Qualität
@@ -327,7 +358,8 @@ rentamovie/
 ├── Zustand_2/rentamovie/   ← Schritt 2: Service-Schicht
 ├── …
 ├── Zustand_9/rentamovie/   ← Schritt 9: JavaFX-Basis-UI
-└── Zustand_10/rentamovie/  ← Schritt 10: JavaFX-Convenience-UI
+├── Zustand_10/rentamovie/  ← Schritt 10: JavaFX-Convenience-UI
+└── Zustand_11/rentamovie/  ← Schritt 11: JavaFX-Vertiefung
 ```
 
 Innerhalb jedes Zustands folgt der Java-Code dem Schema

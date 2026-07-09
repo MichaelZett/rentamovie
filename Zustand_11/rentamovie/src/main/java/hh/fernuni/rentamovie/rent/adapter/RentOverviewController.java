@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
@@ -18,22 +19,33 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.List;
 
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class RentOverviewController {
     private static final int PAGE_SIZE = 5;
 
-    private RentService rentService = RentService.getService();
-    private RateService rateService = RateService.getService();
+    private RentService rentService;
+    private RateService rateService;
     private final ObservableList<Rent> rents = FXCollections.observableArrayList();
     private final ObservableList<Rent> pageRents = FXCollections.observableArrayList();
     private FilteredList<Rent> filteredRents;
     private SortedList<Rent> sortedRents;
     private int currentPageIndex;
+
+    public RentOverviewController() {
+        this(RentService.getService(), RateService.getService());
+    }
+
+    RentOverviewController(RentService rentService, RateService rateService) {
+        this.rentService = rentService;
+        this.rateService = rateService;
+    }
 
     @FXML
     private TableView<Rent> rentTable;
@@ -63,6 +75,8 @@ public class RentOverviewController {
     private Button previousPageButton;
     @FXML
     private Button nextPageButton;
+    @FXML
+    private Button dailyClosingButton;
 
     @FXML
     private void initialize() {
@@ -111,6 +125,10 @@ public class RentOverviewController {
         this.nextPageButton.setDisable(this.currentPageIndex >= pageCount - 1 || this.sortedRents.isEmpty());
     }
 
+    private void selectWorklist(String worklist) {
+        this.statusFilterBox.getSelectionModel().select(worklist);
+    }
+
     @FXML
     private void handleNewRent() {
         Dialog<Rent> dialog = new RentDialog();
@@ -143,6 +161,16 @@ public class RentOverviewController {
         }
     }
 
+    @FXML
+    private void handleDailyClosing() {
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Daily closing");
+        alert.setHeaderText("Payments on " + today);
+        alert.setContentText(dailyClosingText(today));
+        alert.showAndWait();
+    }
+
     BigDecimal expectedPaymentAmount(Rent rent) {
         LocalDate returnDate = rent.getEndDate();
         if (returnDate == null) {
@@ -150,6 +178,29 @@ public class RentOverviewController {
         }
         int age = Period.between(rent.getCustomer().getBirthdate(), returnDate).getYears();
         return this.rateService.calculatePrice(rent, this.rateService.retrieveRateByAge(age));
+    }
+
+    String dailyClosingText(LocalDate date) {
+        List<Rent> payments = this.rentService.findPaymentsOn(date);
+        StringBuilder text = new StringBuilder();
+        if (payments.isEmpty()) {
+            text.append("No payments.");
+        } else {
+            payments.forEach(rent -> text.append(rent.getCustomerLastname())
+                    .append(" - ")
+                    .append(rent.getCopyTitle())
+                    .append(" - ")
+                    .append(formatAmount(rent.getPaidAmount()))
+                    .append(System.lineSeparator()));
+        }
+        text.append(System.lineSeparator())
+                .append("Total: ")
+                .append(formatAmount(this.rentService.sumPaymentsOn(date)));
+        return text.toString();
+    }
+
+    private static String formatAmount(BigDecimal amount) {
+        return amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
     @FXML
@@ -160,6 +211,31 @@ public class RentOverviewController {
     @FXML
     private void handleNextPage() {
         updatePage(this.currentPageIndex + 1);
+    }
+
+    @FXML
+    private void handleAllWorklist() {
+        selectWorklist("All");
+    }
+
+    @FXML
+    private void handleOpenRentsWorklist() {
+        selectWorklist("Open rents");
+    }
+
+    @FXML
+    private void handleOverdueWorklist() {
+        selectWorklist("Overdue");
+    }
+
+    @FXML
+    private void handleOpenPaymentsWorklist() {
+        selectWorklist("Open payments");
+    }
+
+    @FXML
+    private void handlePaidWorklist() {
+        selectWorklist("Paid");
     }
 
 }
