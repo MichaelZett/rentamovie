@@ -1,10 +1,10 @@
 package hh.fernuni.rentamovie.customer.application;
 
-import java.time.LocalDate;
-import java.util.Collection;
-
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.customer.domain.CustomerRepository;
+
+import java.time.LocalDate;
+import java.util.Collection;
 
 class CustomerServiceImpl implements CustomerService {
 	private static final CustomerService INSTANCE = new CustomerServiceImpl();
@@ -32,8 +32,15 @@ class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Collection<Customer> readAllCustomers() {
-		return this.customerRepository.readAll();
-	}
+    public Collection<Customer> readAllCustomers() {
+        return this.customerRepository.readAll();
+    }
+
+    @Override
+    public Collection<Customer> readActiveCustomers() {
+        return this.customerRepository.readAll().stream()
+                .filter(Customer::isActive)
+                .toList();
+    }
 
 }

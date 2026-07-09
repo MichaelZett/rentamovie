@@ -1,16 +1,15 @@
 package hh.fernuni.rentamovie.movie.application;
 
-import java.time.Year;
-import java.util.Collection;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.CopyRepository;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 import hh.fernuni.rentamovie.movie.domain.MovieRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.Year;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 class MovieServiceImpl implements MovieService {
 	private static final Logger LOG = LoggerFactory.getLogger(MovieServiceImpl.class);
@@ -54,9 +53,23 @@ class MovieServiceImpl implements MovieService {
 		        Collectors.toSet());
 	}
 
+    @Override
+    public Collection<Copy> findAvailableCopiesOfMovie(Movie movie) {
+        return findAllCopiesOfMovie(movie).stream()
+                .filter(Copy::isAvailable)
+                .toList();
+    }
+
 	@Override
 	public Collection<Movie> readAllMovies() {
 		return this.movieRepository.readAll();
 	}
+
+    @Override
+    public Collection<Movie> readActiveMovies() {
+        return this.movieRepository.readAll().stream()
+                .filter(Movie::isActive)
+                .toList();
+    }
 
 }

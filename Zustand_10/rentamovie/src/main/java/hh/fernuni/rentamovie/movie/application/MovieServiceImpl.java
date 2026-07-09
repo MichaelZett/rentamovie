@@ -53,8 +53,22 @@ class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public Collection<Copy> findAvailableCopiesOfMovie(Movie movie) {
+        return findAllCopiesOfMovie(movie).stream()
+                .filter(Copy::isAvailable)
+                .toList();
+    }
+
+    @Override
     public Collection<Movie> readAllMovies() {
         return this.movieRepository.readAll();
+    }
+
+    @Override
+    public Collection<Movie> readActiveMovies() {
+        return this.movieRepository.readAll().stream()
+                .filter(Movie::isActive)
+                .toList();
     }
 
 }

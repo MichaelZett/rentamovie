@@ -12,6 +12,8 @@ public interface CustomerService {
 
     Collection<Customer> readAllCustomers();
 
+    Collection<Customer> readActiveCustomers();
+
     static CustomerService getService() {
         return CustomerServiceImpl.getInstance();
     }

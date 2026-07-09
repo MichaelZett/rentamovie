@@ -15,6 +15,8 @@ public interface MovieService {
 
 	Collection<Movie> readAllMovies();
 
+    Collection<Movie> readActiveMovies();
+
 	Copy findCopy(Movie movie);
 
 	static MovieService getService() {

@@ -15,9 +15,13 @@ public interface MovieService {
 
     Collection<Movie> readAllMovies();
 
+    Collection<Movie> readActiveMovies();
+
     static MovieService getService() {
         return MovieServiceImpl.getInstance();
     }
 
     Collection<Copy> findAllCopiesOfMovie(Movie movie);
+
+    Collection<Copy> findAvailableCopiesOfMovie(Movie movie);
 }

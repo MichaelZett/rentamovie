@@ -40,6 +40,13 @@ class MovieServiceImpl implements MovieService {
         return this.movieRepository.readAll();
 	}
 
+    @Override
+    public Collection<Movie> readActiveMovies() {
+        return this.movieRepository.readAll().stream()
+                .filter(Movie::isActive)
+                .toList();
+    }
+
 	@Override
 	public void createCopies(Movie movie, int numberToCreate) {
 		for (int i = 0; i < numberToCreate; i++) {

@@ -36,4 +36,11 @@ class CustomerServiceImpl implements CustomerService {
         return this.customerRepository.readAll();
     }
 
+    @Override
+    public Collection<Customer> readActiveCustomers() {
+        return this.customerRepository.readAll().stream()
+                .filter(Customer::isActive)
+                .toList();
+    }
+
 }

@@ -48,4 +48,15 @@ class MovieServiceImplTest {
 
         assertThat(this.testee.readAllMovies()).containsExactly(movie);
     }
+
+    @Test
+    void shouldReadActiveMovies() {
+        Movie activeMovie = mock(Movie.class);
+        Movie inactiveMovie = mock(Movie.class);
+        when(activeMovie.isActive()).thenReturn(true);
+        when(inactiveMovie.isActive()).thenReturn(false);
+        when(this.movieRepositoryMock.readAll()).thenReturn(java.util.List.of(activeMovie, inactiveMovie));
+
+        assertThat(this.testee.readActiveMovies()).containsExactly(activeMovie);
+    }
 }
