@@ -31,8 +31,15 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
             if (Files.exists(path)) {
                 List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
                 for (String domainClassAsText : lines) {
-                    T domainClass = fromText(domainClassAsText.split(DELIMITER));
-                    repo.put(domainClass.getId(), domainClass);
+                    if (domainClassAsText.isBlank()) {
+                        continue;
+                    }
+                    try {
+                        T domainClass = fromText(domainClassAsText.split(DELIMITER));
+                        repo.put(domainClass.getId(), domainClass);
+                    } catch (RuntimeException e) {
+                        LOG.error("Skipping unreadable line in {}: '{}' ({})", path, domainClassAsText, e.toString());
+                    }
                 }
             } else {
                 Files.createFile(path);
@@ -44,11 +51,12 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 
     @Override
     public void save(T domainClass) {
+        String domainClassAsText = toText(domainClass);
         T old = repo.put(domainClass.getId(), domainClass);
 
         if (old == null) {
             try {
-                Files.write(path, Collections.singletonList(toText(domainClass)), StandardCharsets.UTF_8,
+                Files.write(path, Collections.singletonList(domainClassAsText), StandardCharsets.UTF_8,
                         StandardOpenOption.APPEND);
             } catch (IOException _) {
                 LOG.error("Error writing to db.");
@@ -83,6 +91,13 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
         } catch (IOException _) {
             LOG.error("Error clearing db.");
         }
+    }
+
+    protected static String requireStorableText(String value) {
+        if (value.contains(DELIMITER) || value.contains("\n") || value.contains("\r")) {
+            throw new IllegalArgumentException("Text must not contain '" + DELIMITER + "' or line breaks: " + value);
+        }
+        return value;
     }
 
     protected abstract T fromText(String[] split);

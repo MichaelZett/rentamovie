@@ -26,7 +26,11 @@ public class IdRepository {
 		try {
 			if (Files.exists(path)) {
 				List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-				currentId = Long.parseLong(lines.get(0).trim());
+				if (lines.isEmpty() || lines.get(0).isBlank()) {
+					LOG.error("File {} is empty, starting with id 0.", path);
+				} else {
+					currentId = Long.parseLong(lines.get(0).trim());
+				}
 			} else {
 				Files.createFile(path);
 				Files.write(path, Collections.singletonList(String.valueOf(currentId)), StandardCharsets.UTF_8,
@@ -34,6 +38,8 @@ public class IdRepository {
 			}
         } catch (IOException _) {
 			LOG.error("Error working with file in id.DB.");
+		} catch (NumberFormatException _) {
+			LOG.error("File {} does not contain a valid id, starting with id 0.", path);
 		}
 		COUNT = new AtomicLong(currentId);
 	}

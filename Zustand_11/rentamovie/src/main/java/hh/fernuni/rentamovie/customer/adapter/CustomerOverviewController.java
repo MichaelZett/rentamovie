@@ -117,12 +117,13 @@ public class CustomerOverviewController {
     }
 
     private void clearInput() {
+        currentCustomer = null;
         firstnameInput.setText("");
         lastnameInput.setText("");
         birthdayInput.setText("");
         statusInput.setValue(CustomerStatus.ACTIVE);
         historyArea.clear();
-        customerTable.getSelectionModel().select(-1);
+        customerTable.getSelectionModel().clearSelection();
     }
 
     private void showCustomerHistory(Customer customer) {

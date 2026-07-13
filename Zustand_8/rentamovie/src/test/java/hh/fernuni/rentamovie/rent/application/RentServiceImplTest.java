@@ -59,14 +59,15 @@ class RentServiceImplTest {
     void shouldExcludeAlreadyRentedCopy() {
         Movie movie = mock(Movie.class);
         when(movie.isActive()).thenReturn(true);
-        Copy copy = mock(Copy.class);
+        Copy rentedCopy = new Copy(movie);
+        Copy freeCopy = new Copy(movie);
         Rent openRent = mock(Rent.class);
         when(openRent.isOpen()).thenReturn(true);
-        when(openRent.getCopy()).thenReturn(copy);
-        when(this.movieServiceMock.findAllCopiesOfMovie(movie)).thenReturn(new ArrayList<>(List.of(copy)));
+        when(openRent.getCopy()).thenReturn(rentedCopy);
+        when(this.movieServiceMock.findAllCopiesOfMovie(movie)).thenReturn(new ArrayList<>(List.of(rentedCopy, freeCopy)));
         when(this.rentRepositoryMock.readAll()).thenReturn(List.of(openRent));
 
-        assertThat(this.testee.findAllFreeCopies(movie)).isEmpty();
+        assertThat(this.testee.findAllFreeCopies(movie)).containsExactly(freeCopy);
     }
 
     @Test

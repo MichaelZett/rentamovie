@@ -21,8 +21,8 @@ class CustomerRepositoryImpl extends CommonRepositoryImpl<Customer> implements C
     protected String toText(Customer user) {
         StringBuilder b = new StringBuilder();
         b.append(user.getId()).append(DELIMITER);
-        b.append(user.getFirstname()).append(DELIMITER);
-        b.append(user.getLastname()).append(DELIMITER);
+        b.append(requireStorableText(user.getFirstname())).append(DELIMITER);
+        b.append(requireStorableText(user.getLastname())).append(DELIMITER);
         b.append(user.getBirthdate()).append(DELIMITER);
         b.append(user.getStatus());
         return b.toString();

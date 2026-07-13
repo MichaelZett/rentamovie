@@ -79,11 +79,12 @@ public class CustomerOverviewController {
 	}
 
 	private void clearInput() {
+		currentCustomer = null;
 		firstnameInput.setText("");
 		lastnameInput.setText("");
 		birthdayInput.setText("");
         statusInput.setValue(CustomerStatus.ACTIVE);
-		customerTable.getSelectionModel().select(-1);
+		customerTable.getSelectionModel().clearSelection();
 	}
 
 	@FXML

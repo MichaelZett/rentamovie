@@ -18,6 +18,8 @@ import javafx.scene.layout.GridPane;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RentDialog extends Dialog<Rent> {
     private Label customerLabel = new Label("Customer: ");
@@ -36,8 +38,11 @@ public class RentDialog extends Dialog<Rent> {
         this.setTitle("Input rent");
         ObservableList<Customer> customerOptions = FXCollections.observableArrayList(this.customerService.readActiveCustomers());
         this.customerBox = new ComboBox<>(customerOptions);
+        Set<Copy> rentedCopies = this.rentService.findOpenRents().stream()
+                .map(Rent::getCopy)
+                .collect(Collectors.toSet());
         ObservableList<Copy> movieOptions = FXCollections.observableArrayList(this.copyRepository.readAll().stream()
-                .filter(copy -> copy.isAvailable() && copy.getMovie().isActive())
+                .filter(copy -> copy.isAvailable() && copy.getMovie().isActive() && !rentedCopies.contains(copy))
                 .toList());
         this.movieBox = new ComboBox<>(movieOptions);
 

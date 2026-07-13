@@ -31,6 +31,7 @@ public class Rent extends AbstractIdCarrier {
 		this.customer = user;
 		this.copy = copy;
 		this.startDate = startDate;
+        this.plannedReturnDate = startDate.plusDays(7);
 	}
 
 	public Customer getUser() {

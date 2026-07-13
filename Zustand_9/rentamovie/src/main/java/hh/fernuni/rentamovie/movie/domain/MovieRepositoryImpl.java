@@ -28,8 +28,15 @@ class MovieRepositoryImpl implements MovieRepository {
 			if (Files.exists(path)) {
 				List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
 				for (String domainClassAsText : lines) {
-					Movie domainClass = fromText(domainClassAsText.split(DELIMITER));
-					repo.put(domainClass.getId(), domainClass);
+					if (domainClassAsText.isBlank()) {
+						continue;
+					}
+					try {
+						Movie domainClass = fromText(domainClassAsText.split(DELIMITER));
+						repo.put(domainClass.getId(), domainClass);
+					} catch (RuntimeException e) {
+						LOG.error("Skipping unreadable line in {}: '{}' ({})", path, domainClassAsText, e.toString());
+					}
 				}
 			} else {
 				Files.createFile(path);
@@ -45,10 +52,11 @@ class MovieRepositoryImpl implements MovieRepository {
 
 	@Override
 	public void save(Movie movie) {
+		String movieAsText = toText(movie);
 		Movie put = repo.put(movie.getId(), movie);
 		if (put == null) {
 			try {
-				Files.write(path, Collections.singletonList(toText(movie)), StandardCharsets.UTF_8,
+				Files.write(path, Collections.singletonList(movieAsText), StandardCharsets.UTF_8,
 						StandardOpenOption.APPEND);
             } catch (IOException _) {
 				LOG.error("Error writing movie.db.");
@@ -75,6 +83,13 @@ class MovieRepositoryImpl implements MovieRepository {
 		return repo.values();
 	}
 
+	private static String requireStorableText(String value) {
+		if (value.contains(DELIMITER) || value.contains("\n") || value.contains("\r")) {
+			throw new IllegalArgumentException("Text must not contain '" + DELIMITER + "' or line breaks: " + value);
+		}
+		return value;
+	}
+
 	private Movie fromText(String[] strings) {
         MovieStatus status = strings.length > 3 ? MovieStatus.valueOf(strings[3]) : MovieStatus.ACTIVE;
         return new Movie(Long.parseLong(strings[0]), Year.parse(strings[1]), strings[2], status);
@@ -84,7 +99,7 @@ class MovieRepositoryImpl implements MovieRepository {
 		StringBuilder b = new StringBuilder();
 		b.append(movie.getId()).append(DELIMITER);
 		b.append(movie.getYearOfPublication().toString()).append(DELIMITER);
-        b.append(movie.getTitle()).append(DELIMITER);
+        b.append(requireStorableText(movie.getTitle())).append(DELIMITER);
         b.append(movie.getStatus());
 		return b.toString();
 	}

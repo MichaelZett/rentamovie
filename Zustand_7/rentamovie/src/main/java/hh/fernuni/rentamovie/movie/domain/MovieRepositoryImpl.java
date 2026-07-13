@@ -28,8 +28,15 @@ class MovieRepositoryImpl implements MovieRepository {
 			if (Files.exists(path)) {
 				List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
 				for (String domainClassAsText : lines) {
-					Movie domainClass = fromText(domainClassAsText.split(DELIMITER));
-					repo.put(domainClass.getId(), domainClass);
+					if (domainClassAsText.isBlank()) {
+						continue;
+					}
+					try {
+						Movie domainClass = fromText(domainClassAsText.split(DELIMITER));
+						repo.put(domainClass.getId(), domainClass);
+					} catch (RuntimeException e) {
+						LOG.error("Skipping unreadable line in {}: '{}' ({})", path, domainClassAsText, e.toString());
+					}
 				}
 			} else {
 				Files.createFile(path);
