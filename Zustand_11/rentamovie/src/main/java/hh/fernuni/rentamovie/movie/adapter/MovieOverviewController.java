@@ -120,7 +120,7 @@ public class MovieOverviewController {
         statusInput.setValue(MovieStatus.ACTIVE);
         mediaFormatInput.getSelectionModel().select(MediaFormat.DVD);
         copiesLabel.setText("");
-        movieTable.getSelectionModel().select(-1);
+        movieTable.getSelectionModel().clearSelection();
     }
 
     @FXML
