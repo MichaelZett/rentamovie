@@ -6,7 +6,9 @@ import hh.fernuni.rentamovie.customer.domain.CustomerStatus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -15,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
@@ -24,6 +27,7 @@ public class CustomerOverviewController {
     private CustomerService customerService = CustomerService.getService();
     private final ObservableList<Customer> customers = FXCollections.observableArrayList();
     private FilteredList<Customer> filteredCustomers;
+    private SortedList<Customer> sortedCustomers;
 
     @FXML
     private TableView<Customer> customerTable;
@@ -63,7 +67,9 @@ public class CustomerOverviewController {
         customerTable.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> showCustomerDetails(newValue));
         filteredCustomers = new FilteredList<>(customers, customer -> true);
-        customerTable.setItems(filteredCustomers);
+        sortedCustomers = new SortedList<>(filteredCustomers);
+        sortedCustomers.comparatorProperty().bind(customerTable.comparatorProperty());
+        customerTable.setItems(sortedCustomers);
         searchInput.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
         refreshCustomers();
     }
@@ -107,18 +113,26 @@ public class CustomerOverviewController {
 
     @FXML
     private void handleSaveCustomer() {
-        if (currentCustomer != null) {
-            currentCustomer.updateData(firstnameInput.getText(), lastnameInput.getText(),
-                    LocalDate.parse(birthdayInput.getText()));
-        } else {
-            currentCustomer = customerService.createCustomer(firstnameInput.getText(), lastnameInput.getText(),
-                    LocalDate.parse(birthdayInput.getText()));
-            customerTable.getSelectionModel().select(currentCustomer);
+        LocalDate birthdate;
+        try {
+            birthdate = LocalDate.parse(birthdayInput.getText());
+        } catch (DateTimeParseException _) {
+            showValidationError("Invalid birthday '" + birthdayInput.getText() + "'. Please use the format 2001-12-24.");
+            return;
         }
-        applyStatus(currentCustomer, statusInput.getValue());
-        customerService.updateCustomers(currentCustomer, firstnameInput.getText(), lastnameInput.getText(),
-                LocalDate.parse(birthdayInput.getText()));
-        refreshCustomers();
+        try {
+            if (currentCustomer != null) {
+                currentCustomer.updateData(firstnameInput.getText(), lastnameInput.getText(), birthdate);
+            } else {
+                currentCustomer = customerService.createCustomer(firstnameInput.getText(), lastnameInput.getText(), birthdate);
+                customerTable.getSelectionModel().select(currentCustomer);
+            }
+            applyStatus(currentCustomer, statusInput.getValue());
+            customerService.updateCustomers(currentCustomer, firstnameInput.getText(), lastnameInput.getText(), birthdate);
+            refreshCustomers();
+        } catch (IllegalArgumentException e) {
+            showValidationError(e.getMessage());
+        }
     }
 
     private static void applyStatus(Customer customer, CustomerStatus status) {
@@ -131,6 +145,13 @@ public class CustomerOverviewController {
             return;
         }
         customer.activate();
+    }
+
+    private static void showValidationError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid input");
+        alert.setHeaderText(message);
+        alert.showAndWait();
     }
 
 }

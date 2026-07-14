@@ -30,6 +30,9 @@ class RateServiceImpl implements RateService {
 
     @Override
     public BigDecimal calculatePrice(Rent rent, Rate rate) {
+        if (rent.isOpen()) {
+            throw new IllegalStateException("Rent must be returned before the price can be calculated.");
+        }
         long days = Math.max(1L, ChronoUnit.DAYS.between(rent.getStartDate(), rent.getEndDate()));
         return rate.getValue().multiply(BigDecimal.valueOf(days));
     }

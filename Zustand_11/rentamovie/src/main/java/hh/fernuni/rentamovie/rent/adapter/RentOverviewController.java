@@ -154,9 +154,15 @@ public class RentOverviewController {
             dialog.setTitle("Pay rent");
             dialog.setHeaderText("Expected amount: " + expectedAmount.toPlainString());
             dialog.setContentText("Amount:");
-            dialog.showAndWait()
-                    .map(BigDecimal::new)
-                    .ifPresent(amount -> this.rentService.payRent(rent, amount));
+            dialog.showAndWait().ifPresent(input -> {
+                try {
+                    this.rentService.payRent(rent, new BigDecimal(input));
+                } catch (NumberFormatException _) {
+                    showValidationError("Invalid amount '" + input + "'. Please use the format " + expectedAmount.toPlainString() + ".");
+                } catch (IllegalArgumentException | IllegalStateException e) {
+                    showValidationError(e.getMessage());
+                }
+            });
             refreshRents();
         }
     }
@@ -201,6 +207,13 @@ public class RentOverviewController {
 
     private static String formatAmount(BigDecimal amount) {
         return amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
+    }
+
+    private static void showValidationError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid input");
+        alert.setHeaderText(message);
+        alert.showAndWait();
     }
 
     @FXML

@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
@@ -136,9 +137,15 @@ public class RentOverviewController {
             dialog.setTitle("Pay rent");
             dialog.setHeaderText("Expected amount: " + expectedAmount.toPlainString());
             dialog.setContentText("Amount:");
-            dialog.showAndWait()
-                    .map(BigDecimal::new)
-                    .ifPresent(amount -> this.rentService.payRent(rent, amount));
+            dialog.showAndWait().ifPresent(input -> {
+                try {
+                    this.rentService.payRent(rent, new BigDecimal(input));
+                } catch (NumberFormatException _) {
+                    showValidationError("Invalid amount '" + input + "'. Please use the format " + expectedAmount.toPlainString() + ".");
+                } catch (IllegalArgumentException | IllegalStateException e) {
+                    showValidationError(e.getMessage());
+                }
+            });
             refreshRents();
         }
     }
@@ -150,6 +157,13 @@ public class RentOverviewController {
         }
         int age = Period.between(rent.getCustomer().getBirthdate(), returnDate).getYears();
         return this.rateService.calculatePrice(rent, this.rateService.retrieveRateByAge(age));
+    }
+
+    private static void showValidationError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid input");
+        alert.setHeaderText(message);
+        alert.showAndWait();
     }
 
     @FXML

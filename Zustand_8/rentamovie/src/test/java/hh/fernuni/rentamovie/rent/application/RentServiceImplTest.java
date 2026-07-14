@@ -4,6 +4,8 @@ import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.application.MovieService;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
+import hh.fernuni.rentamovie.rate.application.RateService;
+import hh.fernuni.rentamovie.rate.domain.Rate;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 import hh.fernuni.rentamovie.rent.domain.RentRepository;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,9 @@ class RentServiceImplTest {
 
     @Mock
     private RentRepository rentRepositoryMock;
+
+    @Mock
+    private RateService rateServiceMock;
 
     @InjectMocks
     private RentServiceImpl testee;
@@ -80,6 +85,15 @@ class RentServiceImplTest {
     }
 
     @Test
+    void shouldRejectReturningFinishedRent() {
+        Rent rent = mock(Rent.class);
+        when(rent.isFinished()).thenReturn(true);
+
+        assertThatThrownBy(() -> this.testee.returnRent(rent, LocalDate.of(2026, 7, 4)))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
     void shouldSaveReturnedRent() {
         Rent rent = mock(Rent.class);
         when(rent.getStartDate()).thenReturn(LocalDate.of(2026, 7, 1));
@@ -111,17 +125,42 @@ class RentServiceImplTest {
     @Test
     void shouldSavePaidRent() {
         Rent rent = mock(Rent.class);
+        Customer customer = customerBornOn(LocalDate.of(1980, 3, 12));
         when(rent.isOpen()).thenReturn(false);
+        when(rent.getUser()).thenReturn(customer);
+        when(rent.getEndDate()).thenReturn(LocalDate.of(2026, 7, 4));
+        when(this.rateServiceMock.retrieveRateByAge(46)).thenReturn(Rate.REGULAR);
+        when(this.rateServiceMock.calculatePrice(rent, Rate.REGULAR)).thenReturn(new BigDecimal("6.00"));
 
-        this.testee.payRent(rent, new BigDecimal("1.00"));
+        this.testee.payRent(rent, new BigDecimal("6.00"));
 
         verify(rent).markPaid();
         verify(this.rentRepositoryMock).save(rent);
     }
 
+    @Test
+    void shouldRejectPaymentWithWrongAmount() {
+        Rent rent = mock(Rent.class);
+        Customer customer = customerBornOn(LocalDate.of(1980, 3, 12));
+        when(rent.isOpen()).thenReturn(false);
+        when(rent.getUser()).thenReturn(customer);
+        when(rent.getEndDate()).thenReturn(LocalDate.of(2026, 7, 4));
+        when(this.rateServiceMock.retrieveRateByAge(46)).thenReturn(Rate.REGULAR);
+        when(this.rateServiceMock.calculatePrice(rent, Rate.REGULAR)).thenReturn(new BigDecimal("6.00"));
+
+        assertThatThrownBy(() -> this.testee.payRent(rent, new BigDecimal("0.01")))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     private static Customer activeCustomer() {
         Customer customer = mock(Customer.class);
         when(customer.isActive()).thenReturn(true);
+        return customer;
+    }
+
+    private static Customer customerBornOn(LocalDate birthdate) {
+        Customer customer = mock(Customer.class);
+        when(customer.getBirthdate()).thenReturn(birthdate);
         return customer;
     }
 

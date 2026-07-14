@@ -8,6 +8,7 @@ import hh.fernuni.rentamovie.rent.application.RentService;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -60,8 +61,16 @@ public class RentDialog extends Dialog<Rent> {
             if (b != buttonTypeOk || this.movieBox.getValue() == null || this.customerBox.getValue() == null) {
                 return null;
             }
-            return this.rentService.createRent(this.movieBox.getValue(), this.customerBox.getValue(),
-                    LocalDate.now(ZoneId.systemDefault()), parsePlannedDays());
+            try {
+                return this.rentService.createRent(this.movieBox.getValue(), this.customerBox.getValue(),
+                        LocalDate.now(ZoneId.systemDefault()), parsePlannedDays());
+            } catch (NumberFormatException _) {
+                showValidationError("Planned rental duration must be a number between 1 and 7 days.");
+                return null;
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                showValidationError(e.getMessage());
+                return null;
+            }
         });
     }
 
@@ -71,6 +80,13 @@ public class RentDialog extends Dialog<Rent> {
             throw new IllegalArgumentException("Planned rental duration must be between 1 and 7 days.");
         }
         return plannedDays;
+    }
+
+    private static void showValidationError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid input");
+        alert.setHeaderText(message);
+        alert.showAndWait();
     }
 
 }

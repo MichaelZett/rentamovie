@@ -5,6 +5,7 @@ import hh.fernuni.rentamovie.rent.domain.Rent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TableColumn;
@@ -84,11 +85,24 @@ public class RentOverviewController {
             dialog.setTitle("Pay rent");
             dialog.setHeaderText("Payment amount");
             dialog.setContentText("Amount:");
-            dialog.showAndWait()
-                    .map(BigDecimal::new)
-                    .ifPresent(amount -> this.rentService.payRent(rent, amount));
+            dialog.showAndWait().ifPresent(input -> {
+                try {
+                    this.rentService.payRent(rent, new BigDecimal(input));
+                } catch (NumberFormatException _) {
+                    showValidationError("Invalid amount '" + input + "'. Please use the format 6.00.");
+                } catch (IllegalArgumentException | IllegalStateException e) {
+                    showValidationError(e.getMessage());
+                }
+            });
             refreshRents();
         }
+    }
+
+    private static void showValidationError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid input");
+        alert.setHeaderText(message);
+        alert.showAndWait();
     }
 
 }

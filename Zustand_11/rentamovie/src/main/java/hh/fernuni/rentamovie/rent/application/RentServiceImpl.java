@@ -4,11 +4,13 @@ import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.application.MovieService;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
+import hh.fernuni.rentamovie.rate.application.RateService;
 import hh.fernuni.rentamovie.rent.domain.Rent;
 import hh.fernuni.rentamovie.rent.domain.RentRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +22,7 @@ class RentServiceImpl implements RentService {
     private static final RentService Instance = new RentServiceImpl();
     private MovieService movieService = MovieService.getService();
     private RentRepository rentRepository = RentRepository.getRepository();
+    private RateService rateService = RateService.getService();
 
     private RentServiceImpl() {
         // should only be called from within this class
@@ -77,6 +80,9 @@ class RentServiceImpl implements RentService {
 
     @Override
     public void returnRent(Rent rent, LocalDate endDate) {
+        if (rent.isFinished()) {
+            throw new IllegalStateException("Rent is already returned.");
+        }
         if (endDate.isBefore(rent.getStartDate())) {
             throw new IllegalArgumentException("Return date must not be before start date.");
         }
@@ -92,8 +98,17 @@ class RentServiceImpl implements RentService {
         if (amount.signum() <= 0) {
             throw new IllegalArgumentException("Payment amount must be positive.");
         }
+        BigDecimal expectedAmount = expectedPaymentAmount(rent);
+        if (amount.compareTo(expectedAmount) != 0) {
+            throw new IllegalArgumentException("Payment amount must be " + expectedAmount + ".");
+        }
         rent.markPaid(amount, LocalDate.now(ZoneId.systemDefault()));
         this.rentRepository.save(rent);
+    }
+
+    private BigDecimal expectedPaymentAmount(Rent rent) {
+        int age = Period.between(rent.getCustomer().getBirthdate(), rent.getEndDate()).getYears();
+        return this.rateService.calculatePrice(rent, this.rateService.retrieveRateByAge(age));
     }
 
     @Override
