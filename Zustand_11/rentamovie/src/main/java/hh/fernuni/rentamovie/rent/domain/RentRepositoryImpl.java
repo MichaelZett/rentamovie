@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepository {
 
-    private static final RentRepositoryImpl INSTANCE = new RentRepositoryImpl("./rent.db");
+    private static final RentRepositoryImpl INSTANCE = new RentRepositoryImpl(System.getProperty("rentamovie.rent.db", "./rent.db"));
     private static final String OPEN_END_DATE = "OPEN";
     private static final String PAID = "PAID";
     private static final String OPEN_PAYMENT = "OPEN_PAYMENT";
@@ -37,13 +37,13 @@ class RentRepositoryImpl extends CommonRepositoryImpl<Rent> implements RentRepos
         int customerIndex = split.length > 6 ? 4 : 3;
         int copyIndex = split.length > 6 ? 5 : 4;
         int paymentIndex = split.length > 6 ? 6 : 5;
-        Customer user = this.customerRepository.read(Long.parseLong(split[customerIndex]));
+        Customer customer = this.customerRepository.read(Long.parseLong(split[customerIndex]));
         Copy copy = this.copyRepository.read(Long.parseLong(split[copyIndex]));
         LocalDate endDate = parseEndDate(split[endDateIndex]);
         boolean paid = split.length > paymentIndex && PAID.equals(split[paymentIndex]);
         LocalDate paymentDate = split.length > paymentIndex + 1 ? parseDate(split[paymentIndex + 1]) : null;
         BigDecimal paidAmount = split.length > paymentIndex + 2 ? new BigDecimal(split[paymentIndex + 2]) : BigDecimal.ZERO;
-        return new Rent(Long.parseLong(split[0]), startDate, plannedReturnDate, endDate, paid, paymentDate, paidAmount, user, copy);
+        return new Rent(Long.parseLong(split[0]), startDate, plannedReturnDate, endDate, paid, paymentDate, paidAmount, customer, copy);
     }
 
     @Override

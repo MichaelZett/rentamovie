@@ -20,7 +20,7 @@ class MovieRepositoryImpl implements MovieRepository {
 	private static final Logger LOG = LoggerFactory.getLogger(MovieRepositoryImpl.class);
 	private static final MovieRepositoryImpl INSTANCE = new MovieRepositoryImpl();
 	private static final String DELIMITER = ",";
-	private final Path path = Paths.get("./movie.db");
+	private final Path path = Paths.get(System.getProperty("rentamovie.movie.db", "./movie.db"));
 	private final Map<Long, Movie> repo = new ConcurrentHashMap<>();
 
 	private MovieRepositoryImpl() {

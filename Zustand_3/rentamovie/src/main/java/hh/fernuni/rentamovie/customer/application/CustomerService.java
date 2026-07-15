@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import hh.fernuni.rentamovie.customer.domain.Customer;
 
 public interface CustomerService {
-	Customer createCustomer(String surename, String lastname, LocalDate birthday);
+	Customer createCustomer(String firstname, String lastname, LocalDate birthday);
 
-	void updateCustomers(Customer currentUser, String firstname, String lastname, LocalDate birthdate);
+	void updateCustomer(Customer currentCustomer, String firstname, String lastname, LocalDate birthdate);
 
 	static CustomerService getService() {
 		return CustomerServiceImpl.getInstance();

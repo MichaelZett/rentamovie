@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 class RentServiceImpl implements RentService {
-    private static final RentService Instance = new RentServiceImpl();
+    private static final RentService INSTANCE = new RentServiceImpl();
     private MovieService movieService = MovieService.getService();
     private RentRepository rentRepository = RentRepository.getRepository();
     private RateService rateService = RateService.getService();
@@ -29,7 +29,7 @@ class RentServiceImpl implements RentService {
     }
 
     static RentService getInstance() {
-        return Instance;
+        return INSTANCE;
     }
 
     @Override

@@ -28,21 +28,21 @@ class CustomerServiceImplTest {
 
 	@Test
     void shouldSaveCustomer() {
-        this.testee.createCustomer("surename", "lastname", LocalDate.of(1983, 3, 22));
+        this.testee.createCustomer("firstname", "lastname", LocalDate.of(1983, 3, 22));
 
         ArgumentCaptor<Customer> captor = ArgumentCaptor.forClass(Customer.class);
         verify(this.customerRepoMock).save(captor.capture());
         Customer result = captor.getValue();
-        assertThat(result.getFirstname()).isEqualTo("surename");
+        assertThat(result.getFirstname()).isEqualTo("firstname");
 	}
 
 	@Test
     void shouldUpdateCustomer() {
         Customer customer = mock(Customer.class);
 
-        this.testee.updateCustomers(customer, "surename", "lastname", LocalDate.of(1983, 3, 22));
+        this.testee.updateCustomer(customer, "firstname", "lastname", LocalDate.of(1983, 3, 22));
 
-		verify(customer).updateData("surename", "lastname", LocalDate.of(1983, 3, 22));
+		verify(customer).updateData("firstname", "lastname", LocalDate.of(1983, 3, 22));
         verify(this.customerRepoMock).save(customer);
 	}
 

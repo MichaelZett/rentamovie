@@ -14,27 +14,27 @@ public class Rent extends AbstractIdCarrier {
     private LocalDate plannedReturnDate;
 	private LocalDate endDate;
 
-	public Rent(Long id, Customer user, Copy copy, LocalDate startDate) {
-        this(id, user, copy, startDate, startDate.plusDays(7));
+	public Rent(Long id, Customer customer, Copy copy, LocalDate startDate) {
+        this(id, customer, copy, startDate, startDate.plusDays(7));
     }
 
-    public Rent(Long id, Customer user, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
+    public Rent(Long id, Customer customer, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
 		super(id);
-		this.customer = user;
+		this.customer = customer;
 		this.copy = copy;
 		this.startDate = startDate;
         this.plannedReturnDate = plannedReturnDate;
 	}
 
-	public Rent(Customer user, Copy copy, LocalDate startDate) {
+	public Rent(Customer customer, Copy copy, LocalDate startDate) {
 		super();
-		this.customer = user;
+		this.customer = customer;
 		this.copy = copy;
 		this.startDate = startDate;
         this.plannedReturnDate = startDate.plusDays(7);
 	}
 
-	public Customer getUser() {
+	public Customer getCustomer() {
 		return this.customer;
 	}
 

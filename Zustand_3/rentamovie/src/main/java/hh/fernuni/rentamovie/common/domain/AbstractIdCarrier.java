@@ -35,9 +35,10 @@ public abstract class AbstractIdCarrier implements IdCarrier {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof AbstractIdCarrier other)) {
+		if (obj == null || this.getClass() != obj.getClass()) {
 			return false;
 		}
+		AbstractIdCarrier other = (AbstractIdCarrier) obj;
 		return Objects.equals(this.id, other.id);
 	}
 

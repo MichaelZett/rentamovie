@@ -17,13 +17,13 @@ class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer createCustomer(String surename, String lastname, LocalDate birthday) {
-		return new Customer(surename, lastname, birthday);
+	public Customer createCustomer(String firstname, String lastname, LocalDate birthday) {
+		return new Customer(firstname, lastname, birthday);
 	}
 
 	@Override
-	public void updateCustomers(Customer currentUser, String firstname, String lastname, LocalDate birthdate) {
-		currentUser.updateData(firstname, lastname, birthdate);
+	public void updateCustomer(Customer currentCustomer, String firstname, String lastname, LocalDate birthdate) {
+		currentCustomer.updateData(firstname, lastname, birthdate);
 	}
 
 	@Override

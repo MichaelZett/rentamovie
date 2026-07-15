@@ -15,25 +15,21 @@ public class Rent extends AbstractIdCarrier {
 	private LocalDate endDate;
     private boolean paid;
 
-	public Rent(Customer user, Copy copy, LocalDate startDate) {
-        this(user, copy, startDate, startDate.plusDays(7));
+	public Rent(Customer customer, Copy copy, LocalDate startDate) {
+        this(customer, copy, startDate, startDate.plusDays(7));
     }
 
-    public Rent(Customer user, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
+    public Rent(Customer customer, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
 		super();
-		this.customer = user;
+		this.customer = customer;
 		this.copy = copy;
 		this.startDate = startDate;
         this.plannedReturnDate = plannedReturnDate;
 	}
 
-    public Rent(Long id, LocalDate startDate, LocalDate endDate, boolean paid, Customer user, Copy copy) {
-        this(id, startDate, startDate.plusDays(7), endDate, paid, user, copy);
-    }
-
-    public Rent(Long id, LocalDate startDate, LocalDate plannedReturnDate, LocalDate endDate, boolean paid, Customer user, Copy copy) {
+    public Rent(Long id, LocalDate startDate, LocalDate plannedReturnDate, LocalDate endDate, boolean paid, Customer customer, Copy copy) {
 		super(id);
-		this.customer = user;
+		this.customer = customer;
 		this.copy = copy;
 		this.startDate = startDate;
         this.plannedReturnDate = plannedReturnDate;
@@ -41,7 +37,7 @@ public class Rent extends AbstractIdCarrier {
         this.paid = paid;
 	}
 
-	public Customer getUser() {
+	public Customer getCustomer() {
 		return this.customer;
 	}
 
@@ -59,10 +55,6 @@ public class Rent extends AbstractIdCarrier {
 
     public LocalDate getPlannedReturnDate() {
         return this.plannedReturnDate;
-    }
-
-	public boolean isValid() {
-        return this.isOpen();
     }
 
     public boolean isOpen() {

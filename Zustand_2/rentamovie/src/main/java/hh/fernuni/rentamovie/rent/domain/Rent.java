@@ -14,14 +14,14 @@ public class Rent {
     private LocalDate plannedReturnDate;
 	private LocalDate endDate;
 
-	public Rent(Long id, Customer user, Copy copy, LocalDate startDate) {
-        this(id, user, copy, startDate, startDate.plusDays(7));
+	public Rent(Long id, Customer customer, Copy copy, LocalDate startDate) {
+        this(id, customer, copy, startDate, startDate.plusDays(7));
     }
 
-    public Rent(Long id, Customer user, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
+    public Rent(Long id, Customer customer, Copy copy, LocalDate startDate, LocalDate plannedReturnDate) {
 		super();
 		this.id = id;
-		this.customer = user;
+		this.customer = customer;
 		this.copy = copy;
 		this.startDate = startDate;
         this.plannedReturnDate = plannedReturnDate;
@@ -31,7 +31,7 @@ public class Rent {
 		return this.id;
 	}
 
-	public Customer getUser() {
+	public Customer getCustomer() {
 		return this.customer;
 	}
 

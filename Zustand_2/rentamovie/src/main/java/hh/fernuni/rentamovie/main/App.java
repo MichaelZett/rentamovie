@@ -1,5 +1,7 @@
 package hh.fernuni.rentamovie.main;
 
+import hh.fernuni.rentamovie.customer.application.CustomerService;
+import hh.fernuni.rentamovie.customer.application.CustomerServiceImpl;
 import hh.fernuni.rentamovie.customer.domain.Customer;
 import hh.fernuni.rentamovie.movie.application.MovieService;
 import hh.fernuni.rentamovie.movie.application.MovieServiceImpl;
@@ -22,6 +24,7 @@ public class App {
 		LOG.info("App was started");
 		MovieService movieService = new MovieServiceImpl();
 		RentService rentService = new RentServiceImpl();
+		CustomerService customerService = new CustomerServiceImpl();
 
 		Movie aNewHope = movieService.createMovie(Year.of(1977), "A new hope");
 		LOG.info("{} was created.", aNewHope);
@@ -29,7 +32,8 @@ public class App {
 		movieService.updateMovie(aNewHope, Year.of(1977), "A good hope");
 		LOG.info("{} was updated.", aNewHope);
 
-		Customer customer = new Customer(1L, "Luke", "Skywalker", LocalDate.of(1951, 9, 25));
+		Customer customer = customerService.createCustomer("Luke", "Skywalker", LocalDate.of(1951, 9, 25));
+		LOG.info("{} was created.", customer);
 		Rent rent = rentService.createRent(aNewHope, customer, LocalDate.now(SYSTEM_ZONE));
 		LOG.info("{} was created. Open rents: {}", rent, rentService.findOpenRents().size());
 

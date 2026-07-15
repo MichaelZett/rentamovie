@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 class RentServiceImpl implements RentService {
-	private static final RentService Instance = new RentServiceImpl();
+	private static final RentService INSTANCE = new RentServiceImpl();
 	private MovieService movieService = MovieService.getService();
     private RentRepository rentRepository = RentRepository.getRepository();
 
@@ -21,7 +21,7 @@ class RentServiceImpl implements RentService {
 	}
 
 	static RentService getInstance() {
-		return Instance;
+		return INSTANCE;
 	}
 
 	@Override

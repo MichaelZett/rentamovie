@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class RentServiceImpl implements RentService {
-	private static final RentService Instance = new RentServiceImpl();
+	private static final RentService INSTANCE = new RentServiceImpl();
 	private MovieService movieService = MovieService.getService();
     private List<Rent> rents = new ArrayList<>();
 
@@ -20,7 +20,7 @@ class RentServiceImpl implements RentService {
 	}
 
 	static RentService getInstance() {
-		return Instance;
+		return INSTANCE;
 	}
 
 	@Override

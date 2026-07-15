@@ -4,7 +4,7 @@ import hh.fernuni.rentamovie.common.domain.CommonRepositoryImpl;
 
 class CopyRepositoryImpl extends CommonRepositoryImpl<Copy> implements CopyRepository {
 
-	private static final CopyRepositoryImpl INSTANCE = new CopyRepositoryImpl("./copy.db");
+	private static final CopyRepositoryImpl INSTANCE = new CopyRepositoryImpl(System.getProperty("rentamovie.copy.db", "./copy.db"));
 	private MovieRepository movieRepository;
 
 	protected CopyRepositoryImpl(String filename) {

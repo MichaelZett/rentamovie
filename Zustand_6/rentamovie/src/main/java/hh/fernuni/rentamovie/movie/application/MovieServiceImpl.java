@@ -3,14 +3,11 @@ package hh.fernuni.rentamovie.movie.application;
 import hh.fernuni.rentamovie.movie.domain.Copy;
 import hh.fernuni.rentamovie.movie.domain.Movie;
 import hh.fernuni.rentamovie.movie.domain.MovieRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Year;
 import java.util.Collection;
 
 class MovieServiceImpl implements MovieService {
-	private static final Logger LOG = LoggerFactory.getLogger(MovieServiceImpl.class);
 	private static final MovieService INSTANCE = new MovieServiceImpl();
     private MovieRepository movieRepository = MovieRepository.getRepository();
 
@@ -46,14 +43,6 @@ class MovieServiceImpl implements MovieService {
                 .filter(Movie::isActive)
                 .toList();
     }
-
-	@Override
-	public void createCopies(Movie movie, int numberToCreate) {
-		for (int i = 0; i < numberToCreate; i++) {
-			Copy copy = new Copy(movie);
-			LOG.info("Created: {}", copy);
-		}
-	}
 
 	@Override
 	public Copy findCopy(Movie movie) {

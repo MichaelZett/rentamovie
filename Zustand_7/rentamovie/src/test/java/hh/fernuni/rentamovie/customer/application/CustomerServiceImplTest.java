@@ -29,9 +29,9 @@ class CustomerServiceImplTest {
     void shouldUpdateCustomer() {
 		Customer customer = mock(Customer.class);
 
-		this.testee.updateCustomers(customer, "surename", "lastname", LocalDate.of(1983, 3, 22));
+		this.testee.updateCustomer(customer, "firstname", "lastname", LocalDate.of(1983, 3, 22));
 
-		verify(customer).updateData("surename", "lastname", LocalDate.of(1983, 3, 22));
+		verify(customer).updateData("firstname", "lastname", LocalDate.of(1983, 3, 22));
 		verify(this.customerRepoMock).save(customer);
 	}
 

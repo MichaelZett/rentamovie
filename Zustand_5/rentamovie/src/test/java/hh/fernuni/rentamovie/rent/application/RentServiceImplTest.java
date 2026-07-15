@@ -42,7 +42,7 @@ class RentServiceImplTest {
 
         Rent createdRent = testee.createRent(movie, customer, startDate);
 
-        assertThat(createdRent.getUser()).isEqualTo(customer);
+        assertThat(createdRent.getCustomer()).isEqualTo(customer);
         assertThat(createdRent.getStartDate()).isEqualTo(startDate);
         assertThat(createdRent.getCopy()).isEqualTo(copy);
     }

@@ -5,17 +5,17 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import hh.fernuni.rentamovie.customer.domain.Customer;
 
-class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl implements CustomerService {
 	private static final AtomicLong ID_GENERATOR = new AtomicLong(1L);
 
 	@Override
-	public Customer createCustomer(String surename, String lastname, LocalDate birthday) {
-		return new Customer(ID_GENERATOR.getAndIncrement(), surename, lastname, birthday);
+	public Customer createCustomer(String firstname, String lastname, LocalDate birthday) {
+		return new Customer(ID_GENERATOR.getAndIncrement(), firstname, lastname, birthday);
 	}
 
 	@Override
-	public void updateCustomers(Customer currentUser, String firstname, String lastname, LocalDate birthdate) {
-		currentUser.updateData(firstname, lastname, birthdate);
+	public void updateCustomer(Customer currentCustomer, String firstname, String lastname, LocalDate birthdate) {
+		currentCustomer.updateData(firstname, lastname, birthdate);
 	}
 
 }

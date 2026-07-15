@@ -5,7 +5,7 @@ import hh.fernuni.rentamovie.common.domain.CommonRepositoryImpl;
 import java.time.LocalDate;
 
 class CustomerRepositoryImpl extends CommonRepositoryImpl<Customer> implements CustomerRepository {
-    private static final CustomerRepositoryImpl INSTANCE = new CustomerRepositoryImpl("./customer.db");
+    private static final CustomerRepositoryImpl INSTANCE = new CustomerRepositoryImpl(System.getProperty("rentamovie.customer.db", "./customer.db"));
 
     private CustomerRepositoryImpl(String filename) {
         super(filename);
@@ -18,13 +18,13 @@ class CustomerRepositoryImpl extends CommonRepositoryImpl<Customer> implements C
     }
 
     @Override
-    protected String toText(Customer user) {
+    protected String toText(Customer customer) {
         StringBuilder b = new StringBuilder();
-        b.append(user.getId()).append(DELIMITER);
-        b.append(requireStorableText(user.getFirstname())).append(DELIMITER);
-        b.append(requireStorableText(user.getLastname())).append(DELIMITER);
-        b.append(user.getBirthdate()).append(DELIMITER);
-        b.append(user.getStatus());
+        b.append(customer.getId()).append(DELIMITER);
+        b.append(requireStorableText(customer.getFirstname())).append(DELIMITER);
+        b.append(requireStorableText(customer.getLastname())).append(DELIMITER);
+        b.append(customer.getBirthdate()).append(DELIMITER);
+        b.append(customer.getStatus());
         return b.toString();
     }
 

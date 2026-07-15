@@ -27,9 +27,9 @@ class CustomerServiceImplTest {
 		Customer customer = mock(Customer.class);
 		CustomerService testee = CustomerServiceImpl.getInstance();
 
-		testee.updateCustomers(customer, "surename", "lastname", LocalDate.of(1983, 3, 22));
+		testee.updateCustomer(customer, "firstname", "lastname", LocalDate.of(1983, 3, 22));
 
-		verify(customer).updateData("surename", "lastname", LocalDate.of(1983, 3, 22));
+		verify(customer).updateData("firstname", "lastname", LocalDate.of(1983, 3, 22));
 	}
 
 	@Test

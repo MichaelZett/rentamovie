@@ -127,7 +127,7 @@ class RentServiceImplTest {
         Rent rent = mock(Rent.class);
         Customer customer = customerBornOn(LocalDate.of(1980, 3, 12));
         when(rent.isOpen()).thenReturn(false);
-        when(rent.getUser()).thenReturn(customer);
+        when(rent.getCustomer()).thenReturn(customer);
         when(rent.getEndDate()).thenReturn(LocalDate.of(2026, 7, 4));
         when(this.rateServiceMock.retrieveRateByAge(46)).thenReturn(Rate.REGULAR);
         when(this.rateServiceMock.calculatePrice(rent, Rate.REGULAR)).thenReturn(new BigDecimal("6.00"));
@@ -143,7 +143,7 @@ class RentServiceImplTest {
         Rent rent = mock(Rent.class);
         Customer customer = customerBornOn(LocalDate.of(1980, 3, 12));
         when(rent.isOpen()).thenReturn(false);
-        when(rent.getUser()).thenReturn(customer);
+        when(rent.getCustomer()).thenReturn(customer);
         when(rent.getEndDate()).thenReturn(LocalDate.of(2026, 7, 4));
         when(this.rateServiceMock.retrieveRateByAge(46)).thenReturn(Rate.REGULAR);
         when(this.rateServiceMock.calculatePrice(rent, Rate.REGULAR)).thenReturn(new BigDecimal("6.00"));

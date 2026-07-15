@@ -105,14 +105,14 @@ public class CustomerOverviewController {
         updatePage(0);
     }
 
-    private void showCustomerDetails(Customer user) {
-        if (user != null) {
-            currentCustomer = user;
-            firstnameInput.setText(user.getFirstname());
-            lastnameInput.setText(user.getLastname());
-            birthdayInput.setText(user.getBirthdate().toString());
-            statusInput.setValue(user.getStatus());
-            showCustomerHistory(user);
+    private void showCustomerDetails(Customer customer) {
+        if (customer != null) {
+            currentCustomer = customer;
+            firstnameInput.setText(customer.getFirstname());
+            lastnameInput.setText(customer.getLastname());
+            birthdayInput.setText(customer.getBirthdate().toString());
+            statusInput.setValue(customer.getStatus());
+            showCustomerHistory(customer);
         } else {
             clearInput();
         }
@@ -164,7 +164,7 @@ public class CustomerOverviewController {
                 customerTable.getSelectionModel().select(currentCustomer);
             }
             applyStatus(currentCustomer, statusInput.getValue());
-            customerService.updateCustomers(currentCustomer, firstnameInput.getText(), lastnameInput.getText(), birthdate);
+            customerService.updateCustomer(currentCustomer, firstnameInput.getText(), lastnameInput.getText(), birthdate);
             refreshCustomers();
         } catch (IllegalArgumentException e) {
             showValidationError(e.getMessage());

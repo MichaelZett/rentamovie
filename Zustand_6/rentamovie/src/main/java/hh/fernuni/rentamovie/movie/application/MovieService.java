@@ -9,8 +9,6 @@ import java.util.Collection;
 public interface MovieService {
 	Movie createMovie(Year yearOfPublication, String title);
 
-	void createCopies(Movie movie, int count);
-
 	void updateMovie(Movie currentMovie, Year year, String title);
 
 	Collection<Movie> readAllMovies();

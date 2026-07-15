@@ -19,16 +19,16 @@ class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer createCustomer(String surename, String lastname, LocalDate birthday) {
-        Customer customer = new Customer(surename, lastname, birthday);
+    public Customer createCustomer(String firstname, String lastname, LocalDate birthday) {
+        Customer customer = new Customer(firstname, lastname, birthday);
         this.customerRepository.save(customer);
         return customer;
     }
 
     @Override
-    public void updateCustomers(Customer currentUser, String firstname, String lastname, LocalDate birthdate) {
-        currentUser.updateData(firstname, lastname, birthdate);
-        this.customerRepository.save(currentUser);
+    public void updateCustomer(Customer currentCustomer, String firstname, String lastname, LocalDate birthdate) {
+        currentCustomer.updateData(firstname, lastname, birthdate);
+        this.customerRepository.save(currentCustomer);
     }
 
     @Override
