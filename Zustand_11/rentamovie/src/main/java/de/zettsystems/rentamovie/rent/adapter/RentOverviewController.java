@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import org.jspecify.annotations.Nullable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -34,8 +35,8 @@ public class RentOverviewController {
     private RateService rateService;
     private final ObservableList<Rent> rents = FXCollections.observableArrayList();
     private final ObservableList<Rent> pageRents = FXCollections.observableArrayList();
-    private FilteredList<Rent> filteredRents;
-    private SortedList<Rent> sortedRents;
+    private final FilteredList<Rent> filteredRents = new FilteredList<>(rents, rent -> true);
+    private final SortedList<Rent> sortedRents = new SortedList<>(filteredRents);
     private int currentPageIndex;
 
     public RentOverviewController() {
@@ -88,8 +89,6 @@ public class RentOverviewController {
         this.paymentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
         this.statusFilterBox.setItems(FXCollections.observableArrayList("All", "Open rents", "Overdue", "Open payments", "Paid"));
         this.statusFilterBox.getSelectionModel().select("All");
-        this.filteredRents = new FilteredList<>(rents, rent -> true);
-        this.sortedRents = new SortedList<>(this.filteredRents);
         this.sortedRents.comparatorProperty().bind(this.rentTable.comparatorProperty());
         this.rentTable.setItems(this.pageRents);
         this.rentTable.comparatorProperty().addListener((observable, oldValue, newValue) -> updatePage(0));
@@ -209,7 +208,7 @@ public class RentOverviewController {
         return amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
-    private static void showValidationError(String message) {
+    private static void showValidationError(@Nullable String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);

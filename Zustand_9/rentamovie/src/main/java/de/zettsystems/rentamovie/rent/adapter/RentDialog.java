@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
+import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Set;
@@ -82,7 +83,7 @@ public class RentDialog extends Dialog<Rent> {
 		return plannedDays;
 	}
 
-    private static void showValidationError(String message) {
+    private static void showValidationError(@Nullable String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);

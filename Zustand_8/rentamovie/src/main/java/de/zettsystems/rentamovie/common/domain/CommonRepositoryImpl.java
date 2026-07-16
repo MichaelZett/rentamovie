@@ -3,6 +3,7 @@ package de.zettsystems.rentamovie.common.domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.jspecify.annotations.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,10 +24,9 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 
 	protected CommonRepositoryImpl(String filename) {
 		path = Paths.get(filename);
-		init();
 	}
 
-	protected void init() {
+	protected final void load() {
 		try {
 			if (Files.exists(path)) {
 				List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
@@ -73,7 +73,7 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 	}
 
 	@Override
-	public T read(Long id) {
+	public @Nullable T read(Long id) {
 		return repo.get(id);
 	}
 

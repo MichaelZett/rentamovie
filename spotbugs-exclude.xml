@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Shared SpotBugs exclusions for all Zustand modules. Only didactic patterns
+     belong here (mirrors the Sonar multicriteria ignores in the parent POM). -->
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/4.10.3/spotbugs/etc/findbugsfilter.xsd">
+
+    <!-- JavaFX wires @FXML methods and fields via reflection and initializes the UI in
+         start()/initialize() instead of constructors; SpotBugs cannot see either. -->
+    <Match>
+        <Or>
+            <Package name="~de\.zettsystems\.rentamovie\..*\.adapter"/>
+            <Class name="~de\.zettsystems\.rentamovie\.main\.(App|RootLayoutController)"/>
+        </Or>
+        <Or>
+            <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD"/>
+            <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+        </Or>
+    </Match>
+</FindBugsFilter>

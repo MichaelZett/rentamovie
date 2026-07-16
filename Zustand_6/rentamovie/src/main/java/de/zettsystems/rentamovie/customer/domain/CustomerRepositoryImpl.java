@@ -1,5 +1,6 @@
 package de.zettsystems.rentamovie.customer.domain;
 
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +24,7 @@ class CustomerRepositoryImpl implements CustomerRepository {
 	}
 
 	@Override
-	public Customer read(Long id) {
+	public @Nullable Customer read(Long id) {
 		return this.repo.get(id);
 	}
 

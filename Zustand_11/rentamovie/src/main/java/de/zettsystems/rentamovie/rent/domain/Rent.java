@@ -4,6 +4,7 @@ import de.zettsystems.rentamovie.common.domain.AbstractIdCarrier;
 import de.zettsystems.rentamovie.customer.domain.Customer;
 import de.zettsystems.rentamovie.movie.domain.Copy;
 
+import org.jspecify.annotations.Nullable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -13,9 +14,9 @@ public class Rent extends AbstractIdCarrier {
     private Copy copy;
     private LocalDate startDate;
     private LocalDate plannedReturnDate;
-    private LocalDate endDate;
+    private @Nullable LocalDate endDate;
     private boolean paid;
-    private LocalDate paymentDate;
+    private @Nullable LocalDate paymentDate;
     private BigDecimal paidAmount = BigDecimal.ZERO;
 
     public Rent(Customer customer, Copy copy, LocalDate startDate) {
@@ -30,8 +31,8 @@ public class Rent extends AbstractIdCarrier {
         this.plannedReturnDate = plannedReturnDate;
     }
 
-    public Rent(Long id, LocalDate startDate, LocalDate plannedReturnDate, LocalDate endDate, boolean paid,
-                LocalDate paymentDate, BigDecimal paidAmount, Customer customer, Copy copy) {
+    public Rent(Long id, LocalDate startDate, LocalDate plannedReturnDate, @Nullable LocalDate endDate, boolean paid,
+                @Nullable LocalDate paymentDate, BigDecimal paidAmount, Customer customer, Copy copy) {
         super(id);
         this.customer = customer;
         this.copy = copy;
@@ -63,7 +64,7 @@ public class Rent extends AbstractIdCarrier {
         return this.startDate;
     }
 
-    public LocalDate getEndDate() {
+    public @Nullable LocalDate getEndDate() {
         return this.endDate;
     }
 
@@ -95,7 +96,7 @@ public class Rent extends AbstractIdCarrier {
         return this.paid;
     }
 
-    public LocalDate getPaymentDate() {
+    public @Nullable LocalDate getPaymentDate() {
         return this.paymentDate;
     }
 

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+// The root layout and overview panes are created in start(), not in the constructor (JavaFX lifecycle).
+@SuppressWarnings("NullAway.Init")
 public class App extends Application {
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
     private final DemoDataService demoDataService = new DemoDataService();

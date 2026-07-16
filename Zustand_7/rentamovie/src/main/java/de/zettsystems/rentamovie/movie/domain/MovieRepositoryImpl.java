@@ -9,6 +9,7 @@ class MovieRepositoryImpl extends CommonRepositoryImpl<Movie> implements MovieRe
 
 	private MovieRepositoryImpl(String filename) {
 		super(filename);
+		load();
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import org.jspecify.annotations.Nullable;
 import java.time.Year;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
@@ -27,12 +28,12 @@ import java.util.Locale;
 public class MovieOverviewController {
     private static final int PAGE_SIZE = 5;
 
-    private Movie currentMovie;
+    private @Nullable Movie currentMovie;
     private MovieService movieService = MovieService.getService();
     private final ObservableList<Movie> movies = FXCollections.observableArrayList();
     private final ObservableList<Movie> pageMovies = FXCollections.observableArrayList();
-    private FilteredList<Movie> filteredMovies;
-    private SortedList<Movie> sortedMovies;
+    private final FilteredList<Movie> filteredMovies = new FilteredList<>(movies, movie -> true);
+    private final SortedList<Movie> sortedMovies = new SortedList<>(filteredMovies);
     private int currentPageIndex;
 
     @FXML
@@ -81,8 +82,6 @@ public class MovieOverviewController {
 
         movieTable.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> showMovieDetails(newValue));
-        filteredMovies = new FilteredList<>(movies, movie -> true);
-        sortedMovies = new SortedList<>(filteredMovies);
         sortedMovies.comparatorProperty().bind(movieTable.comparatorProperty());
         movieTable.setItems(pageMovies);
         movieTable.comparatorProperty().addListener((observable, oldValue, newValue) -> updatePage(0));
@@ -103,7 +102,7 @@ public class MovieOverviewController {
         updatePage(0);
     }
 
-    private void showMovieDetails(Movie movie) {
+    private void showMovieDetails(@Nullable Movie movie) {
         if (movie != null) {
             currentMovie = movie;
             yearOfPublicationInput.setText(movie.getYearOfPublication().toString());
@@ -181,7 +180,7 @@ public class MovieOverviewController {
         movie.activate();
     }
 
-    private static void showValidationError(String message) {
+    private static void showValidationError(@Nullable String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);

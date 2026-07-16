@@ -35,6 +35,8 @@
         <maven.compiler.release>25</maven.compiler.release>
 
         <error-prone.version>2.50.0</error-prone.version>
+        <nullaway.version>0.13.7</nullaway.version>
+        <jspecify.version>1.0.0</jspecify.version>
         <slf4j.version>2.0.18</slf4j.version>
         <logback.version>1.5.37</logback.version>
         <junit.version>6.1.1</junit.version>
@@ -50,6 +52,7 @@
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
+        <spotbugs-maven-plugin.version>4.10.3.0</spotbugs-maven-plugin.version>
 
         <versions.allowMajorUpdates>false</versions.allowMajorUpdates>
 
@@ -93,6 +96,12 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${jspecify.version}</version>
             </dependency>
 
             <dependency>
@@ -155,7 +164,10 @@
                         <compilerArgs>
                             <arg>-XDcompilePolicy=simple</arg>
                             <arg>--should-stop=ifError=FLOW</arg>
-                            <arg>-Xplugin:ErrorProne -XepAllErrorsAsWarnings</arg>
+                            <arg>-Xplugin:ErrorProne -XepAllErrorsAsWarnings
+                                -XepOpt:NullAway:AnnotatedPackages=de.zettsystems
+                                -XepOpt:NullAway:ExcludedFieldAnnotations=javafx.fxml.FXML,org.mockito.Mock,org.mockito.InjectMocks,org.mockito.Captor
+                                -XepOpt:NullAway:HandleTestAssertionLibraries=true</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
@@ -172,6 +184,11 @@
                                 <groupId>com.google.errorprone</groupId>
                                 <artifactId>error_prone_core</artifactId>
                                 <version>${error-prone.version}</version>
+                            </path>
+                            <path>
+                                <groupId>com.uber.nullaway</groupId>
+                                <artifactId>nullaway</artifactId>
+                                <version>${nullaway.version}</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>
@@ -240,6 +257,16 @@
                     <artifactId>sonar-maven-plugin</artifactId>
                     <version>${sonar-maven-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs-maven-plugin.version}</version>
+                    <configuration>
+                        <effort>Max</effort>
+                        <threshold>Low</threshold>
+                        <excludeFilterFile>${maven.multiModuleProjectDirectory}/spotbugs-exclude.xml</excludeFilterFile>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -267,6 +294,18 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>spotbugs-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

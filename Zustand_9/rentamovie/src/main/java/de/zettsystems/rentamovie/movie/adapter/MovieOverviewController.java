@@ -16,13 +16,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import org.jspecify.annotations.Nullable;
 import java.time.Year;
 import java.time.format.DateTimeParseException;
 
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class MovieOverviewController {
-	private Movie currentMovie;
+	private @Nullable Movie currentMovie;
 	private MovieService movieService = MovieService.getService();
 
 	@FXML
@@ -74,7 +75,7 @@ public class MovieOverviewController {
 		movieTable.refresh();
 	}
 
-	private void showMovieDetails(Movie movie) {
+	private void showMovieDetails(@Nullable Movie movie) {
 		if (movie != null) {
 			currentMovie = movie;
 			yearOfPublicationInput.setText(movie.getYearOfPublication().toString());
@@ -141,7 +142,7 @@ public class MovieOverviewController {
         movie.activate();
     }
 
-    private static void showValidationError(String message) {
+    private static void showValidationError(@Nullable String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);

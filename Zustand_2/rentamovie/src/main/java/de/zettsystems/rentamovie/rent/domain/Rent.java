@@ -3,6 +3,7 @@ package de.zettsystems.rentamovie.rent.domain;
 import de.zettsystems.rentamovie.customer.domain.Customer;
 import de.zettsystems.rentamovie.movie.domain.Copy;
 
+import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -12,7 +13,7 @@ public class Rent {
 	private Copy copy;
 	private LocalDate startDate;
     private LocalDate plannedReturnDate;
-	private LocalDate endDate;
+	private @Nullable LocalDate endDate;
 
 	public Rent(Long id, Customer customer, Copy copy, LocalDate startDate) {
         this(id, customer, copy, startDate, startDate.plusDays(7));
@@ -43,7 +44,7 @@ public class Rent {
 		return this.startDate;
 	}
 
-	public LocalDate getEndDate() {
+	public @Nullable LocalDate getEndDate() {
 		return this.endDate;
 	}
 

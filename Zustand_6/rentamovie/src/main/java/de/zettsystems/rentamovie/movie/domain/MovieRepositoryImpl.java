@@ -1,5 +1,6 @@
 package de.zettsystems.rentamovie.movie.domain;
 
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +23,7 @@ class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
-    public Movie read(Long id) {
+    public @Nullable Movie read(Long id) {
         return this.repo.get(id);
     }
 

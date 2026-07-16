@@ -1,5 +1,6 @@
 package de.zettsystems.rentamovie.customer.domain;
 
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 
 public interface CustomerRepository {
@@ -9,7 +10,7 @@ public interface CustomerRepository {
 
 	void save(Customer customer);
 
-	Customer read(Long id);
+	@Nullable Customer read(Long id);
 
 	Collection<Customer> readAll();
 }

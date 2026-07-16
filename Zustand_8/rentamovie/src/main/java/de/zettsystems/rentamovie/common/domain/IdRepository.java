@@ -17,6 +17,7 @@ public class IdRepository {
 	private static final Logger LOG = LoggerFactory.getLogger(IdRepository.class);
 	private static final AtomicLong COUNT;
     private static final Path path = Paths.get(System.getProperty("rentamovie.id.db", "./id.db"));
+    private static final Object LOCK = new Object();
 
     private IdRepository() {
     }
@@ -44,14 +45,16 @@ public class IdRepository {
 		COUNT = new AtomicLong(currentId);
 	}
 
-    public static synchronized long getNextId() {
-		long newId = COUNT.incrementAndGet();
-		try {
-			Files.write(path, Collections.singletonList(String.valueOf(newId)), StandardCharsets.UTF_8,
-					StandardOpenOption.WRITE);
-        } catch (IOException _) {
-			LOG.error("Error writing id.db.");
-		}
-		return newId;
+    public static long getNextId() {
+    	synchronized (LOCK) {
+			long newId = COUNT.incrementAndGet();
+			try {
+				Files.write(path, Collections.singletonList(String.valueOf(newId)), StandardCharsets.UTF_8,
+						StandardOpenOption.WRITE);
+	        } catch (IOException _) {
+				LOG.error("Error writing id.db.");
+			}
+			return newId;
+    	}
 	}
 }

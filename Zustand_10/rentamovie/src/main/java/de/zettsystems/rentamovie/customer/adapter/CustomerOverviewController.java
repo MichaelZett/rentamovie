@@ -16,6 +16,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
@@ -23,12 +24,11 @@ import java.util.Locale;
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class CustomerOverviewController {
-    private Customer currentCustomer;
+    private @Nullable Customer currentCustomer;
     private CustomerService customerService = CustomerService.getService();
     private final ObservableList<Customer> customers = FXCollections.observableArrayList();
-    private FilteredList<Customer> filteredCustomers;
-    private SortedList<Customer> sortedCustomers;
-
+    private final FilteredList<Customer> filteredCustomers = new FilteredList<>(customers, customer -> true);
+    private final SortedList<Customer> sortedCustomers = new SortedList<>(filteredCustomers);
     @FXML
     private TableView<Customer> customerTable;
     @FXML
@@ -66,8 +66,6 @@ public class CustomerOverviewController {
 
         customerTable.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> showCustomerDetails(newValue));
-        filteredCustomers = new FilteredList<>(customers, customer -> true);
-        sortedCustomers = new SortedList<>(filteredCustomers);
         sortedCustomers.comparatorProperty().bind(customerTable.comparatorProperty());
         customerTable.setItems(sortedCustomers);
         searchInput.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
@@ -85,7 +83,7 @@ public class CustomerOverviewController {
                 || customer.getLastname().toLowerCase(Locale.ROOT).contains(search));
     }
 
-    private void showCustomerDetails(Customer customer) {
+    private void showCustomerDetails(@Nullable Customer customer) {
         if (customer != null) {
             currentCustomer = customer;
             firstnameInput.setText(customer.getFirstname());
@@ -147,7 +145,7 @@ public class CustomerOverviewController {
         customer.activate();
     }
 
-    private static void showValidationError(String message) {
+    private static void showValidationError(@Nullable String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);

@@ -9,6 +9,7 @@ class CustomerRepositoryImpl extends CommonRepositoryImpl<Customer> implements C
 
 	private CustomerRepositoryImpl(String filename) {
 		super(filename);
+		load();
 	}
 
 	@Override

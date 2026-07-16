@@ -12,6 +12,8 @@ public class Rent {
     private final Copy copy;
     private final LocalDate startDate;
     private final LocalDate plannedReturnDate;
+    // endDate stays null while the rent is open; Zustand 1 intentionally has no annotation library yet.
+    @SuppressWarnings("NullAway.Init")
     private LocalDate endDate;
 
     public Rent(Long id, Customer customer, Copy copy, LocalDate startDate) {

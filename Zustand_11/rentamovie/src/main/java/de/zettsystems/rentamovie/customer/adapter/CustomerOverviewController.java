@@ -20,6 +20,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
@@ -30,13 +31,13 @@ import java.util.Locale;
 public class CustomerOverviewController {
     private static final int PAGE_SIZE = 5;
 
-    private Customer currentCustomer;
+    private @Nullable Customer currentCustomer;
     private CustomerService customerService;
     private RentService rentService;
     private final ObservableList<Customer> customers = FXCollections.observableArrayList();
     private final ObservableList<Customer> pageCustomers = FXCollections.observableArrayList();
-    private FilteredList<Customer> filteredCustomers;
-    private SortedList<Customer> sortedCustomers;
+    private final FilteredList<Customer> filteredCustomers = new FilteredList<>(customers, customer -> true);
+    private final SortedList<Customer> sortedCustomers = new SortedList<>(filteredCustomers);
     private int currentPageIndex;
 
     public CustomerOverviewController() {
@@ -93,8 +94,6 @@ public class CustomerOverviewController {
 
         customerTable.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> showCustomerDetails(newValue));
-        filteredCustomers = new FilteredList<>(customers, customer -> true);
-        sortedCustomers = new SortedList<>(filteredCustomers);
         sortedCustomers.comparatorProperty().bind(customerTable.comparatorProperty());
         customerTable.setItems(pageCustomers);
         customerTable.comparatorProperty().addListener((observable, oldValue, newValue) -> updatePage(0));
@@ -114,7 +113,7 @@ public class CustomerOverviewController {
         updatePage(0);
     }
 
-    private void showCustomerDetails(Customer customer) {
+    private void showCustomerDetails(@Nullable Customer customer) {
         if (customer != null) {
             currentCustomer = customer;
             firstnameInput.setText(customer.getFirstname());
@@ -195,7 +194,7 @@ public class CustomerOverviewController {
         customer.activate();
     }
 
-    private static void showValidationError(String message) {
+    private static void showValidationError(@Nullable String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);

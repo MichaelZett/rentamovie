@@ -4,7 +4,8 @@ import javafx.fxml.FXML;
 
 public class RootLayoutController {
 
-	// Reference to the main application
+	// Reference to the main application; wired by App right after the FXML load
+	@SuppressWarnings("NullAway.Init")
 	private App mainApp;
 
 	public void setMainApp(App mainApp) {

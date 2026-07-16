@@ -14,13 +14,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class CustomerOverviewController {
-	private Customer currentCustomer;
+	private @Nullable Customer currentCustomer;
 	private CustomerService customerService = CustomerService.getService();
 
 	@FXML
@@ -68,7 +69,7 @@ public class CustomerOverviewController {
 		customerTable.refresh();
 	}
 
-	private void showCustomerDetails(Customer customer) {
+	private void showCustomerDetails(@Nullable Customer customer) {
 		if (customer != null) {
 			currentCustomer = customer;
 			firstnameInput.setText(customer.getFirstname());
@@ -130,7 +131,7 @@ public class CustomerOverviewController {
         customer.activate();
     }
 
-    private static void showValidationError(String message) {
+    private static void showValidationError(@Nullable String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);

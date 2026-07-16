@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import org.jspecify.annotations.Nullable;
 import java.time.Year;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
@@ -25,12 +26,11 @@ import java.util.Locale;
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class MovieOverviewController {
-    private Movie currentMovie;
+    private @Nullable Movie currentMovie;
     private MovieService movieService = MovieService.getService();
     private final ObservableList<Movie> movies = FXCollections.observableArrayList();
-    private FilteredList<Movie> filteredMovies;
-    private SortedList<Movie> sortedMovies;
-
+    private final FilteredList<Movie> filteredMovies = new FilteredList<>(movies, movie -> true);
+    private final SortedList<Movie> sortedMovies = new SortedList<>(filteredMovies);
     @FXML
     private TableView<Movie> movieTable;
     @FXML
@@ -71,8 +71,6 @@ public class MovieOverviewController {
 
         movieTable.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> showMovieDetails(newValue));
-        filteredMovies = new FilteredList<>(movies, movie -> true);
-        sortedMovies = new SortedList<>(filteredMovies);
         sortedMovies.comparatorProperty().bind(movieTable.comparatorProperty());
         movieTable.setItems(sortedMovies);
         searchInput.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
@@ -91,7 +89,7 @@ public class MovieOverviewController {
                 || movie.getYearOfPublication().toString().contains(search));
     }
 
-    private void showMovieDetails(Movie movie) {
+    private void showMovieDetails(@Nullable Movie movie) {
         if (movie != null) {
             currentMovie = movie;
             yearOfPublicationInput.setText(movie.getYearOfPublication().toString());
@@ -158,7 +156,7 @@ public class MovieOverviewController {
         movie.activate();
     }
 
-    private static void showValidationError(String message) {
+    private static void showValidationError(@Nullable String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);
