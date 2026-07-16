@@ -1,93 +1,24 @@
 package hh.fernuni.rentamovie.movie.domain;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import hh.fernuni.rentamovie.common.domain.CommonRepositoryImpl;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.time.Year;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-class MovieRepositoryImpl implements MovieRepository {
-	private static final Logger LOG = LoggerFactory.getLogger(MovieRepositoryImpl.class);
-	private static final MovieRepositoryImpl INSTANCE = new MovieRepositoryImpl();
-	private static final String DELIMITER = ",";
-	private final Path path = Paths.get(System.getProperty("rentamovie.movie.db", "./movie.db"));
-	private final Map<Long, Movie> repo = new ConcurrentHashMap<>();
+class MovieRepositoryImpl extends CommonRepositoryImpl<Movie> implements MovieRepository {
+	private static final MovieRepositoryImpl INSTANCE = new MovieRepositoryImpl(System.getProperty("rentamovie.movie.db", "./movie.db"));
 
-	private MovieRepositoryImpl() {
-		try {
-			if (Files.exists(path)) {
-				List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-				for (String domainClassAsText : lines) {
-					if (domainClassAsText.isBlank()) {
-						continue;
-					}
-					try {
-						Movie domainClass = fromText(domainClassAsText.split(DELIMITER));
-						repo.put(domainClass.getId(), domainClass);
-					} catch (RuntimeException e) {
-						LOG.error("Skipping unreadable line in {}: '{}' ({})", path, domainClassAsText, e.toString());
-					}
-				}
-			} else {
-				Files.createFile(path);
-			}
-        } catch (IOException _) {
-            LOG.error("Error working with file in {}.", path);
-		}
-	}
-
-	public static MovieRepository getInstance() {
-		return INSTANCE;
+	private MovieRepositoryImpl(String filename) {
+		super(filename);
 	}
 
 	@Override
-	public void save(Movie movie) {
-		Movie put = repo.put(movie.getId(), movie);
-		if (put == null) {
-			try {
-				Files.write(path, Collections.singletonList(toText(movie)), StandardCharsets.UTF_8,
-						StandardOpenOption.APPEND);
-            } catch (IOException _) {
-				LOG.error("Error writing movie.db.");
-			}
-		} else {
-			List<String> allMovies = repo.values().stream().map(MovieRepositoryImpl::toText)
-                    .toList();
-			try {
-				Files.write(path, allMovies, StandardCharsets.UTF_8, StandardOpenOption.WRITE,
-						StandardOpenOption.TRUNCATE_EXISTING);
-            } catch (IOException _) {
-				LOG.error("Error writing movie.db.");
-			}
-		}
+	protected Movie fromText(String[] split) {
+        MovieStatus status = split.length > 3 ? MovieStatus.valueOf(split[3]) : MovieStatus.ACTIVE;
+        return new Movie(Long.parseLong(split[0]), Year.parse(split[1]), split[2], status);
 	}
 
 	@Override
-	public Movie read(Long id) {
-		return repo.get(id);
-	}
-
-	@Override
-	public Collection<Movie> readAll() {
-		return repo.values();
-	}
-
-	private Movie fromText(String[] strings) {
-        MovieStatus status = strings.length > 3 ? MovieStatus.valueOf(strings[3]) : MovieStatus.ACTIVE;
-        return new Movie(Long.parseLong(strings[0]), Year.parse(strings[1]), strings[2], status);
-	}
-
-	private static String toText(Movie movie) {
+	protected String toText(Movie movie) {
 		StringBuilder b = new StringBuilder();
 		b.append(movie.getId()).append(DELIMITER);
 		b.append(movie.getYearOfPublication().toString()).append(DELIMITER);
@@ -95,4 +26,9 @@ class MovieRepositoryImpl implements MovieRepository {
         b.append(movie.getStatus());
 		return b.toString();
 	}
+
+	static MovieRepository getInstance() {
+		return INSTANCE;
+	}
+
 }

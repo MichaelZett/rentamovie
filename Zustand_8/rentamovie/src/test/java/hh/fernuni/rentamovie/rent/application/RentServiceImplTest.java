@@ -41,6 +41,19 @@ class RentServiceImplTest {
     private RentServiceImpl testee;
 
     @Test
+    void shouldSaveCreatedRent() {
+        Movie movie = mock(Movie.class);
+        when(movie.isActive()).thenReturn(true);
+        Copy copy = new Copy(movie);
+        when(this.movieServiceMock.findAllCopiesOfMovie(movie)).thenReturn(List.of(copy));
+
+        Rent rent = this.testee.createRent(movie, activeCustomer(), LocalDate.of(2026, 7, 1));
+
+        assertThat(rent.getCopy()).isEqualTo(copy);
+        verify(this.rentRepositoryMock).save(rent);
+    }
+
+    @Test
     void shouldRejectRentWithoutFreeCopy() {
         Movie movie = mock(Movie.class);
         when(movie.isActive()).thenReturn(true);
@@ -174,5 +187,27 @@ class RentServiceImplTest {
         when(this.rentRepositoryMock.readAll()).thenReturn(List.of(overdueRent, rentInTime));
 
         assertThat(this.testee.findOverdueRents(date)).containsExactly(overdueRent);
+    }
+
+    @Test
+    void shouldFindOpenRents() {
+        Rent openRent = mock(Rent.class);
+        Rent finishedRent = mock(Rent.class);
+        when(openRent.isOpen()).thenReturn(true);
+        when(finishedRent.isOpen()).thenReturn(false);
+        when(this.rentRepositoryMock.readAll()).thenReturn(List.of(openRent, finishedRent));
+
+        assertThat(this.testee.findOpenRents()).containsExactly(openRent);
+    }
+
+    @Test
+    void shouldFindRentsWithOpenPayment() {
+        Rent openPayment = mock(Rent.class);
+        Rent paidRent = mock(Rent.class);
+        when(openPayment.hasOpenPayment()).thenReturn(true);
+        when(paidRent.hasOpenPayment()).thenReturn(false);
+        when(this.rentRepositoryMock.readAll()).thenReturn(List.of(openPayment, paidRent));
+
+        assertThat(this.testee.findRentsWithOpenPayment()).containsExactly(openPayment);
     }
 }

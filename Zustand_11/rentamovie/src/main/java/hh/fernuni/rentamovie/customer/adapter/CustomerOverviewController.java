@@ -31,13 +31,22 @@ public class CustomerOverviewController {
     private static final int PAGE_SIZE = 5;
 
     private Customer currentCustomer;
-    private CustomerService customerService = CustomerService.getService();
-    private RentService rentService = RentService.getService();
+    private CustomerService customerService;
+    private RentService rentService;
     private final ObservableList<Customer> customers = FXCollections.observableArrayList();
     private final ObservableList<Customer> pageCustomers = FXCollections.observableArrayList();
     private FilteredList<Customer> filteredCustomers;
     private SortedList<Customer> sortedCustomers;
     private int currentPageIndex;
+
+    public CustomerOverviewController() {
+        this(CustomerService.getService(), RentService.getService());
+    }
+
+    CustomerOverviewController(CustomerService customerService, RentService rentService) {
+        this.customerService = customerService;
+        this.rentService = rentService;
+    }
 
     @FXML
     private TableView<Customer> customerTable;
@@ -129,13 +138,16 @@ public class CustomerOverviewController {
     }
 
     private void showCustomerHistory(Customer customer) {
-        String history = this.rentService.readAllRents().stream()
+        this.historyArea.setText(customerHistoryText(customer));
+    }
+
+    String customerHistoryText(Customer customer) {
+        return this.rentService.readAllRents().stream()
                 .filter(rent -> rent.getCustomer().equals(customer))
                 .sorted(Comparator.comparing(Rent::getStartDate).reversed())
                 .map(this::formatRentLine)
                 .reduce((left, right) -> left + System.lineSeparator() + right)
                 .orElse("No rentals yet.");
-        this.historyArea.setText(history);
     }
 
     private String formatRentLine(Rent rent) {
@@ -190,9 +202,17 @@ public class CustomerOverviewController {
         alert.showAndWait();
     }
 
+    static int pageCount(int totalSize) {
+        return Math.max(1, (int) Math.ceil((double) totalSize / PAGE_SIZE));
+    }
+
+    static int clampPageIndex(int pageIndex, int pageCount) {
+        return Math.max(0, Math.min(pageIndex, pageCount - 1));
+    }
+
     private void updatePage(int pageIndex) {
-        int pageCount = Math.max(1, (int) Math.ceil((double) this.sortedCustomers.size() / PAGE_SIZE));
-        this.currentPageIndex = Math.max(0, Math.min(pageIndex, pageCount - 1));
+        int pageCount = pageCount(this.sortedCustomers.size());
+        this.currentPageIndex = clampPageIndex(pageIndex, pageCount);
         int fromIndex = this.currentPageIndex * PAGE_SIZE;
         int toIndex = Math.min(fromIndex + PAGE_SIZE, this.sortedCustomers.size());
         this.pageCustomers.setAll(this.sortedCustomers.subList(fromIndex, toIndex));
