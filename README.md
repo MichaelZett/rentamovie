@@ -314,7 +314,7 @@ mvn -pl Zustand_4/rentamovie test -Dtest=RentServiceImplTest
 
 ```bash
 cd Zustand_1/rentamovie
-mvn exec:java -Dexec.mainClass=hh.fernuni.rentamovie.main.App
+mvn exec:java -Dexec.mainClass=de.zettsystems.rentamovie.main.App
 ```
 
 ### JavaFX-Oberfläche starten (Zustand_9 / Zustand_10 / Zustand_11)
@@ -363,7 +363,7 @@ rentamovie/
 ```
 
 Innerhalb jedes Zustands folgt der Java-Code dem Schema
-`hh.fernuni.rentamovie.<feature>.<schicht>`, mit
+`de.zettsystems.rentamovie.<feature>.<schicht>`, mit
 `feature ∈ { customer, movie, rent, rate, common, main }` und
 `schicht ∈ { domain, application, adapter }`.
 
