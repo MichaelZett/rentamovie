@@ -1,0 +1,73 @@
+# Zustand 2 — Die Service-Schicht {background-color="#1a3a5c"}
+
+## Neue Technik: Services hinter Interfaces
+
+```{mermaid}
+flowchart TB
+    App[App.main] --> CS[CustomerService] & MS[MovieService] & RS[RentService]
+    CS & MS & RS --> D[Domain-Klassen]
+```
+
+- Die Anwendung ruft **Interfaces**, nicht Implementierungen
+- Geschäftslogik wandert aus `main` in Services
+- Ein Service pro Feature: `customer`, `movie`, `rent`
+
+## Neue Technik: Logging wie in echten Projekten
+
+```{mermaid}
+flowchart LR
+    Code -->|API| SLF4J[SLF4J-Fassade]
+    SLF4J -->|Binding| Logback
+    Logback --> K[Konsole / Datei]
+```
+
+- **SLF4J** = Fassade, **Logback** = Implementierung — austauschbar
+- Parametrisierte Meldungen: `LOG.info("Created {}", rent);`
+- 📖 [slf4j.org](https://www.slf4j.org/manual.html) · [logback.qos.ch](https://logback.qos.ch/manual/)
+
+## Neue Fachlichkeit: Verleih als Use-Case
+
+```{mermaid}
+sequenceDiagram
+    participant App
+    participant RS as RentService
+    participant M as MovieService
+    App->>RS: createRent(movie, customer, date)
+    RS->>M: findCopy(movie)
+    M-->>RS: copy
+    RS-->>App: Rent
+```
+
+## Der Service-Vertrag
+
+```{.java code-line-numbers="1|3|5|7"}
+public interface RentService {
+
+    Rent createRent(Movie movie, Customer customer, LocalDate startDate);
+
+    void returnRent(Rent rent);
+
+    List<Rent> findOpenRents();
+}
+```
+
+## Ab in den Code 🧑‍💻
+
+- `XService`-Interface + `XServiceImpl` je Feature
+- `RentServiceImpl` hält die Liste der Verleihe
+- Logger pro Klasse: `LoggerFactory.getLogger(...)`
+- `App.main` wird schlank — nur noch Aufrufe
+
+→ Live: `Zustand_2/rentamovie`
+
+## Aufgaben {.aufgaben}
+
+1. Domain-Objekte über **stabile ID** vergleichen statt Objektidentität
+2. Gemeinsames ID-Handling in eine **Basisklasse** auslagern
+3. Doppelte Methoden in den Domain-Klassen abbauen
+4. **Ein** Service pro Typ: `App` und `RentServiceImpl` erzeugen aktuell
+   je einen eigenen `MovieServiceImpl` — getrennter Zustand!
+
+::: footer-hint
+Lösung: Zustand 3
+:::

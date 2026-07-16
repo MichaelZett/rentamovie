@@ -1,0 +1,62 @@
+# Zustand 10 — Komfort-UI {background-color="#1a3a5c"}
+
+## Neue Technik: Listen-Pipeline statt Handarbeit
+
+```{mermaid}
+flowchart LR
+    R[("rents<br/>ObservableList")] --> F[FilteredList]
+    F --> S[SortedList]
+    S --> P["Seite (subList)"]
+    P --> T[TableView]
+    SF[Statusfilter] -.->|setPredicate| F
+    TC[Spaltenklick] -.->|comparatorProperty| S
+```
+
+- **`FilteredList`** + **`SortedList`** reagieren automatisch auf Änderungen
+- Comparator an die Tabelle **binden** ⇒ Klick auf Spalte sortiert wirklich
+- 📖 [Javadoc `SortedList`](https://openjfx.io/javadoc/26/javafx.base/javafx/collections/transformation/SortedList.html)
+
+## Die Pipeline im Code
+
+```{.java code-line-numbers="1-2|5|6|7"}
+private final FilteredList<Rent> filteredRents = new FilteredList<>(rents, rent -> true);
+private final SortedList<Rent> sortedRents = new SortedList<>(filteredRents);
+
+private void initialize() {
+    this.sortedRents.comparatorProperty().bind(this.rentTable.comparatorProperty());
+    this.rentTable.setItems(this.pageRents);
+    this.statusFilterBox.valueProperty().addListener((observable, oldValue, newValue) -> applyFilter());
+}
+```
+
+- Suche: `textProperty().addListener(...)` → `setPredicate(...)`
+- Paging von Hand: `subList(from, to)` + Seitenzähler
+
+## Neue Fachlichkeit
+
+- 🔍 Suche über Vor-/Nachname bzw. Titel
+- 🎚 Verleih-Statusfilter: All, Open rents, Overdue, Open payments, Paid
+- 📄 Seitenweise Verleihe (5 pro Seite)
+- 💶 Zahlungsdialog zeigt den **erwarteten Betrag** (via `RateService`)
+- ♻️ **Demo-Daten-Reset** für Kursübungen (`DemoDataService`)
+
+## Ab in den Code 🧑‍💻
+
+- Pipeline-Felder `final` am Feld initialisiert
+- `applyFilter()` kombiniert Suchtext + Statusfilter
+- `updatePage(index)`: Seitenmathematik + Button-Zustände
+- Seed-Daten in den `.db`-Dateien = Stand nach Reset
+
+→ Live: `Zustand_10/rentamovie` — `mvn javafx:run`
+
+## Aufgaben {.aufgaben}
+
+1. **Arbeitslisten** als Buttons: offene Verleihe, offene Zahlungen, überfällig
+2. **Kunden-Verleihhistorie** anzeigen
+3. **Paging** auch für Kunden- und Filmübersicht
+4. **Tagesabschluss**: Zahlungen eines Tages mit Summe
+5. **Tests** für die neue Controller-Logik
+
+::: footer-hint
+Lösung: Zustand 11
+:::

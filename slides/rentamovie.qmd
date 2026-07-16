@@ -1,0 +1,39 @@
+---
+title: "rentamovie"
+subtitle: "Java-Anwendungsentwicklung Schritt für Schritt"
+author: "Michael Zöller"
+lang: de
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    slide-number: c/t
+    hash: true
+    transition: slide
+    code-line-numbers: true
+    mermaid:
+      theme: neutral
+---
+
+{{< include chapters/_z00_intro.qmd >}}
+
+{{< include chapters/_z01_domaene.qmd >}}
+
+{{< include chapters/_z02_services.qmd >}}
+
+{{< include chapters/_z03_identitaet.qmd >}}
+
+{{< include chapters/_z04_tests.qmd >}}
+
+{{< include chapters/_z05_preise.qmd >}}
+
+{{< include chapters/_z06_repository.qmd >}}
+
+{{< include chapters/_z07_persistenz.qmd >}}
+
+{{< include chapters/_z08_validierung.qmd >}}
+
+{{< include chapters/_z09_javafx.qmd >}}
+
+{{< include chapters/_z10_komfort.qmd >}}
+
+{{< include chapters/_z11_abschluss.qmd >}}

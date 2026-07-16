@@ -1,0 +1,69 @@
+# Zustand 6 — Das Repository-Muster {background-color="#1a3a5c"}
+
+## Neue Technik: Speicher hinter einem Interface
+
+```{mermaid}
+flowchart LR
+    S[CustomerService] --> R[CustomerRepository]
+    R --> I[CustomerRepositoryImpl]
+    I --> M[("Map&lt;Long, Customer&gt;")]
+```
+
+- Das **Repository** kapselt „wo liegen meine Objekte?"
+- Heute eine `ConcurrentHashMap` — morgen eine Datei, ohne Service-Änderung
+- Vertrag: `save`, `read(id)`, `readAll`
+
+## `read` kann leer ausgehen
+
+```{.java code-line-numbers="3|5"}
+public interface CustomerRepository {
+
+    @Nullable Customer read(Long id);
+
+    Collection<Customer> readAll();
+    // ...
+}
+```
+
+- Unbekannte ID ⇒ `null` — der Vertrag sagt es **explizit**
+- `@Nullable` (JSpecify) macht den Compiler zum Mitleser
+- 📖 [jspecify.org](https://jspecify.dev)
+
+## Services delegieren statt zu horten
+
+```{.java code-line-numbers="2|5-7|10-12"}
+class CustomerServiceImpl implements CustomerService {
+    private CustomerRepository customerRepository = CustomerRepository.getRepository();
+
+    @Override
+    public Customer createCustomer(String firstname, String lastname, LocalDate birthday) {
+        Customer customer = new Customer(firstname, lastname, birthday);
+        this.customerRepository.save(customer);
+        return customer;
+    }
+
+    @Override
+    public Collection<Customer> readAllCustomers() {
+        return this.customerRepository.readAll();
+    }
+}
+```
+
+## Ab in den Code 🧑‍💻
+
+- `CustomerRepository`, `MovieRepository`, `RentRepository` — je in-memory
+- Gleiche Singleton-Mechanik wie bei den Services: `getRepository()`
+- Services geben ihre internen Listen auf
+
+→ Live: `Zustand_6/rentamovie`
+
+## Aufgaben {.aufgaben}
+
+1. Die drei Repositories zu einem **`CommonRepository<T>`** generalisieren
+2. **Datei-Persistenz** für Kunden, Filme und Verleihe vorbereiten
+3. **Zahlungsfälle** vorbereiten: berechneter Preis, offener Betrag, bezahlt
+4. ID-Erzeugung aus dem Domain-Modell in ein **Repository** verschieben
+
+::: footer-hint
+Lösung: Zustand 7
+:::

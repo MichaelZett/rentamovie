@@ -1,0 +1,88 @@
+# Zustand 7 — Datei-Persistenz {background-color="#1a3a5c"}
+
+## Neue Technik: ein generisches Repository
+
+```{mermaid}
+classDiagram
+    class CommonRepository~T~ {
+        <<interface>>
+        save(T)
+        read(Long) T
+        readAll() Collection~T~
+    }
+    class CommonRepositoryImpl~T~ {
+        <<abstract>>
+        load()
+        fromText(String[])* T
+        toText(T)* String
+    }
+    CommonRepository <|.. CommonRepositoryImpl
+    CommonRepositoryImpl <|-- CustomerRepositoryImpl
+    CommonRepositoryImpl <|-- MovieRepositoryImpl
+    CommonRepositoryImpl <|-- CopyRepositoryImpl
+    CommonRepositoryImpl <|-- RentRepositoryImpl
+```
+
+- **Generics** + **Template-Methoden**: Basisklasse kann Laden/Speichern,
+  Subklassen liefern nur `fromText`/`toText`
+
+## Neue Technik: Dateien lesen und schreiben
+
+```
+4,2026-07-16,2026-07-23,OPEN,2,3,OPEN_PAYMENT      ← eine Zeile = ein Rent
+```
+
+- `java.nio.file.Files`: `readAllLines`, `write`, `exists`, `createFile`
+- Textformat mit Delimiter `,` — bewusst simpel, gut debugbar
+- 📖 [Javadoc `Files`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html)
+
+## Erst Felder, dann laden
+
+```{.java code-line-numbers="2|3|4"}
+private CopyRepositoryImpl(String filename) {
+    super(filename);                                    // Pfad merken
+    this.movieRepository = MovieRepository.getRepository(); // Abhängigkeit setzen
+    load();                                             // dann erst laden
+}
+```
+
+- `load()` ist **final** in der Basisklasse — Reihenfolge garantiert
+- Kaputte Zeile? Log + überspringen statt Absturz:
+
+```java
+} catch (RuntimeException e) {
+    LOG.error("Skipping unreadable line in {}: '{}' ({})", path, domainClassAsText, e.toString());
+}
+```
+
+## IDs überleben den Neustart
+
+```{mermaid}
+flowchart LR
+    S[Service] -->|getNextId| IR[IdRepository]
+    IR -->|incrementAndGet| AL[AtomicLong]
+    IR -->|write| DB[(id.db)]
+```
+
+- `IdRepository.getNextId()`: zählt hoch **und** persistiert
+- Synchronisiert über ein privates Lock-Objekt
+- Die ID-Erzeugung ist raus aus `AbstractIdCarrier`
+
+## Ab in den Code 🧑‍💻
+
+- `CommonRepositoryImpl<T>`: `load`, `save` (append vs. rewrite), `read`
+- Vier konkrete Repositories: nur noch `fromText`/`toText` + `INSTANCE`
+- `./customer.db`, `./movie.db`, … — Tests leiten per System-Property um
+
+→ Live: `Zustand_7/rentamovie` — App starten, beenden, **neu starten**
+
+## Aufgaben {.aufgaben}
+
+1. **Konsistenzregeln** für Verleih, Rückgabe und Zahlung ergänzen
+2. **Doppelverleih** derselben Kopie verhindern, solange ein Verleih offen ist
+3. Rückgabe **beendeter** Verleihe ablehnen
+4. **Rückgabedatum und Zahlung** vor dem Speichern validieren
+
+::: footer-hint
+Lösung: Zustand 8
+:::

@@ -1,0 +1,20 @@
+/*-- scss:defaults --*/
+$presentation-heading-color: #1a3a5c;
+$link-color: #1a6fb5;
+$code-block-font-size: 0.55em;
+$presentation-h2-font-size: 1.4em;
+
+/*-- scss:rules --*/
+.reveal .slide ul li {
+  margin-bottom: 0.35em;
+}
+
+.reveal .footer-hint {
+  font-size: 0.55em;
+  color: #888;
+  margin-top: 1.5em;
+}
+
+.reveal .aufgaben h2 {
+  color: #7a4a10;
+}

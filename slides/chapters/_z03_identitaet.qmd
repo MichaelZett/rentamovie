@@ -1,0 +1,83 @@
+# Zustand 3 — Identität & Basisklasse {background-color="#1a3a5c"}
+
+## Neue Technik: Wer bin ich? `equals` & `hashCode`
+
+```{mermaid}
+flowchart LR
+    A["rent1 (id=4)"] ---|"equals? → id-Vergleich"| B["rent2 (id=4)"]
+```
+
+- Objektidentität (`==`) ≠ fachliche Gleichheit
+- Kontrakt: gleiche Objekte ⇒ gleicher Hashcode
+- 📖 [Javadoc `Object.equals`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object))
+
+## Neue Technik: eine Basisklasse für alle
+
+```{mermaid}
+classDiagram
+    class IdCarrier {
+        <<interface>>
+        getId()
+    }
+    class AbstractIdCarrier {
+        id
+        equals()
+        hashCode()
+    }
+    IdCarrier <|.. AbstractIdCarrier
+    AbstractIdCarrier <|-- Customer
+    AbstractIdCarrier <|-- Movie
+    AbstractIdCarrier <|-- Copy
+    AbstractIdCarrier <|-- Rent
+```
+
+## Das id-basierte equals
+
+```{.java code-line-numbers="3-5|6-8|9-10"}
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj == null || this.getClass() != obj.getClass()) {
+        return false;
+    }
+    AbstractIdCarrier other = (AbstractIdCarrier) obj;
+    return Objects.equals(this.id, other.id);
+}
+```
+
+- `AtomicLong` vergibt die IDs — threadsicher, fortlaufend
+- Subklassen überschreiben `equals`/`hashCode` **nicht** mehr
+
+## Neue Technik: genau eine Service-Instanz
+
+```{.java code-line-numbers="2-4"}
+public interface RentService {
+    static RentService getService() {
+        return RentServiceImpl.getInstance();
+    }
+    // ...
+}
+```
+
+- Hand-verdrahtetes **Singleton**: `INSTANCE` + privater Konstruktor
+- Kein DI-Framework — bewusst: erst verstehen, dann automatisieren
+
+## Ab in den Code 🧑‍💻
+
+- Neues Paket `common.domain`: `IdCarrier`, `AbstractIdCarrier`
+- Domain-Klassen erben — und schrumpfen
+- Alle Services: `INSTANCE` + statisches `getService()`
+
+→ Live: `Zustand_3/rentamovie`
+
+## Aufgaben {.aufgaben}
+
+1. Erste **Unit-Tests** für `RentService`: anlegen, zurückgeben, offene filtern
+2. **ID-Gleichheit** aus `AbstractIdCarrier` testen
+3. **Mockito** einsetzen, wo ein Service einen anderen Service braucht
+
+::: footer-hint
+Lösung: Zustand 4
+:::

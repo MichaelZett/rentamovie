@@ -1,0 +1,75 @@
+# Zustand 11 — Auswertungen & Abschluss {background-color="#1a3a5c"}
+
+## Neue Fachlichkeit: der Arbeitstag in der Videothek
+
+```{mermaid}
+flowchart LR
+    W[Worklist-Buttons] -->|selectWorklist| F[Statusfilter]
+    K[Kunde auswählen] --> H[Verleihhistorie]
+    T[Tagesabschluss] --> P["Zahlungen heute + Summe"]
+```
+
+- **Worklists**: ein Klick = vorgefilterte Verleihliste
+- **Historie**: alle Verleihe eines Kunden, neueste zuerst
+- **Tagesabschluss**: Kassensturz per Dialog
+
+## Auswertung mit Streams
+
+```{.java code-line-numbers="2|3|4|5-6"}
+String customerHistoryText(Customer customer) {
+    return this.rentService.readAllRents().stream()
+            .filter(rent -> rent.getCustomer().equals(customer))
+            .sorted(Comparator.comparing(Rent::getStartDate).reversed())
+            .map(this::formatRentLine)
+            .reduce((left, right) -> left + System.lineSeparator() + right)
+            .orElse("No rentals yet.");
+}
+```
+
+- Lesen → filtern → sortieren → formatieren → zusammenfügen
+- Das id-basierte `equals` aus Z3 zahlt sich hier aus
+
+## Neue Technik: Controller testbar machen
+
+```{mermaid}
+flowchart LR
+    subgraph Test
+        M1[RentService-Mock] & M2[RateService-Mock] --> C[RentOverviewController]
+        C --> A["dailyClosingText(date) → String"]
+    end
+```
+
+```java
+RentOverviewController(RentService rentService, RateService rateService) { ... }
+```
+
+- Paket-privater **DI-Konstruktor** nur für Tests — FXML nutzt weiter den Default
+- Logik als reine Methoden (`pageCount`, `clampPageIndex`, `dailyClosingText`)
+  → testbar **ohne** UI
+
+## Ab in den Code 🧑‍💻
+
+- Worklist-Handler delegieren an den Statusfilter
+- `dailyClosingText`: `findPaymentsOn(date)` + `sumPaymentsOn(date)`
+- `Rent` kennt jetzt `paymentDate` und `paidAmount`
+- Controller-Tests mit gemockten Services
+
+→ Live: `Zustand_11/rentamovie` — `mvn javafx:run`
+
+## Geschafft! 🎉
+
+```{mermaid}
+flowchart LR
+    D[Domänenmodell] --> S[Services] --> T[Tests] --> R[Repositories] --> P[Persistenz] --> V[Validierung] --> UI[JavaFX-UI]
+```
+
+- Vom POJO zur getesteten Desktop-Anwendung mit Datei-Persistenz
+- Jeder Schritt: **ein** Konzept, lauffähig, mit Aufgaben geübt
+
+## Ausblick
+
+- 👥 Mitarbeiter, Rollen & Rechte
+- 🖥 Mehrplatzbetrieb: gemeinsame Datenbank oder Server?
+- 📦 Großhandels-Schnittstelle: Bestellungen, Wareneingang, Rechnungen
+
+*Die Videothek expandiert — vielleicht im nächsten Kurs.*

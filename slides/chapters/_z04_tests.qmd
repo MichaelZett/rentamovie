@@ -1,0 +1,68 @@
+# Zustand 4 — Erste Tests {background-color="#1a3a5c"}
+
+## Neue Technik: das Test-Trio
+
+| | | |
+|---|---|---|
+| **JUnit Jupiter** | Test-Framework: `@Test`, Lifecycle | [docs.junit.org](https://docs.junit.org) |
+| **AssertJ** | lesbare, fluente Assertions | [assertj.github.io](https://assertj.github.io/doc/) |
+| **Mockito** | Mocks für Abhängigkeiten | [site.mockito.org](https://site.mockito.org) |
+
+- Tests liegen in `src/test/java` — gleiche Pakete wie der Code
+- `mvn test` führt alles aus, der Build wird rot bei Fehlern
+
+## Wozu Mocks?
+
+```{mermaid}
+flowchart LR
+    T[RentServiceImplTest] --> RS[RentServiceImpl]
+    RS -.->|"@Mock"| MS[MovieService-Attrappe]
+    MS -.->|"when(...).thenReturn(copy)"| RS
+```
+
+- Der Test prüft **nur** `RentServiceImpl` — der Rest ist Attrappe
+- `@InjectMocks` setzt die Mocks per Reflection ein
+
+## Anatomie eines Tests
+
+```{.java code-line-numbers="1-2|6-7|9-11|13|15-17"}
+@ExtendWith(MockitoExtension.class)
+class RentServiceImplTest {
+
+    @Mock private MovieService movieServiceMock;
+
+    @InjectMocks
+    private RentServiceImpl testee;
+
+    @Test
+    void shouldCreateRent() {
+        when(movieServiceMock.findCopy(movie)).thenReturn(copy);
+
+        Rent createdRent = testee.createRent(movie, customer, startDate);
+
+        assertThat(createdRent.getCustomer()).isEqualTo(customer);
+        assertThat(createdRent.getStartDate()).isEqualTo(startDate);
+        assertThat(createdRent.getCopy()).isEqualTo(copy);
+    }
+}
+```
+
+**Arrange → Act → Assert** — jeder Test erzählt eine Geschichte
+
+## Ab in den Code 🧑‍💻
+
+- `RentServiceImplTest`: anlegen, ablehnen, zurückgeben
+- `AbstractIdCarrierTest`: gleiche ID ⇒ gleich, andere Klasse ⇒ ungleich
+- `assertThatThrownBy(...)` für erwartete Fehler
+
+→ Live: `Zustand_4/rentamovie` — `mvn test`
+
+## Aufgaben {.aufgaben}
+
+1. Tests für **`MovieService`** und **`CustomerService`** ergänzen
+2. Domain-Klassen **`Movie`**, **`Copy`**, **`Rent`** testen
+3. Testfälle für **Tarif- und Preisberechnung** vorbereiten
+
+::: footer-hint
+Lösung: Zustand 5
+:::

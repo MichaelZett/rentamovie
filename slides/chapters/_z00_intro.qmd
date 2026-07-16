@@ -1,0 +1,66 @@
+# Willkommen in der Videothek {background-color="#1a3a5c"}
+
+## Worum geht es?
+
+:::: {.columns}
+::: {.column width="55%"}
+- Eine **Videothek** — bewusst altmodisch 📼
+- Konkrete Business-Anwendung statt Spielbeispiel
+- Desktop-UI im Stil der 1990er — als Lehr-Konstante
+:::
+::: {.column width="45%"}
+```{mermaid}
+flowchart TB
+    K[👤 Kunde] -->|leiht| KO[📼 Kopie]
+    KO -->|gehört zu| F[🎬 Film]
+    K -->|zahlt| T[💰 Tarif]
+```
+:::
+::::
+
+## Die Reise: elf Zustände
+
+```{mermaid}
+timeline
+    section Fundament
+        Z1 : Domänenmodell
+        Z2 : Services
+        Z3 : Identität
+    section Qualität
+        Z4 : Tests
+        Z5 : Preise
+    section Daten
+        Z6 : Repository
+        Z7 : Dateien
+        Z8 : Validierung
+    section Oberfläche
+        Z9 : JavaFX
+        Z10 : Komfort
+        Z11 : Auswertungen
+```
+
+Jeder Zustand = ein lauffähiges Maven-Modul mit **einem** neuen Konzept.
+
+## Werkzeuge
+
+| | |
+|---|---|
+| ☕ Java 25 | [dev.java](https://dev.java) · Temurin/[Adoptium](https://adoptium.net) |
+| 📦 Maven 3.9 | [maven.apache.org](https://maven.apache.org) — Multi-Module-Build |
+| 🖥 IntelliJ IDEA | Run-Configs je Zustand |
+
+```bash
+mvn verify                          # alles bauen + testen
+cd Zustand_1/rentamovie && mvn exec:java -Dexec.mainClass=de.zettsystems.rentamovie.main.App
+```
+
+## Der Build passt mit auf
+
+```{mermaid}
+flowchart LR
+    Code --> EP[ErrorProne] --> NA[NullAway] --> SB[SpotBugs] --> T[Tests] --> OK[✅ mvn verify]
+```
+
+- Statische Analyse findet Fehlerklassen **vor** dem Start
+- Warnungen lesen lohnt sich — der Kurs nutzt sie als Lernsignal
+- [errorprone.info](https://errorprone.info) · [NullAway](https://github.com/uber/NullAway) · [spotbugs.github.io](https://spotbugs.github.io)

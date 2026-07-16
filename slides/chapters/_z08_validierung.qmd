@@ -1,0 +1,99 @@
+# Zustand 8 — Validierung {background-color="#1a3a5c"}
+
+## Neue Fachlichkeit: der Lebenszyklus wird verbindlich
+
+```{mermaid}
+stateDiagram-v2
+    [*] --> Offen : createRent
+    Offen --> Zurückgegeben : returnRent(endDate)
+    Zurückgegeben --> Bezahlt : payRent(betrag)
+    Bezahlt --> [*]
+    note right of Offen : kein zweiter Verleih derselben Kopie
+    note right of Zurückgegeben : endDate ≥ startDate
+    note right of Bezahlt : Betrag = berechneter Preis
+```
+
+## Neue Technik: Fail fast an der Service-Grenze
+
+```{.java code-line-numbers="2-4|5-7|8"}
+public void returnRent(Rent rent, LocalDate endDate) {
+    if (rent.isFinished()) {
+        throw new IllegalStateException("Rent is already returned.");
+    }
+    if (endDate.isBefore(rent.getStartDate())) {
+        throw new IllegalArgumentException("Return date must not be before start date.");
+    }
+    rent.endRent(endDate);
+    this.rentRepository.save(rent);
+}
+```
+
+- `IllegalStateException` = falscher Zustand, `IllegalArgumentException` = falscher Wert
+- Erst prüfen, dann ändern, dann speichern
+
+## Kein Doppelverleih
+
+```{mermaid}
+flowchart LR
+    C[createRent] --> F[findAllFreeCopies]
+    F --> A[alle Kopien des Films]
+    F --> O[minus Kopien offener Verleihe]
+    F --> V[minus nicht verfügbare]
+    V -->|leer?| E[IllegalStateException]
+    V -->|sonst| R[Rent anlegen]
+```
+
+## Zahlung gegen den Preis prüfen
+
+```{.java code-line-numbers="2-4|5-7|8-10"}
+public void payRent(Rent rent, BigDecimal amount) {
+    if (rent.isOpen()) {
+        throw new IllegalStateException("Rent must be returned before payment.");
+    }
+    if (amount.signum() <= 0) {
+        throw new IllegalArgumentException("Payment amount must be positive.");
+    }
+    BigDecimal expectedAmount = expectedPaymentAmount(rent);
+    if (amount.compareTo(expectedAmount) != 0) {
+        throw new IllegalArgumentException("Payment amount must be " + expectedAmount + ".");
+    }
+    rent.markPaid();
+    this.rentRepository.save(rent);
+}
+```
+
+- Neu: `RentServiceImpl` fragt den **`RateService`** nach dem Sollbetrag
+
+## Auch die Datei-Schicht wehrt sich
+
+```java
+protected static String requireStorableText(String value) {
+    if (value.contains(DELIMITER) || value.contains("\n") || value.contains("\r")) {
+        throw new IllegalArgumentException("Text must not contain '" + DELIMITER + "' or line breaks: " + value);
+    }
+    return value;
+}
+```
+
+- Ein Komma im Nachnamen würde das Dateiformat zerlegen — **Injection**!
+- Validierung dort, wo die Invariante lebt
+
+## Ab in den Code 🧑‍💻
+
+- Guards in `createRent`, `returnRent`, `payRent`
+- `findAllFreeCopies` als zentrale Verfügbarkeitsprüfung
+- `App.main` demonstriert drei **gefangene** Validierungsfehler
+- Tests für jeden Guard
+
+→ Live: `Zustand_8/rentamovie`
+
+## Aufgaben {.aufgaben}
+
+1. Kunden-, Film-, Kopie-, Verleih-, Rückgabe- und Zahlungs-Flow in eine
+   einfache **JavaFX-UI** bringen
+2. Die erste UI bewusst **basal** halten: Tabellen, Auswahl, Aktionen
+3. Komfort-Ideen sammeln: Suche, Filter, Sortierung
+
+::: footer-hint
+Lösung: Zustand 9
+:::

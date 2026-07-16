@@ -1,0 +1,84 @@
+# Zustand 9 — JavaFX-Grundlagen {background-color="#1a3a5c"}
+
+## Neue Technik: das JavaFX-Anwendungsmodell
+
+```{mermaid}
+flowchart TB
+    A["App extends Application"] -->|"start(stage)"| ST[Stage = Fenster]
+    ST --> SC[Scene]
+    SC --> BP[BorderPane RootLayout]
+    BP --> OV["Overview-Panes (Center)"]
+```
+
+- `Application.launch()` startet den FX-Thread, `start(Stage)` baut die UI
+- Szenengraph: Fenster → Szene → Container → Controls
+- 📖 [openjfx.io](https://openjfx.io) · Start via `mvn javafx:run`
+
+## Neue Technik: FXML trennt Layout und Logik
+
+```{mermaid}
+flowchart LR
+    F["CustomerOverview.fxml<br/>(Layout, im SceneBuilder editierbar)"] -->|fx:controller| C[CustomerOverviewController]
+    C -->|"@FXML-Felder"| F
+    C --> S[CustomerService]
+```
+
+```xml
+<AnchorPane fx:controller="de.zettsystems.rentamovie.customer.adapter.CustomerOverviewController">
+    <TableView fx:id="customerTable">
+        <TableColumn fx:id="firstnameColumn" text="First Name"/>
+```
+
+- `fx:id` ↔ `@FXML`-Feld, Button-`onAction` ↔ `@FXML`-Methode — per **Reflection**
+
+## Der Controller
+
+```{.java code-line-numbers="1-2|4-5|7-9|11-13"}
+@FXML
+private TableView<Customer> customerTable;
+
+@FXML
+private void initialize() {
+    firstnameColumn.setCellValueFactory(new PropertyValueFactory<>("firstname"));
+
+    customerTable.getSelectionModel().selectedItemProperty()
+            .addListener((observable, oldValue, newValue) -> showCustomerDetails(newValue));
+
+    refreshCustomers();
+}
+```
+
+- `initialize()` läuft nach der FXML-Injektion
+- `PropertyValueFactory("firstname")` ruft `getFirstname()` — Namenskonvention!
+
+## Neue Fachlichkeit: die Videothek bekommt ein Gesicht
+
+- Drei Ansichten: **Customers**, **Movies**, **Rents** (Navigation im RootLayout)
+- Anlegen/Ändern mit Status-ComboBox, Kopien je Film
+- Verleih-Dialog mit freien Kopien, Rückgabe, Zahlung
+- Service-Validierungsfehler → **Alert** statt Absturz
+
+```java
+} catch (IllegalArgumentException e) {
+    showValidationError(e.getMessage());
+}
+```
+
+## Ab in den Code 🧑‍💻
+
+- `<feature>.adapter`: `XOverview.fxml` + `XOverviewController`
+- `App` wird `javafx.application.Application`; FXML liegt neben dem Controller
+- `RentDialog` als eigener `Dialog<Rent>` ohne FXML
+
+→ Live: `Zustand_9/rentamovie` — `mvn javafx:run`
+
+## Aufgaben {.aufgaben}
+
+1. **Suchfelder** für Kunden und Filme
+2. **Verleih-Filter**, robuste **Sortierung**, **Paging**
+3. **Erwarteter Zahlbetrag** im Zahlungsdialog
+4. **Demo-Daten-Reset** und mehr Seed-Daten für Übungen
+
+::: footer-hint
+Lösung: Zustand 10
+:::

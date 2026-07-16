@@ -1,0 +1,72 @@
+# Zustand 5 — Preisberechnung {background-color="#1a3a5c"}
+
+## Neue Technik: Geld rechnet man nicht mit `double`
+
+```java
+System.out.println(0.1 + 0.2);   // 0.30000000000000004  😱
+```
+
+- Binäre Gleitkommazahlen können 0.1 nicht exakt darstellen
+- **`BigDecimal`**: exakte Dezimalarithmetik, `compareTo` statt `==`
+- Enum + `BigDecimal` = typsicherer Tarifkatalog
+- 📖 [Javadoc `BigDecimal`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html)
+
+## Neue Fachlichkeit: Tarife nach Alter
+
+```{mermaid}
+flowchart TB
+    A[Alter des Kunden] --> J{"≤ 12?"}
+    J -->|ja| JU["JUNIOR — 1,00 €/Tag"]
+    J -->|nein| S{"≥ 65?"}
+    S -->|ja| SE["SENIOR — 1,50 €/Tag"]
+    S -->|nein| RE["REGULAR — 2,00 €/Tag"]
+```
+
+## Der Tarif als Enum
+
+```{.java code-line-numbers="2|4-8"}
+public enum Rate {
+    JUNIOR(new BigDecimal("1.00")), REGULAR(new BigDecimal("2.00")), SENIOR(new BigDecimal("1.50"));
+
+    private final BigDecimal value;
+
+    Rate(BigDecimal value) {
+        this.value = value;
+    }
+    // ...
+}
+```
+
+## Preis = Tarif × Tage
+
+```{.java code-line-numbers="2-4|5|6"}
+public BigDecimal calculatePrice(Rent rent, Rate rate) {
+    if (rent.isOpen()) {
+        throw new IllegalStateException("Rent must be returned before the price can be calculated.");
+    }
+    long days = Math.max(1L, ChronoUnit.DAYS.between(rent.getStartDate(), rent.getEndDate()));
+    return rate.getValue().multiply(BigDecimal.valueOf(days));
+}
+```
+
+- `ChronoUnit.DAYS` aus `java.time` zählt die Verleihtage
+- Mindestens **ein** Tag wird berechnet
+- Offene Verleihe haben noch keinen Preis — Guard!
+
+## Ab in den Code 🧑‍💻
+
+- Neues Feature-Paket `rate`: `Rate`, `RateService`, `RateServiceImpl`
+- `retrieveRateByAge(int)` + `calculatePrice(rent, rate)`
+- Tests: Tarifgrenzen (12/65), Mindesttag, offener Verleih
+
+→ Live: `Zustand_5/rentamovie`
+
+## Aufgaben {.aufgaben}
+
+1. **Repository-Lesemethoden** ergänzen: Kunden, Filme, Verleihe als Collections
+2. Die Verleih-Liste im Service schrittweise durch ein **Repository** ersetzen
+3. **Tests** für die neuen Lese-Use-Cases schreiben
+
+::: footer-hint
+Lösung: Zustand 6
+:::

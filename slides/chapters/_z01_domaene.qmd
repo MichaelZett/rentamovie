@@ -1,0 +1,97 @@
+# Zustand 1 — Das Domänenmodell {background-color="#1a3a5c"}
+
+## Neue Technik: Feature-Schnitt statt Schichten-Salat
+
+```{mermaid}
+flowchart TB
+    subgraph de.zettsystems.rentamovie
+        subgraph customer
+            cd[domain]
+        end
+        subgraph movie
+            md[domain]
+        end
+        subgraph rent
+            rd[domain]
+        end
+        subgraph rate
+            rad[domain]
+        end
+        main
+    end
+```
+
+- Paket = **Fachlichkeit** zuerst, Schicht darunter: `<feature>.<layer>`
+- Z1 kennt nur die Schicht `domain` — und `main` zum Starten
+
+## Neue Technik: Logging ohne Zusatzbibliothek
+
+```java
+private static final System.Logger LOG = System.getLogger(App.class.getName());
+
+LOG.log(Level.INFO, "{0} was created.", movie);
+```
+
+- `System.Logger`: seit Java 9 **im JDK enthalten**
+- Kein `System.out.println` in Anwendungen
+- Später im Kurs: der Industriestandard SLF4J
+- 📖 [Javadoc `System.Logger`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.Logger.html)
+
+## Neue Fachlichkeit: die Begriffe der Videothek
+
+```{mermaid}
+classDiagram
+    class Customer {
+        firstname
+        lastname
+        birthdate
+    }
+    class Movie {
+        title
+        yearOfPublication
+    }
+    class Copy
+    class Rent {
+        startDate
+        plannedReturnDate
+        endDate
+    }
+    class Rate {
+        price
+    }
+    Copy --> Movie : gehört zu
+    Rent --> Customer : Mieter
+    Rent --> Copy : Exemplar
+```
+
+## Offen oder beendet?
+
+```{mermaid}
+stateDiagram-v2
+    [*] --> Offen : Verleih angelegt
+    Offen --> Beendet : endRent(datum)
+    note right of Offen : endDate == null
+    note right of Beendet : endDate gesetzt
+```
+
+- Ein Verleih ohne `endDate` **läuft noch**
+- `null` hat hier eine fachliche Bedeutung — sauber dokumentiert
+
+## Ab in den Code 🧑‍💻
+
+- `Customer`, `Movie`, `Copy`, `Rent`, `Rate` — Konstruktor, private Felder, Getter
+- Sprechende Methoden: `isOpen()`, `isOverdue(date)`, `endRent(...)`
+- `App.main` verdrahtet noch **alles von Hand**
+- `toString()` für lesbare Log-Ausgaben
+
+→ Live: `Zustand_1/rentamovie`
+
+## Aufgaben {.aufgaben}
+
+1. Verleih-Erzeugung aus `App.main` in einen **`RentService`** verschieben
+2. Eine **Rückgabe-Operation** für einen offenen Verleih ergänzen
+3. Eine Abfrage **offener Verleihe** bauen — damit Verfügbarkeit sichtbar wird
+
+::: footer-hint
+Lösung: Zustand 2
+:::
