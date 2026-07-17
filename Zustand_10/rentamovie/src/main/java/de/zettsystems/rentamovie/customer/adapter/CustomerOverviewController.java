@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import de.zettsystems.rentamovie.common.adapter.Theme;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -149,6 +150,7 @@ public class CustomerOverviewController {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);
+        Theme.apply(alert.getDialogPane());
         alert.showAndWait();
     }
 

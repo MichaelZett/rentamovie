@@ -1,30 +1,54 @@
 package de.zettsystems.rentamovie.main;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+
+import java.util.List;
 
 public class RootLayoutController {
 
-	// Reference to the main application; wired by App right after the FXML load
-	@SuppressWarnings("NullAway.Init")
-	private App mainApp;
+    private static final String ACTIVE_STYLE_CLASS = "active";
 
-	public void setMainApp(App mainApp) {
-		this.mainApp = mainApp;
-	}
+    // Reference to the main application; wired by App right after the FXML load
+    @SuppressWarnings("NullAway.Init")
+    private App mainApp;
 
-	@FXML
-	public void navigateToMovies() {
-		mainApp.navigateToMovies();
-	}
+    @FXML
+    private Button customersNavButton;
+    @FXML
+    private Button moviesNavButton;
+    @FXML
+    private Button rentNavButton;
 
-	@FXML
-	public void navigateToUsers() {
-		mainApp.navigateToCustomers();
-	}
+    public void setMainApp(App mainApp) {
+        this.mainApp = mainApp;
+        // App starts on the customer overview
+        markActive(this.customersNavButton);
+    }
 
-	@FXML
-	public void navigateToRent() {
-		mainApp.navigateToRent();
-	}
+    @FXML
+    public void navigateToMovies() {
+        markActive(this.moviesNavButton);
+        this.mainApp.navigateToMovies();
+    }
+
+    @FXML
+    public void navigateToCustomers() {
+        markActive(this.customersNavButton);
+        this.mainApp.navigateToCustomers();
+    }
+
+    @FXML
+    public void navigateToRent() {
+        markActive(this.rentNavButton);
+        this.mainApp.navigateToRent();
+    }
+
+    private void markActive(Button activeButton) {
+        for (Button navButton : List.of(this.customersNavButton, this.moviesNavButton, this.rentNavButton)) {
+            navButton.getStyleClass().remove(ACTIVE_STYLE_CLASS);
+        }
+        activeButton.getStyleClass().add(ACTIVE_STYLE_CLASS);
+    }
 
 }

@@ -32,6 +32,8 @@ public class App extends Application {
         this.demoDataService.seedDemoData();
         primaryStage.setTitle("MovieRentApp");
         primaryStage.getIcons().add(new Image("images/address_book_32.png"));
+        primaryStage.setMinWidth(900);
+        primaryStage.setMinHeight(650);
 
         initRootLayout();
         initCustomerOverview();
@@ -53,6 +55,7 @@ public class App extends Application {
             controller.setMainApp(this);
         } catch (IOException e) {
             LOG.error("Failed to load RootLayout.fxml", e);
+            throw new IllegalStateException("Failed to load RootLayout.fxml", e);
         }
     }
 
@@ -62,6 +65,7 @@ public class App extends Application {
             this.movieOverview = loader.load();
         } catch (IOException e) {
             LOG.error("Failed to load MovieOverview.fxml", e);
+            throw new IllegalStateException("Failed to load MovieOverview.fxml", e);
         }
     }
 
@@ -71,6 +75,7 @@ public class App extends Application {
             this.customerOverview = loader.load();
         } catch (IOException e) {
             LOG.error("Failed to load CustomerOverview.fxml", e);
+            throw new IllegalStateException("Failed to load CustomerOverview.fxml", e);
         }
     }
 
@@ -80,6 +85,7 @@ public class App extends Application {
             this.rentOverview = loader.load();
         } catch (IOException e) {
             LOG.error("Failed to load RentOverview.fxml", e);
+            throw new IllegalStateException("Failed to load RentOverview.fxml", e);
         }
     }
 

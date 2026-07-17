@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.input.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800.0" prefWidth="1000.0" stylesheets="stylesheets/DarkTheme.css" xmlns="http://javafx.com/javafx/8.0.40" 
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.zettsystems.rentamovie.main.RootLayoutController">
-	<left>
-        <VBox spacing="10" alignment="top_left">
-        	<Button text="Users"  onAction="#navigateToUsers"/>
-        	<Button text="Movies"  onAction="#navigateToMovies"/>
-        	<Button text="Rent"  onAction="#navigateToRent"/>
-    	</VBox>
+<BorderPane prefHeight="800.0" prefWidth="1000.0" stylesheets="stylesheets/rentamovie.css" xmlns="http://javafx.com/javafx/8.0.40"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.zettsystems.rentamovie.main.RootLayoutController">
+    <left>
+        <VBox styleClass="sidebar">
+            <Button fx:id="customersNavButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#navigateToCustomers"
+                    styleClass="nav-button" text="Customers"/>
+            <Button fx:id="moviesNavButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#navigateToMovies"
+                    styleClass="nav-button" text="Movies"/>
+            <Button fx:id="rentNavButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#navigateToRent"
+                    styleClass="nav-button" text="Rent"/>
+        </VBox>
     </left>
- 
 </BorderPane>

@@ -1,5 +1,6 @@
 package de.zettsystems.rentamovie.rent.adapter;
 
+import de.zettsystems.rentamovie.common.adapter.Theme;
 import de.zettsystems.rentamovie.customer.application.CustomerService;
 import de.zettsystems.rentamovie.customer.domain.Customer;
 import de.zettsystems.rentamovie.movie.domain.Copy;
@@ -8,6 +9,7 @@ import de.zettsystems.rentamovie.rent.application.RentService;
 import de.zettsystems.rentamovie.rent.domain.Rent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -16,6 +18,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.util.StringConverter;
 
 import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
@@ -24,9 +27,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RentDialog extends Dialog<Rent> {
-    private Label customerLabel = new Label("Customer: ");
-    private Label movieLabel = new Label("Movie: ");
-    private Label plannedDaysLabel = new Label("Planned days: ");
+    private Label customerLabel = new Label("Customer:");
+    private Label movieLabel = new Label("Movie:");
+    private Label plannedDaysLabel = new Label("Planned days:");
     private GridPane grid = new GridPane();
     private ComboBox<Customer> customerBox;
     private ComboBox<Copy> movieBox;
@@ -48,6 +51,35 @@ public class RentDialog extends Dialog<Rent> {
                 .toList());
         this.movieBox = new ComboBox<>(movieOptions);
 
+        // Without a converter the combo boxes would render the raw toString() of the domain objects.
+        this.customerBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(@Nullable Customer customer) {
+                return customer == null ? "" : customerDisplayText(customer);
+            }
+
+            @Override
+            public @Nullable Customer fromString(String text) {
+                return null; // combo box is not editable
+            }
+        });
+        this.movieBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(@Nullable Copy copy) {
+                return copy == null ? "" : copyDisplayText(copy);
+            }
+
+            @Override
+            public @Nullable Copy fromString(String text) {
+                return null; // combo box is not editable
+            }
+        });
+        this.customerBox.setPrefWidth(320);
+        this.movieBox.setPrefWidth(320);
+
+        this.grid.setHgap(12);
+        this.grid.setVgap(10);
+        this.grid.setPadding(new Insets(16));
         this.grid.add(this.customerLabel, 1, 1);
         this.grid.add(this.customerBox, 2, 1);
         this.grid.add(this.movieLabel, 1, 2);
@@ -55,9 +87,11 @@ public class RentDialog extends Dialog<Rent> {
         this.grid.add(this.plannedDaysLabel, 1, 3);
         this.grid.add(this.plannedDaysInput, 2, 3);
         this.getDialogPane().setContent(this.grid);
+        Theme.apply(this.getDialogPane());
 
         ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
-        this.getDialogPane().getButtonTypes().add(buttonTypeOk);
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+        this.getDialogPane().getButtonTypes().addAll(buttonTypeOk, buttonTypeCancel);
         this.setResultConverter(b -> {
             if (b != buttonTypeOk || this.movieBox.getValue() == null || this.customerBox.getValue() == null) {
                 return null;
@@ -75,6 +109,15 @@ public class RentDialog extends Dialog<Rent> {
         });
     }
 
+    static String customerDisplayText(Customer customer) {
+        return customer.getLastname() + ", " + customer.getFirstname();
+    }
+
+    static String copyDisplayText(Copy copy) {
+        return copy.getMovie().getTitle()
+                + " (" + copy.getMovie().getYearOfPublication() + ", " + copy.getMediaFormat() + ")";
+    }
+
     private int parsePlannedDays() {
         int plannedDays = Integer.parseInt(this.plannedDaysInput.getText());
         if (plannedDays < 1 || plannedDays > 7) {
@@ -87,6 +130,7 @@ public class RentDialog extends Dialog<Rent> {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);
+        Theme.apply(alert.getDialogPane());
         alert.showAndWait();
     }
 

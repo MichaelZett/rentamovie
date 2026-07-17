@@ -7,6 +7,7 @@ import de.zettsystems.rentamovie.movie.domain.MovieStatus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import de.zettsystems.rentamovie.common.adapter.Theme;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -146,6 +147,7 @@ public class MovieOverviewController {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);
+        Theme.apply(alert.getDialogPane());
         alert.showAndWait();
     }
 

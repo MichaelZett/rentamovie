@@ -1,0 +1,68 @@
+/* Light theme for the RentAMovie teaching app. Modena-based with a single accent color. */
+
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-accent: #2a6fb8;
+    -fx-focus-color: #2a6fb8;
+    -fx-faint-focus-color: #2a6fb822;
+    -fx-background-color: #f5f6f8;
+}
+
+/* --- Sidebar navigation --- */
+
+.sidebar {
+    -fx-background-color: #2b3440;
+    -fx-padding: 16 12 16 12;
+    -fx-spacing: 6;
+    -fx-pref-width: 180;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6;
+    -fx-text-fill: #d7dce3;
+    -fx-alignment: center-left;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: #3a4656;
+}
+
+.nav-button:pressed {
+    -fx-background-color: #1f2630;
+}
+
+.nav-button.active {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: white;
+}
+
+/* --- Content --- */
+
+.detail-pane {
+    -fx-background-color: white;
+}
+
+.header-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2b3440;
+}
+
+/* --- Tables --- */
+
+.table-view {
+    -fx-background-color: white;
+}
+
+.table-row-cell {
+    -fx-cell-size: 32px;
+}
+
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+}

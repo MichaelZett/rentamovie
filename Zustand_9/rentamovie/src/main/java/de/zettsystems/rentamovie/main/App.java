@@ -15,82 +15,88 @@ import java.io.IOException;
 // The root layout and overview panes are created in start(), not in the constructor (JavaFX lifecycle).
 @SuppressWarnings("NullAway.Init")
 public class App extends Application {
-	private static final Logger LOG = LoggerFactory.getLogger(App.class);
+    private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
-	private BorderPane rootLayout;
-	private AnchorPane customerOverview;
-	private AnchorPane movieOverview;
-	private AnchorPane rentOverview;
+    private BorderPane rootLayout;
+    private AnchorPane customerOverview;
+    private AnchorPane movieOverview;
+    private AnchorPane rentOverview;
 
-	public static void main(String[] args) {
-		launch(args);
-	}
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-	@Override
+    @Override
     public void start(Stage primaryStage) {
-		primaryStage.setTitle("MovieRentApp");
-		primaryStage.getIcons().add(new Image("images/address_book_32.png"));
+        primaryStage.setTitle("MovieRentApp");
+        primaryStage.getIcons().add(new Image("images/address_book_32.png"));
+        primaryStage.setMinWidth(900);
+        primaryStage.setMinHeight(650);
 
-		initRootLayout();
-		initCustomerOverview();
-		initMovieOverview();
-		initRentOverview();
+        initRootLayout();
+        initCustomerOverview();
+        initMovieOverview();
+        initRentOverview();
 
-		navigateToCustomers();
+        navigateToCustomers();
 
-		Scene scene = new Scene(this.rootLayout);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+        Scene scene = new Scene(this.rootLayout);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
-	public void initRootLayout() {
-		try {
+    public void initRootLayout() {
+        try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource("RootLayout.fxml"));
             this.rootLayout = loader.load();
-			RootLayoutController controller = loader.getController();
-			controller.setMainApp(this);
-		} catch (IOException e) {
+            RootLayoutController controller = loader.getController();
+            controller.setMainApp(this);
+        } catch (IOException e) {
             LOG.error("Failed to load RootLayout.fxml", e);
-		}
-	}
+            throw new IllegalStateException("Failed to load RootLayout.fxml", e);
+        }
+    }
 
-	private void initMovieOverview() {
-		try {
+    private void initMovieOverview() {
+        try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource("/de/zettsystems/rentamovie/movie/adapter/MovieOverview.fxml"));
             this.movieOverview = loader.load();
-		} catch (IOException e) {
+        } catch (IOException e) {
             LOG.error("Failed to load MovieOverview.fxml", e);
-		}
-	}
+            throw new IllegalStateException("Failed to load MovieOverview.fxml", e);
+        }
+    }
 
-	private void initCustomerOverview() {
-		try {
+    private void initCustomerOverview() {
+        try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource("/de/zettsystems/rentamovie/customer/adapter/CustomerOverview.fxml"));
             this.customerOverview = loader.load();
-		} catch (IOException e) {
+        } catch (IOException e) {
             LOG.error("Failed to load CustomerOverview.fxml", e);
-		}
-	}
+            throw new IllegalStateException("Failed to load CustomerOverview.fxml", e);
+        }
+    }
 
-	private void initRentOverview() {
-		try {
+    private void initRentOverview() {
+        try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource("/de/zettsystems/rentamovie/rent/adapter/RentOverview.fxml"));
             this.rentOverview = loader.load();
-		} catch (IOException e) {
+        } catch (IOException e) {
             LOG.error("Failed to load RentOverview.fxml", e);
-		}
-	}
+            throw new IllegalStateException("Failed to load RentOverview.fxml", e);
+        }
+    }
 
-	public void navigateToMovies() {
-		this.rootLayout.setCenter(this.movieOverview);
-	}
+    public void navigateToMovies() {
+        this.rootLayout.setCenter(this.movieOverview);
+    }
 
-	public void navigateToCustomers() {
-		this.rootLayout.setCenter(this.customerOverview);
-	}
+    public void navigateToCustomers() {
+        this.rootLayout.setCenter(this.customerOverview);
+    }
 
-	public void navigateToRent() {
-		this.rootLayout.setCenter(this.rentOverview);
-	}
+    public void navigateToRent() {
+        this.rootLayout.setCenter(this.rentOverview);
+    }
 
 }

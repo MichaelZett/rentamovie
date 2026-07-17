@@ -1,5 +1,6 @@
 package de.zettsystems.rentamovie.rent.adapter;
 
+import de.zettsystems.rentamovie.common.adapter.Theme;
 import de.zettsystems.rentamovie.rate.application.RateService;
 import de.zettsystems.rentamovie.rent.application.RentService;
 import de.zettsystems.rentamovie.rent.domain.Rent;
@@ -136,6 +137,7 @@ public class RentOverviewController {
             dialog.setTitle("Pay rent");
             dialog.setHeaderText("Expected amount: " + expectedAmount.toPlainString());
             dialog.setContentText("Amount:");
+            Theme.apply(dialog.getDialogPane());
             dialog.showAndWait().ifPresent(input -> {
                 try {
                     this.rentService.payRent(rent, new BigDecimal(input));
@@ -162,6 +164,7 @@ public class RentOverviewController {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid input");
         alert.setHeaderText(message);
+        Theme.apply(alert.getDialogPane());
         alert.showAndWait();
     }
 
