@@ -12,6 +12,7 @@ import de.zettsystems.rentamovie.common.adapter.Theme;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -19,7 +20,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 // @FXML members are wired via reflection from the FXML file; ErrorProne cannot see those uses.
@@ -45,7 +45,7 @@ public class CustomerOverviewController {
     @FXML
     private TextField lastnameInput;
     @FXML
-    private TextField birthdayInput;
+    private DatePicker birthdayInput;
     @FXML
     private ComboBox<CustomerStatus> statusInput;
     @FXML
@@ -89,7 +89,7 @@ public class CustomerOverviewController {
             currentCustomer = customer;
             firstnameInput.setText(customer.getFirstname());
             lastnameInput.setText(customer.getLastname());
-            birthdayInput.setText(customer.getBirthdate().toString());
+            birthdayInput.setValue(customer.getBirthdate());
             statusInput.setValue(customer.getStatus());
         } else {
             clearInput();
@@ -100,7 +100,7 @@ public class CustomerOverviewController {
         currentCustomer = null;
         firstnameInput.setText("");
         lastnameInput.setText("");
-        birthdayInput.setText("");
+        birthdayInput.setValue(null);
         statusInput.setValue(CustomerStatus.ACTIVE);
         customerTable.getSelectionModel().clearSelection();
     }
@@ -112,11 +112,9 @@ public class CustomerOverviewController {
 
     @FXML
     private void handleSaveCustomer() {
-        LocalDate birthdate;
-        try {
-            birthdate = LocalDate.parse(birthdayInput.getText());
-        } catch (DateTimeParseException _) {
-            showValidationError("Invalid birthday '" + birthdayInput.getText() + "'. Please use the format 2001-12-24.");
+        LocalDate birthdate = birthdayInput.getValue();
+        if (birthdate == null) {
+            showValidationError("Please pick a birthday.");
             return;
         }
         try {

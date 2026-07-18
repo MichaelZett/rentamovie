@@ -23,6 +23,6 @@ class RentDialogTest {
     void shouldBuildCopyDisplayText() {
         Copy copy = new Copy(new Movie(Year.of(1977), "A new hope"));
 
-        assertThat(RentDialog.copyDisplayText(copy)).isEqualTo("A new hope (1977, DVD)");
+        assertThat(RentDialog.copyDisplayText(copy)).isEqualTo("#" + copy.getId() + " - A new hope (1977, DVD)");
     }
 }

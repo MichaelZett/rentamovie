@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
 
 public class RentDialog extends Dialog<Rent> {
     private Label customerLabel = new Label("Customer:");
-    private Label movieLabel = new Label("Movie:");
+    private Label copyLabel = new Label("Copy:");
     private Label plannedDaysLabel = new Label("Planned days:");
     private GridPane grid = new GridPane();
     private ComboBox<Customer> customerBox;
-    private ComboBox<Copy> movieBox;
+    private ComboBox<Copy> copyBox;
     private TextField plannedDaysInput = new TextField("7");
 
     private CustomerService customerService = CustomerService.getService();
@@ -46,10 +46,10 @@ public class RentDialog extends Dialog<Rent> {
         Set<Copy> rentedCopies = this.rentService.findOpenRents().stream()
                 .map(Rent::getCopy)
                 .collect(Collectors.toSet());
-        ObservableList<Copy> movieOptions = FXCollections.observableArrayList(this.copyRepository.readAll().stream()
+        ObservableList<Copy> copyOptions = FXCollections.observableArrayList(this.copyRepository.readAll().stream()
                 .filter(copy -> copy.isAvailable() && copy.getMovie().isActive() && !rentedCopies.contains(copy))
                 .toList());
-        this.movieBox = new ComboBox<>(movieOptions);
+        this.copyBox = new ComboBox<>(copyOptions);
 
         // Without a converter the combo boxes would render the raw toString() of the domain objects.
         this.customerBox.setConverter(new StringConverter<>() {
@@ -63,7 +63,7 @@ public class RentDialog extends Dialog<Rent> {
                 return null; // combo box is not editable
             }
         });
-        this.movieBox.setConverter(new StringConverter<>() {
+        this.copyBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(@Nullable Copy copy) {
                 return copy == null ? "" : copyDisplayText(copy);
@@ -75,15 +75,15 @@ public class RentDialog extends Dialog<Rent> {
             }
         });
         this.customerBox.setPrefWidth(320);
-        this.movieBox.setPrefWidth(320);
+        this.copyBox.setPrefWidth(320);
 
         this.grid.setHgap(12);
         this.grid.setVgap(10);
         this.grid.setPadding(new Insets(16));
         this.grid.add(this.customerLabel, 1, 1);
         this.grid.add(this.customerBox, 2, 1);
-        this.grid.add(this.movieLabel, 1, 2);
-        this.grid.add(this.movieBox, 2, 2);
+        this.grid.add(this.copyLabel, 1, 2);
+        this.grid.add(this.copyBox, 2, 2);
         this.grid.add(this.plannedDaysLabel, 1, 3);
         this.grid.add(this.plannedDaysInput, 2, 3);
         this.getDialogPane().setContent(this.grid);
@@ -93,11 +93,11 @@ public class RentDialog extends Dialog<Rent> {
         ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
         this.getDialogPane().getButtonTypes().addAll(buttonTypeOk, buttonTypeCancel);
         this.setResultConverter(b -> {
-            if (b != buttonTypeOk || this.movieBox.getValue() == null || this.customerBox.getValue() == null) {
+            if (b != buttonTypeOk || this.copyBox.getValue() == null || this.customerBox.getValue() == null) {
                 return null;
             }
             try {
-                return this.rentService.createRent(this.movieBox.getValue(), this.customerBox.getValue(),
+                return this.rentService.createRent(this.copyBox.getValue(), this.customerBox.getValue(),
                         LocalDate.now(ZoneId.systemDefault()), parsePlannedDays());
             } catch (NumberFormatException _) {
                 showValidationError("Planned rental duration must be a number between 1 and 7 days.");
@@ -114,7 +114,7 @@ public class RentDialog extends Dialog<Rent> {
     }
 
     static String copyDisplayText(Copy copy) {
-        return copy.getMovie().getTitle()
+        return "#" + copy.getId() + " - " + copy.getMovie().getTitle()
                 + " (" + copy.getMovie().getYearOfPublication() + ", " + copy.getMediaFormat() + ")";
     }
 

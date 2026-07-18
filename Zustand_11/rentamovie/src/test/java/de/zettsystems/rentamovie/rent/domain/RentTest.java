@@ -2,10 +2,12 @@ package de.zettsystems.rentamovie.rent.domain;
 
 import de.zettsystems.rentamovie.customer.domain.Customer;
 import de.zettsystems.rentamovie.movie.domain.Copy;
+import de.zettsystems.rentamovie.movie.domain.Movie;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Year;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -42,6 +44,14 @@ class RentTest {
         Rent testee = new Rent(mock(Customer.class), mock(Copy.class), LocalDate.of(2026, 7, 1));
 
         assertThat(testee.getPlannedReturnDate()).isEqualTo(LocalDate.of(2026, 7, 8));
+    }
+
+    @Test
+    void shouldBuildCopyTextWithCopyId() {
+        Copy copy = new Copy(new Movie(Year.of(1977), "A new hope"));
+        Rent testee = new Rent(mock(Customer.class), copy, LocalDate.of(2026, 7, 1));
+
+        assertThat(testee.getCopyText()).isEqualTo("#" + copy.getId() + " - A new hope");
     }
 
     @Test

@@ -79,6 +79,8 @@ einfaches Paging-Beispiel.
 `Zustand_10` deckt damit diese fachlichen Use-Cases ab:
 
 - Kunden über die Oberfläche erfassen und ändern,
+- das Geburtsdatum im Kundenformular über einen Kalender (`DatePicker`)
+  auswählen statt als Text einzugeben,
 - Filme über die Oberfläche erfassen und ändern,
 - Kopien eines Films anlegen und mit Medienformat versehen,
 - Filme suchen,
@@ -242,7 +244,9 @@ Aufgaben nach `Zustand_8`:
   eine einfache JavaFX-Oberfläche ein.
 - Halte die erste UI bewusst schlicht: Tabellen, Auswahl und Aktionen
   statt Komfortfunktionen.
-- Formuliere Convenience-Aufgaben für Suche, Filter und Sortierung.
+- Formuliere Convenience-Aufgaben für Suche, Filter und Sortierung —
+  darunter: das schlichte Geburtsdatum-Textfeld durch einen JavaFX
+  `DatePicker` ersetzen (Referenzlösung in `Zustand_10`).
 
 Hausaufgaben nach `Zustand_10` mit Referenzlösung in `Zustand_11`:
 

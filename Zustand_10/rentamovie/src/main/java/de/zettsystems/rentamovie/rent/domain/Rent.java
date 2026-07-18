@@ -50,6 +50,10 @@ public class Rent extends AbstractIdCarrier {
         return this.copy.getMovie().getTitle();
     }
 
+    public String getCopyText() {
+        return "#" + this.copy.getId() + " - " + this.getCopyTitle();
+    }
+
     public Copy getCopy() {
         return this.copy;
     }

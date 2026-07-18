@@ -48,7 +48,7 @@ public class RentOverviewController {
 	@FXML
 	private void initialize() {
         this.customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerLastname"));
-        this.copyColumn.setCellValueFactory(new PropertyValueFactory<>("copyTitle"));
+        this.copyColumn.setCellValueFactory(new PropertyValueFactory<>("copyText"));
         this.startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         this.plannedReturnDateColumn.setCellValueFactory(new PropertyValueFactory<>("plannedReturnDate"));
         this.endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
@@ -73,32 +73,48 @@ public class RentOverviewController {
     @FXML
     private void handleReturnRent() {
         Rent rent = this.rentTable.getSelectionModel().getSelectedItem();
-        if (rent != null && rent.isOpen()) {
-            this.rentService.returnRent(rent, LocalDate.now(ZoneId.systemDefault()));
-            refreshRents();
+        if (rent == null) {
+            showValidationError("Please select a rent first.");
+            return;
         }
+        if (rent.isFinished()) {
+            showValidationError("The rent is already returned.");
+            return;
+        }
+        this.rentService.returnRent(rent, LocalDate.now(ZoneId.systemDefault()));
+        refreshRents();
     }
 
     @FXML
     private void handlePayRent() {
         Rent rent = this.rentTable.getSelectionModel().getSelectedItem();
-        if (rent != null && rent.hasOpenPayment()) {
-            TextInputDialog dialog = new TextInputDialog("1.00");
-            dialog.setTitle("Pay rent");
-            dialog.setHeaderText("Payment amount");
-            dialog.setContentText("Amount:");
-            Theme.apply(dialog.getDialogPane());
-            dialog.showAndWait().ifPresent(input -> {
-                try {
-                    this.rentService.payRent(rent, new BigDecimal(input));
-                } catch (NumberFormatException _) {
-                    showValidationError("Invalid amount '" + input + "'. Please use the format 6.00.");
-                } catch (IllegalArgumentException | IllegalStateException e) {
-                    showValidationError(e.getMessage());
-                }
-            });
-            refreshRents();
+        if (rent == null) {
+            showValidationError("Please select a rent first.");
+            return;
         }
+        if (rent.isOpen()) {
+            showValidationError("The rent must be returned before it can be paid.");
+            return;
+        }
+        if (rent.isPaid()) {
+            showValidationError("The rent is already paid.");
+            return;
+        }
+        TextInputDialog dialog = new TextInputDialog("1.00");
+        dialog.setTitle("Pay rent");
+        dialog.setHeaderText("Payment amount");
+        dialog.setContentText("Amount:");
+        Theme.apply(dialog.getDialogPane());
+        dialog.showAndWait().ifPresent(input -> {
+            try {
+                this.rentService.payRent(rent, new BigDecimal(input));
+            } catch (NumberFormatException _) {
+                showValidationError("Invalid amount '" + input + "'. Please use the format 6.00.");
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                showValidationError(e.getMessage());
+            }
+        });
+        refreshRents();
     }
 
     private static void showValidationError(@Nullable String message) {
