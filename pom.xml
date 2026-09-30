@@ -53,12 +53,17 @@
         <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
         <spotbugs-maven-plugin.version>4.10.3.0</spotbugs-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
 
         <versions.allowMajorUpdates>false</versions.allowMajorUpdates>
 
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.projectKey>rentamovie</sonar.projectKey>
         <sonar.projectName>rentamovie</sonar.projectName>
+        <!-- JavaFX-Adapter und App-Start sind UI-Code ohne Tests; sie zaehlen nicht in die Coverage -->
+        <sonar.coverage.exclusions>**/adapter/**,**/main/**</sonar.coverage.exclusions>
+        <!-- leerer Default, damit @{argLine} in Surefire auch ohne JaCoCo-Agent aufloest -->
+        <argLine></argLine>
         <sonar.issue.ignore.multicriteria>
             idBasedEquals,teachingSingletons,mainArgs,disabledRepositoryTests,numericDatesInTests
         </sonar.issue.ignore.multicriteria>
@@ -199,7 +204,7 @@
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
                         <argLine>
-                            -javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${bytebuddy.version}/byte-buddy-agent-${bytebuddy.version}.jar
+                            @{argLine} -javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${bytebuddy.version}/byte-buddy-agent-${bytebuddy.version}.jar
                         </argLine>
                         <systemPropertyVariables>
                             <rentamovie.id.db>${project.build.directory}/id.db</rentamovie.id.db>
@@ -258,6 +263,11 @@
                     <version>${sonar-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>${spotbugs-maven-plugin.version}</version>
@@ -294,6 +304,25 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jacoco-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
