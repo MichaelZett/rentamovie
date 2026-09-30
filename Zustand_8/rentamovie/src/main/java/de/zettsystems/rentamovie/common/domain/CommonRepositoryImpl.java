@@ -34,18 +34,22 @@ public abstract class CommonRepositoryImpl<T extends AbstractIdCarrier> implemen
 					if (domainClassAsText.isBlank()) {
 						continue;
 					}
-					try {
-						T domainClass = fromText(domainClassAsText.split(DELIMITER));
-						repo.put(domainClass.getId(), domainClass);
-					} catch (RuntimeException e) {
-						LOG.error("Skipping unreadable line in {}: '{}' ({})", path, domainClassAsText, e.toString());
-					}
+					loadLine(domainClassAsText);
 				}
 			} else {
 				Files.createFile(path);
 			}
         } catch (IOException _) {
             LOG.error("Error working with file in {}.", path);
+		}
+	}
+
+	private void loadLine(String domainClassAsText) {
+		try {
+			T domainClass = fromText(domainClassAsText.split(DELIMITER));
+			repo.put(domainClass.getId(), domainClass);
+		} catch (RuntimeException e) {
+			LOG.error("Skipping unreadable line in {}: '{}' ({})", path, domainClassAsText, e.toString());
 		}
 	}
 

@@ -56,7 +56,8 @@ class RentServiceImplTest {
         Customer customer = mock(Customer.class);
         when(customer.isActive()).thenReturn(false);
 
-        assertThatThrownBy(() -> this.testee.createRent(movie, customer, LocalDate.of(2026, 7, 1)))
+        LocalDate date = LocalDate.of(2026, 7, 1);
+        assertThatThrownBy(() -> this.testee.createRent(movie, customer, date))
                 .isInstanceOf(IllegalStateException.class);
     }
 

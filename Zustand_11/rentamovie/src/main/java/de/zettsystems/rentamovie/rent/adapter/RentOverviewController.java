@@ -31,6 +31,9 @@ import java.util.List;
 @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
 public class RentOverviewController {
     private static final int PAGE_SIZE = 5;
+    private static final String FILTER_OPEN_RENTS = "Open rents";
+    private static final String FILTER_OVERDUE = "Overdue";
+    private static final String FILTER_OPEN_PAYMENTS = "Open payments";
 
     private RentService rentService;
     private RateService rateService;
@@ -88,7 +91,7 @@ public class RentOverviewController {
         this.plannedReturnDateColumn.setCellValueFactory(new PropertyValueFactory<>("plannedReturnDate"));
         this.endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         this.paymentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
-        this.statusFilterBox.setItems(FXCollections.observableArrayList("All", "Open rents", "Overdue", "Open payments", "Paid"));
+        this.statusFilterBox.setItems(FXCollections.observableArrayList("All", FILTER_OPEN_RENTS, FILTER_OVERDUE, FILTER_OPEN_PAYMENTS, "Paid"));
         this.statusFilterBox.getSelectionModel().select("All");
         this.sortedRents.comparatorProperty().bind(this.rentTable.comparatorProperty());
         this.rentTable.setItems(this.pageRents);
@@ -105,9 +108,9 @@ public class RentOverviewController {
     private void applyFilter() {
         String selected = this.statusFilterBox.getSelectionModel().getSelectedItem();
         this.filteredRents.setPredicate(rent -> switch (selected) {
-            case "Open rents" -> rent.isOpen();
-            case "Overdue" -> rent.isOverdue(LocalDate.now(ZoneId.systemDefault()));
-            case "Open payments" -> rent.hasOpenPayment();
+            case FILTER_OPEN_RENTS -> rent.isOpen();
+            case FILTER_OVERDUE -> rent.isOverdue(LocalDate.now(ZoneId.systemDefault()));
+            case FILTER_OPEN_PAYMENTS -> rent.hasOpenPayment();
             case "Paid" -> rent.isPaid();
             default -> true;
         });
@@ -116,7 +119,7 @@ public class RentOverviewController {
 
     private void updatePage(int pageIndex) {
         int pageCount = Math.max(1, (int) Math.ceil((double) this.sortedRents.size() / PAGE_SIZE));
-        this.currentPageIndex = Math.max(0, Math.min(pageIndex, pageCount - 1));
+        this.currentPageIndex = Math.clamp(pageIndex, 0, pageCount - 1);
         int fromIndex = this.currentPageIndex * PAGE_SIZE;
         int toIndex = Math.min(fromIndex + PAGE_SIZE, this.sortedRents.size());
         this.pageRents.setAll(this.sortedRents.subList(fromIndex, toIndex));
@@ -252,17 +255,17 @@ public class RentOverviewController {
 
     @FXML
     private void handleOpenRentsWorklist() {
-        selectWorklist("Open rents");
+        selectWorklist(FILTER_OPEN_RENTS);
     }
 
     @FXML
     private void handleOverdueWorklist() {
-        selectWorklist("Overdue");
+        selectWorklist(FILTER_OVERDUE);
     }
 
     @FXML
     private void handleOpenPaymentsWorklist() {
-        selectWorklist("Open payments");
+        selectWorklist(FILTER_OPEN_PAYMENTS);
     }
 
     @FXML

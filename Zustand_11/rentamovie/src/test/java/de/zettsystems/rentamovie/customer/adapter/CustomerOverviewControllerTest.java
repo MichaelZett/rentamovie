@@ -57,7 +57,7 @@ class CustomerOverviewControllerTest {
 
     @Test
     void shouldClampPageIndex() {
-        assertThat(CustomerOverviewController.clampPageIndex(-1, 3)).isEqualTo(0);
+        assertThat(CustomerOverviewController.clampPageIndex(-1, 3)).isZero();
         assertThat(CustomerOverviewController.clampPageIndex(1, 3)).isEqualTo(1);
         assertThat(CustomerOverviewController.clampPageIndex(7, 3)).isEqualTo(2);
     }

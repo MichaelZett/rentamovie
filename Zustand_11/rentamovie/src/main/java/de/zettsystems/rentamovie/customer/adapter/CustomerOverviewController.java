@@ -206,7 +206,7 @@ public class CustomerOverviewController {
     }
 
     static int clampPageIndex(int pageIndex, int pageCount) {
-        return Math.max(0, Math.min(pageIndex, pageCount - 1));
+        return Math.clamp(pageIndex, 0, pageCount - 1);
     }
 
     private void updatePage(int pageIndex) {

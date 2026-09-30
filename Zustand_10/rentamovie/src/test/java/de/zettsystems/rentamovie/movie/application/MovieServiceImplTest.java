@@ -59,7 +59,8 @@ class MovieServiceImplTest {
 
     private static Copy copyOfOtherMovie() {
         Copy copy = mock(Copy.class);
-        when(copy.getMovie()).thenReturn(mock(Movie.class));
+        Movie otherMovie = mock(Movie.class);
+        when(copy.getMovie()).thenReturn(otherMovie);
         return copy;
     }
 }

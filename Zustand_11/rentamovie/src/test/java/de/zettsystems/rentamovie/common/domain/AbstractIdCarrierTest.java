@@ -11,8 +11,7 @@ class AbstractIdCarrierTest {
         TestIdCarrier first = new TestIdCarrier(7L);
         TestIdCarrier second = new TestIdCarrier(7L);
 
-        assertThat(first).isEqualTo(second);
-        assertThat(first).hasSameHashCodeAs(second);
+        assertThat(first).isEqualTo(second).hasSameHashCodeAs(second);
     }
 
     @Test
@@ -26,7 +25,7 @@ class AbstractIdCarrierTest {
     @Test
     void shouldDetectDifferentTypes() {
         TestIdCarrier first = new TestIdCarrier(7L);
-        OtherIdCarrier second = new OtherIdCarrier(7L);
+        Object second = new OtherIdCarrier(7L);
 
         assertThat(first).isNotEqualTo(second);
     }

@@ -103,7 +103,7 @@ public class RentOverviewController {
 
     private void updatePage(int pageIndex) {
         int pageCount = Math.max(1, (int) Math.ceil((double) this.sortedRents.size() / PAGE_SIZE));
-        this.currentPageIndex = Math.max(0, Math.min(pageIndex, pageCount - 1));
+        this.currentPageIndex = Math.clamp(pageIndex, 0, pageCount - 1);
         int fromIndex = this.currentPageIndex * PAGE_SIZE;
         int toIndex = Math.min(fromIndex + PAGE_SIZE, this.sortedRents.size());
         this.pageRents.setAll(this.sortedRents.subList(fromIndex, toIndex));

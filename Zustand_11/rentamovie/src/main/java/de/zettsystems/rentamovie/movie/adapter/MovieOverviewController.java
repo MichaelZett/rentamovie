@@ -164,7 +164,7 @@ public class MovieOverviewController {
 
     private void updatePage(int pageIndex) {
         int pageCount = Math.max(1, (int) Math.ceil((double) this.sortedMovies.size() / PAGE_SIZE));
-        this.currentPageIndex = Math.max(0, Math.min(pageIndex, pageCount - 1));
+        this.currentPageIndex = Math.clamp(pageIndex, 0, pageCount - 1);
         int fromIndex = this.currentPageIndex * PAGE_SIZE;
         int toIndex = Math.min(fromIndex + PAGE_SIZE, this.sortedMovies.size());
         this.pageMovies.setAll(this.sortedMovies.subList(fromIndex, toIndex));

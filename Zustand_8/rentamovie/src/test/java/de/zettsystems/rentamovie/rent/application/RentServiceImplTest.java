@@ -59,7 +59,9 @@ class RentServiceImplTest {
         when(movie.isActive()).thenReturn(true);
         when(this.movieServiceMock.findAllCopiesOfMovie(movie)).thenReturn(List.of());
 
-        assertThatThrownBy(() -> this.testee.createRent(movie, activeCustomer(), LocalDate.of(2026, 7, 1)))
+        LocalDate date = LocalDate.of(2026, 7, 1);
+        Customer rentingCustomer = activeCustomer();
+        assertThatThrownBy(() -> this.testee.createRent(movie, rentingCustomer, date))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -69,7 +71,8 @@ class RentServiceImplTest {
         Customer customer = mock(Customer.class);
         when(customer.isActive()).thenReturn(false);
 
-        assertThatThrownBy(() -> this.testee.createRent(movie, customer, LocalDate.of(2026, 7, 1)))
+        LocalDate date = LocalDate.of(2026, 7, 1);
+        assertThatThrownBy(() -> this.testee.createRent(movie, customer, date))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -93,7 +96,8 @@ class RentServiceImplTest {
         Rent rent = mock(Rent.class);
         when(rent.getStartDate()).thenReturn(LocalDate.of(2026, 7, 4));
 
-        assertThatThrownBy(() -> this.testee.returnRent(rent, LocalDate.of(2026, 7, 1)))
+        LocalDate date = LocalDate.of(2026, 7, 1);
+        assertThatThrownBy(() -> this.testee.returnRent(rent, date))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -102,7 +106,8 @@ class RentServiceImplTest {
         Rent rent = mock(Rent.class);
         when(rent.isFinished()).thenReturn(true);
 
-        assertThatThrownBy(() -> this.testee.returnRent(rent, LocalDate.of(2026, 7, 4)))
+        LocalDate date = LocalDate.of(2026, 7, 4);
+        assertThatThrownBy(() -> this.testee.returnRent(rent, date))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -122,7 +127,8 @@ class RentServiceImplTest {
         Rent rent = mock(Rent.class);
         when(rent.isOpen()).thenReturn(true);
 
-        assertThatThrownBy(() -> this.testee.payRent(rent, new BigDecimal("1.00")))
+        BigDecimal amount = new BigDecimal("1.00");
+        assertThatThrownBy(() -> this.testee.payRent(rent, amount))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -161,7 +167,8 @@ class RentServiceImplTest {
         when(this.rateServiceMock.retrieveRateByAge(46)).thenReturn(Rate.REGULAR);
         when(this.rateServiceMock.calculatePrice(rent, Rate.REGULAR)).thenReturn(new BigDecimal("6.00"));
 
-        assertThatThrownBy(() -> this.testee.payRent(rent, new BigDecimal("0.01")))
+        BigDecimal amount = new BigDecimal("0.01");
+        assertThatThrownBy(() -> this.testee.payRent(rent, amount))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

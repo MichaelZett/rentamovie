@@ -65,7 +65,7 @@
         <!-- leerer Default, damit @{argLine} in Surefire auch ohne JaCoCo-Agent aufloest -->
         <argLine></argLine>
         <sonar.issue.ignore.multicriteria>
-            idBasedEquals,teachingSingletons,mainArgs,disabledRepositoryTests,numericDatesInTests
+            idBasedEquals,teachingSingletons,mainArgs,disabledRepositoryTests,numericDatesInTests,fileLoadConstructor
         </sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.idBasedEquals.ruleKey>java:S2160
         </sonar.issue.ignore.multicriteria.idBasedEquals.ruleKey>
@@ -88,6 +88,10 @@
         </sonar.issue.ignore.multicriteria.numericDatesInTests.ruleKey>
         <sonar.issue.ignore.multicriteria.numericDatesInTests.resourceKey>**/src/test/java/**/*.java
         </sonar.issue.ignore.multicriteria.numericDatesInTests.resourceKey>
+        <sonar.issue.ignore.multicriteria.fileLoadConstructor.ruleKey>java:S107
+        </sonar.issue.ignore.multicriteria.fileLoadConstructor.ruleKey>
+        <sonar.issue.ignore.multicriteria.fileLoadConstructor.resourceKey>**/src/main/java/**/domain/*.java
+        </sonar.issue.ignore.multicriteria.fileLoadConstructor.resourceKey>
     </properties>
 
     <dependencyManagement>
