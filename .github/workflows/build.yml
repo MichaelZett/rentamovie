@@ -8,6 +8,9 @@ on:
 
 permissions:
   contents: read
+  checks: write
+  security-events: write
+  actions: read
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -30,6 +33,32 @@ jobs:
           cache: maven
       - name: Verify
         run: mvn -B verify
+      - name: Publish test results
+        if: always()
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: '**/target/surefire-reports/TEST-*.xml'
+          check_name: Tests
+      # Ein SARIF je Zustand; jeder Lauf bekommt eine eigene Kategorie, sonst
+      # weist Code Scanning mehrere SpotBugs-Laeufe in einem Upload ab.
+      # Absolute Pfade (sarifFullPath) werden relativ zum Repo gemacht.
+      - name: Collect SpotBugs SARIF
+        if: always() && !github.event.repository.private && hashFiles('**/target/spotbugsSarif.json') != ''
+        run: |
+          mkdir -p sarif
+          for f in Zustand_*/rentamovie/target/spotbugsSarif.json; do
+            z=${f%%/*}
+            jq --arg id "spotbugs/$z/" --arg ws "$GITHUB_WORKSPACE/" '
+              .runs[].automationDetails = {id: $id}
+              | walk(if type == "object" and (.uri? | type) == "string"
+                     then .uri |= sub("^(file://)?" + $ws; "") else . end)
+            ' "$f" > "sarif/$z.sarif"
+          done
+      - name: Upload SpotBugs SARIF
+        if: always() && !github.event.repository.private && hashFiles('sarif/*.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: sarif
       - name: SonarCloud
         # Secrets sind bei Fork-PRs nicht verfügbar
         if: env.SONAR_TOKEN != ''
@@ -39,3 +68,14 @@ jobs:
           -Dsonar.organization=michaelzett
           -Dsonar.projectKey=MichaelZett_rentamovie
           -Dsonar.projectName=rentamovie
+      - name: Upload reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reports
+          path: |
+            **/target/surefire-reports/
+            **/target/spotbugs*
+          retention-days: 7
+          compression-level: 9
+          if-no-files-found: ignore

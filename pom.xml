@@ -281,6 +281,9 @@
                         <effort>Max</effort>
                         <threshold>Low</threshold>
                         <excludeFilterFile>${maven.multiModuleProjectDirectory}/spotbugs-exclude.xml</excludeFilterFile>
+                        <!-- SARIF fuer GitHub Code Scanning (CI laedt es bei oeffentlichem Repo hoch) -->
+                        <sarifOutput>true</sarifOutput>
+                        <sarifFullPath>true</sarifFullPath>
                     </configuration>
                 </plugin>
             </plugins>
